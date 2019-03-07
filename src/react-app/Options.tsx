@@ -1,31 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
+import { Dimensions, Options, GameString, gameStrings } from "./types";
 
-interface Dimensions {
-  width: Number;
-  height: Number;
-}
-
-type GameString = "Civ V" | "Civ VI";
-
-interface Game {
-  type: GameString;
-  display: String;
-}
-
-interface Options {
-  dimensions: Dimensions;
-  format: GameString;
-}
+// @ts-ignore: noImplicitAny
+import ControlPanel, { Select, Range } from "react-control-panel";
 
 interface OptionsProps {
   onSubmit: () => void;
   minDimensions: Dimensions;
   maxDimensions: Dimensions;
   selectedOptions: Options;
-  onChange: () => Options;
-  games: Array<Game>;
+  onChange: (options: Options) => void;
 }
 
-const Options: React.SFC<OptionsProps> = (props: OptionsProps) => <div />;
+type State = {
+  Width: number;
+  Height: number;
+  Format: GameString;
+};
 
-export default Options;
+type ControlPanelProps = State & {
+  minDimensions: Dimensions;
+  maxDimensions: Dimensions;
+  onChange: (newState: any) => void;
+};
+
+const OptionsWrapper: React.SFC<OptionsProps> = props => {
+  const selected = props.selectedOptions;
+
+  const [state, setState] = useState({
+    Width: selected.dimensions.width,
+    Height: selected.dimensions.height,
+    Format: selected.format
+  });
+
+  return (
+    <OptionsMenu
+      {...state}
+      minDimensions={props.minDimensions}
+      maxDimensions={props.maxDimensions}
+      onChange={(newState: State) => {
+        setState({ ...state, ...newState });
+      }}
+    />
+  );
+};
+
+const OptionsMenu: React.SFC<ControlPanelProps> = props => (
+  <ControlPanel
+    theme="dark"
+    title="Demo Panel"
+    initialState={initialState}
+    onChange={(label: string, newvalue: any) => {
+      props.onChange({ [label]: newvalue });
+    }}
+    width={500}
+    style={{ marginRight: 30 }}
+  >
+    <Range
+      label="Width"
+      step={1}
+      min={props.minDimensions.width}
+      max={props.maxDimensions.width}
+    />
+    <Range
+      label="Height"
+      step={1}
+      min={props.minDimensions.height}
+      max={props.maxDimensions.height}
+    />
+    <Select label="Format" options={gameStrings} />
+  </ControlPanel>
+);
+
+export default OptionsWrapper;
