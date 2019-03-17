@@ -15,7 +15,10 @@ export default class AppContainer extends React.Component {
     alert("submitted" + JSON.stringify(this.state));
     fetch("/api/map", {
       method: "POST",
-      body: JSON.stringify({ ...this.state })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(this.state)
     });
   }
 

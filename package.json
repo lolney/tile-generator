@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@google/earthengine": "^0.1.171",
     "@types/jest": "24.0.6",
     "@types/leaflet": "^1.4.3",
     "@types/leaflet-areaselect": "^0.1.4",
@@ -26,10 +27,12 @@
     "react-leaflet": "^2.2.1",
     "react-leaflet-vectorgrid": "^2.2.1",
     "react-scripts": "2.1.5",
+    "resource-router-middleware": "^0.7.0",
     "typescript": "3.3.3333"
   },
   "scripts": {
     "start": "babel-node src/server/main.js",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
