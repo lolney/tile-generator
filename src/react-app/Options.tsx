@@ -34,14 +34,17 @@ const OptionsWrapper: React.SFC<OptionsProps> = props => {
   });
 
   return (
-    <OptionsMenu
-      {...state}
-      minDimensions={props.minDimensions}
-      maxDimensions={props.maxDimensions}
-      onChange={(newState: State) => {
-        setState({ ...state, ...newState });
-      }}
-    />
+    <div>
+      <OptionsMenu
+        {...state}
+        minDimensions={props.minDimensions}
+        maxDimensions={props.maxDimensions}
+        onChange={(newState: State) => {
+          setState({ ...state, ...newState });
+        }}
+      />
+      <button onClick={props.onSubmit}> Submit </button>
+    </div>
   );
 };
 
@@ -49,7 +52,11 @@ const OptionsMenu: React.SFC<ControlPanelProps> = props => (
   <ControlPanel
     theme="dark"
     title="Demo Panel"
-    initialState={initialState}
+    initialState={{
+      Width: props.Width,
+      Height: props.Height,
+      Format: props.Format
+    }}
     onChange={(label: string, newvalue: any) => {
       props.onChange({ [label]: newvalue });
     }}

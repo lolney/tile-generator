@@ -13,6 +13,7 @@
     "leaflet": "^1.4.0",
     "leaflet-area-select": "^1.0.3",
     "leaflet-css": "^0.1.0",
+    "leaflet-virtual-grid": "^1.0.7",
     "react": "^16.8.3",
     "react-control-panel": "^0.4.5",
     "react-dom": "^16.8.3",

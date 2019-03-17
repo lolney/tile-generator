@@ -12,7 +12,11 @@ export default class AppContainer extends React.Component {
   };
 
   onSubmit() {
-    // submit state
+    alert("submitted" + JSON.stringify(this.state));
+    fetch("/api/map", {
+      method: "POST",
+      body: JSON.stringify({ ...this.state })
+    });
   }
 
   render() {

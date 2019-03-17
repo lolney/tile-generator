@@ -1,10 +1,12 @@
 import React from "react";
-import { Map as LeafletMap, TileLayer } from "react-leaflet";
+//import { Map as LeafletMap, TileLayer } from "react-leaflet";
+import L from "leaflet";
 // @ts-ignore: noImplicitAny
-import SelectArea from "leaflet-area-select";
+import "leaflet-area-select";
 // Leaflet.Grid
 
 import "leaflet/dist/leaflet.css";
+import "./Map.css";
 
 import { LeafletEvent, LatLngBounds } from "leaflet";
 
@@ -14,8 +16,11 @@ interface MapProps {
 
 export default class Map extends React.Component<MapProps> {
   componentDidMount() {
-    /*// initialize map
+    // initialize map
     var map = L.map("map").setView([38, 0], 4);
+
+    // @ts-ignore
+    map.selectArea.enable();
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
@@ -24,8 +29,12 @@ export default class Map extends React.Component<MapProps> {
 
     // add AreaSelect with keepAspectRatio:true
     map.on("areaselected", (e: any) => {
+      this.props.onBoundsChange(e.bounds);
       console.log(e.bounds.toBBoxString()); // lon, lat, lon, lat
-    });*/
+    });
+
+    // @ts-ignore
+    //map.selectArea.setCtrlKey(true);
   }
 
   onMoveEnd(e: LeafletEvent) {
@@ -34,18 +43,6 @@ export default class Map extends React.Component<MapProps> {
   }
 
   render() {
-    return (
-      <LeafletMap
-        style={{ height: "80vh", width: "100vw" }}
-        center={[2.935403, 101.448205]}
-        zoom={4}
-        onMoveend={this.onMoveEnd.bind(this)}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-      </LeafletMap>
-    );
+    return <div id="map" />;
   }
 }
