@@ -1,11 +1,8 @@
+import ee from "@google/earthengine";
+
 export default function() {
   var dataset = ee.Image("USGS/GTOPO30");
   var elevation = dataset.select("elevation");
-  var elevationVis = {
-    min: -10.0,
-    max: 8000.0,
-    gamma: 1.6
-  };
 
   var lat = [-180, 180];
   var lng = [-90, 90];
@@ -27,9 +24,19 @@ export default function() {
     geometries: true
   });
 
-  print(samples);
+  console.log(samples.getInfo());
 
+  /* viz
+  // Can do this in Node api in another way:
+  // https://github.com/google/earthengine-api/blob/master/demos/map-layer/static/script.js
+  var elevationVis = {
+    min: -10.0,
+    max: 8000.0,
+    gamma: 1.6
+  };
+  
   Map.setCenter(0, 0, 4);
   Map.addLayer(samples, null, "Elevation");
   Map.addLayer(polygon, null, "Poly");
+  */
 }

@@ -1,3 +1,5 @@
+import ee from "@google/earthengine";
+
 export default function createGrid(lon_start, lon_end, lat_start, lat_end) {
   // 2) Decide no. of (in this case: equally sized) cells
   var num_cells = 16;
