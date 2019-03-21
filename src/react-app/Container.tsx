@@ -11,15 +11,16 @@ export default class AppContainer extends React.Component {
     bounds: new LatLngBounds(new LatLng(37, -121), new LatLng(38, -120))
   };
 
-  onSubmit() {
-    alert("submitted" + JSON.stringify(this.state));
-    fetch("/api/map", {
+  async onSubmit() {
+    console.log("submitted" + JSON.stringify(this.state));
+    const response = await fetch("/api/map", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(this.state)
     });
+    console.log(response);
   }
 
   render() {

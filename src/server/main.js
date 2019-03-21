@@ -7,6 +7,7 @@ import path from "path";
 
 import config from "./config.json";
 import EarthEngine from "./earth-engine/EarthEngine.js";
+import OpenRequest from "./api/OpenRequest.js";
 
 let app = express();
 EarthEngine.init().then(earthEngine => {
@@ -37,8 +38,13 @@ EarthEngine.init().then(earthEngine => {
 
   // API starter
   app.post("/api/map", function(req, res) {
-    earthEngine.parseRequest(req.body);
-    res.sendStatus(200);
+    const request = new OpenRequest(earthEngine);
+    const data = request.parseRequest(req.body);
+
+    console.log(data);
+
+    res.setHeader("Content-Type", "application/json");
+    res.send({ data });
   });
 
   app.server.listen(process.env.PORT || config.port, () => {

@@ -33,10 +33,15 @@ export default class EarthEngine {
     return new EarthEngine();
   }
 
-  parseRequest(req) {
-    // Match req -> method
-    // Start jobs
-    // On all jobs complete: create outputed map
+  createLandTiles(grid) {
+    const featureCollection = isLand(grid);
+
+    return featureCollection.getInfo().features.map(feature => {
+      const island = feature.properties.isLand;
+      return {
+        terrain: island ? "grassland" : "coast"
+      };
+    });
   }
 
   static async runAnalysis() {
@@ -49,3 +54,75 @@ export default class EarthEngine {
     });
   }
 }
+
+/**
+ Class design:
+ - Open request
+    - Validate request
+    - State: Map, request
+    - Start jobs, notifying client on completion
+    - When all jobs complete, generate the actual map
+ - Earth engine (singleton)
+    - sets up earth engine
+    - dispatches to isLand, etc.
+OPTION 1
+ - Map
+    - Creates grid from request dimensions and bounds
+    - Holds completed map layers
+    - State: layers, grid
+ - Map layer
+    - Contains a tile grid    
+    - Eg, water: each tile is water or not 
+END OPTION 1
+OPTION 2
+ - Map
+    - Holds array of tiles
+    - Can add layers - partially complete tiles
+    - State: tiles, grid
+END OPTION 2
+ - TileMap
+    - Civ5Map, Civ6Map, etc., are more specific versions
+    - Has methods to write specific features
+
+
+ - Mapping tiles to tilemaps:
+    - Create base map by nxm tiles
+    - Order applied shouldn't matter:
+        - Each tile is just a collection of independent features
+    - Rely on implementations of methods under the TileMap interface:
+        - eg, writeLand(terrainType)
+ - Writing Civ5 Maps
+    - Description of map format: 
+    https://forums.civfanatics.com/threads/civ5map-file-format.418566/
+    - A Javascript parser (for replays, so does more):
+    https://github.com/aiwebb/civ5replay/blob/gh-pages/js/Replay.js#L135
+
+
+    Types:
+        interface Tile {
+            terrain: TerrainType,
+            elevation: Elevation
+            feature: FeatureType
+        }
+
+        enum TerrainType {
+            grassland,
+            plains,
+            tundra,
+            ice,
+            coast,
+            ocean
+        }
+
+        enum FeatureType {
+            marsh,
+            forest,
+            jungle
+        }
+
+        enum Elevation {
+            mountain,
+            hill,
+            flat
+        }
+ */

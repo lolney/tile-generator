@@ -7,13 +7,17 @@ function setIsLand(square) {
   return square.set({ isLand: land });
 }
 
-export default function() {
+/**
+ *
+ * @param {ee.FeatureCollection} grid
+ */
+export default function(grid) {
   var hasMean = ee.Filter.neq("mean", undefined);
 
   var dataset = ee.Image("MODIS/MOD44W/MOD44W_005_2000_02_24");
   var waterMask = dataset.select("water_mask");
 
-  var grid = createGrid(-180, 180, 0, 90);
+  if (!grid) grid = createGrid(-180, 180, 0, 90);
 
   const findMean = square => {
     var meanDictionary = waterMask.reduceRegion({
@@ -37,6 +41,7 @@ export default function() {
 
   console.log(waterTiles.getInfo());
 
+  return waterTiles;
   // Paint
   /*
   Map.setCenter(6.746, 46.529, 2);
