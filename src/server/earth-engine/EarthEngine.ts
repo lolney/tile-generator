@@ -1,6 +1,8 @@
+// @ts-ignore: noImplicitAny
 import ee from "@google/earthengine";
-import privateKey from "../../../tile-generator-private-key.json";
+import privateKey from "../tile-generator-private-key.json";
 import isLand from "./isLand.js";
+import { TerrainType } from "../types";
 
 export default class EarthEngine {
   static async init() {
@@ -11,7 +13,7 @@ export default class EarthEngine {
           console.log("auth succeeded");
           resolve();
         },
-        function(e) {
+        function(e: Error) {
           reject(e);
         }
       );
@@ -24,7 +26,7 @@ export default class EarthEngine {
         () => {
           resolve();
         },
-        e => {
+        (e: Error) => {
           reject(e);
         }
       );
@@ -33,13 +35,13 @@ export default class EarthEngine {
     return new EarthEngine();
   }
 
-  createLandTiles(grid) {
+  createLandTiles(grid: any) {
     const featureCollection = isLand(grid);
 
-    return featureCollection.getInfo().features.map(feature => {
+    return featureCollection.getInfo().features.map((feature: any) => {
       const island = feature.properties.isLand;
       return {
-        terrain: island ? "grassland" : "coast"
+        terrain: island ? TerrainType.grassland : TerrainType.coast
       };
     });
   }
@@ -47,7 +49,7 @@ export default class EarthEngine {
   static async runAnalysis() {
     return new Promise(resolve => {
       var image = new ee.Image("srtm90_v4");
-      image.getMap({ min: 0, max: 1000 }, map => {
+      image.getMap({ min: 0, max: 1000 }, (map: any) => {
         console.log(map);
         resolve(map);
       });
@@ -96,33 +98,5 @@ END OPTION 2
     https://forums.civfanatics.com/threads/civ5map-file-format.418566/
     - A Javascript parser (for replays, so does more):
     https://github.com/aiwebb/civ5replay/blob/gh-pages/js/Replay.js#L135
-
-
-    Types:
-        interface Tile {
-            terrain: TerrainType,
-            elevation: Elevation
-            feature: FeatureType
-        }
-
-        enum TerrainType {
-            grassland,
-            plains,
-            tundra,
-            ice,
-            coast,
-            ocean
-        }
-
-        enum FeatureType {
-            marsh,
-            forest,
-            jungle
-        }
-
-        enum Elevation {
-            mountain,
-            hill,
-            flat
-        }
+        
  */

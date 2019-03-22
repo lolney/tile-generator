@@ -31,11 +31,13 @@
     "typescript": "3.3.3333"
   },
   "scripts": {
-    "start": "babel-node src/server/main.js",
+    "start": "babel-node dist/main.js",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "watch-all": "npm run watch-server & npm run build & npm start",
+    "watch-server": "tsc -p server-tsconfig.json --watch"
   },
   "eslintConfig": {
     "extends": "react-app"
