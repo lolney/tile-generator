@@ -27,7 +27,7 @@ export function createRawHexGrid({
   for (let row = 0; row < height; row++) {
     let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
 
-    let start = [lon_offset + lon_start, 0.25 + lat_start + unit * 0.75];
+    let start = [lon_offset + lon_start, 0.25 + lat_start + unit * 0.75 * row];
 
     // for each col
     for (let col = 0; col < width; col++) {
@@ -52,7 +52,7 @@ export function addOffsets(offsets, start, unit) {
 export const offsets = [
   // lng, lat
   [0, 0],
-  [0.5, 0.5],
+  [0.5, 0.25],
   [1, 0],
   [1, -0.5],
   [0.5, -0.75],

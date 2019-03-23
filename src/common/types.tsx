@@ -15,7 +15,7 @@ export interface Options {
   format: GameString;
 }
 
-export type State = Options & {
+export type MapOptions = Options & {
   bounds: LatLngBounds;
 };
 

@@ -2,7 +2,7 @@
 import ee from "@google/earthengine";
 import privateKey from "../tile-generator-private-key.json";
 import isLand from "./isLand.js";
-import { TerrainType } from "../types";
+import { TerrainType, Tile } from "../types";
 
 export default class EarthEngine {
   static async init() {
@@ -35,7 +35,15 @@ export default class EarthEngine {
     return new EarthEngine();
   }
 
-  createLandTiles(grid: any) {
+  extractGeometry(grid: any) {
+    const featureCollection = grid.getInfo();
+
+    return featureCollection.features.map((feature: any) => {
+      return feature.geometry;
+    });
+  }
+
+  createLandTiles(grid: any): Array<Tile> {
     const featureCollection = isLand(grid);
 
     return featureCollection.getInfo().features.map((feature: any) => {

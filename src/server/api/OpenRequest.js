@@ -10,7 +10,7 @@ export default class OpenRequest {
   }
 
   parseRequest(req) {
-    // Validate request -> map
+    // Validate request
     const options = MapOptionsT.decode(req).getOrElseL(errors => {
       throw new Error(failure(errors).join("\n"));
     });
@@ -23,6 +23,11 @@ export default class OpenRequest {
       lon_end: options.bounds._northEast.lng,
       lat_start: options.bounds._northEast.lat
     });
+
+    return this.earthEngine.extractGeometry(grid);
+    // TODO: make these separate events
+
+    // Create layers
 
     const tiles = this.earthEngine.createLandTiles(grid);
     this.map.addLayer(tiles);
