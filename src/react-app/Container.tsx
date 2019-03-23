@@ -1,12 +1,12 @@
 import Map from "./Map";
 import OptionsMenu from "./Options";
 import React from "react";
-import { State, Options } from "./types";
+import { State, Options } from "../common/types";
 import { LatLng, LatLngBounds } from "leaflet";
 
 export default class AppContainer extends React.Component {
   state: State = {
-    dimensions: { width: 500, height: 50 },
+    dimensions: { width: 10, height: 10 },
     format: "Civ V",
     bounds: new LatLngBounds(new LatLng(37, -121), new LatLng(38, -120))
   };

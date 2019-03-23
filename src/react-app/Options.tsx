@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, Options, GameString, gameStrings } from "./types";
+import { Dimensions, Options, GameString, gameStrings } from "../common/types";
 
 // @ts-ignore: noImplicitAny
 import ControlPanel, { Select, Range } from "react-control-panel";

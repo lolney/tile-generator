@@ -15,6 +15,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "http": "0.0.0",
+    "io-ts": "^1.8.3",
     "leaflet": "^1.4.0",
     "leaflet-area-select": "^1.0.3",
     "leaflet-css": "^0.1.0",
@@ -31,7 +32,7 @@
     "typescript": "3.3.3333"
   },
   "scripts": {
-    "start": "babel-node dist/main.js",
+    "start": "babel-node dist/server/main.js",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

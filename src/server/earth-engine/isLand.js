@@ -39,8 +39,6 @@ export default function(grid) {
     .filter(hasMean)
     .map(setIsLand);
 
-  console.log(waterTiles.getInfo());
-
   return waterTiles;
   // Paint
   /*
