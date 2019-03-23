@@ -46,3 +46,8 @@ export default class Map extends React.Component<MapProps> {
     return <div id="map" />;
   }
 }
+
+/**
+ Leaflet map todo:
+ - Aspect ratio locking
+ */

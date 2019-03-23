@@ -7,7 +7,6 @@ export default function createGrid(lon_start, lon_end, lat_start, lat_end) {
   var lat_edge = (lat_end - lat_start) / Math.sqrt(num_cells);
   // 3) Create the grid
   var polys = [];
-  var polys_line = [];
   var cell_id = 0;
   for (var lon = lon_start; lon < lon_end; lon += lon_edge) {
     var x1 = lon;
