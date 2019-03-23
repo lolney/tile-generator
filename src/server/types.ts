@@ -1,7 +1,7 @@
 export interface Tile {
-  terrain: TerrainType;
-  elevation: Elevation;
-  feature: FeatureType;
+  terrain?: TerrainType;
+  elevation?: Elevation;
+  feature?: FeatureType;
 }
 
 export enum TerrainType {

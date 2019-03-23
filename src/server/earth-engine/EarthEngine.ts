@@ -45,16 +45,6 @@ export default class EarthEngine {
       };
     });
   }
-
-  static async runAnalysis() {
-    return new Promise(resolve => {
-      var image = new ee.Image("srtm90_v4");
-      image.getMap({ min: 0, max: 1000 }, (map: any) => {
-        console.log(map);
-        resolve(map);
-      });
-    });
-  }
 }
 
 /**

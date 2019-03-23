@@ -1,5 +1,9 @@
+import { Tile } from "../types";
+
 export default class Map {
-  constructor(ntiles) {
+  tiles: Array<Tile>;
+
+  constructor(ntiles: number) {
     this.tiles = new Array(ntiles);
 
     for (let i = 0; i < this.tiles.length; i++) {
@@ -7,7 +11,7 @@ export default class Map {
     }
   }
 
-  addLayer(tiles) {
+  addLayer(tiles: Array<Tile>) {
     this.tiles = this.tiles.map((tile, i) => ({ ...tile, ...tiles[i] }));
   }
 }
