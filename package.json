@@ -39,7 +39,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "watch-all": "npm run watch-server & npm run build & npm start",
-    "watch-server": "tsc -p server-tsconfig.json --watch"
+    "watch-server": "tsc -p server-tsconfig.json --watch",
+    "watch-client": "node scripts/watch.js"
   },
   "eslintConfig": {
     "extends": "react-app"
