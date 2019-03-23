@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Dimensions, Options, GameString, gameStrings } from "../common/types";
 
 // @ts-ignore: noImplicitAny
@@ -18,29 +18,33 @@ type State = {
   Format: GameString;
 };
 
-type ControlPanelProps = State & {
+type ControlPanelProps = {
+  state: State;
   minDimensions: Dimensions;
   maxDimensions: Dimensions;
-  onChange: (newState: any) => void;
+  onChange: (newState: State) => void;
 };
 
-const OptionsWrapper: React.SFC<OptionsProps> = props => {
-  const selected = props.selectedOptions;
+function stateToOptions(state: State): Options {
+  return {
+    dimensions: { width: state.Width, height: state.Height },
+    format: state.Format
+  };
+}
 
-  const [state, setState] = useState({
-    Width: selected.dimensions.width,
-    Height: selected.dimensions.height,
-    Format: selected.format
-  });
+const OptionsWrapper: React.SFC<OptionsProps> = props => {
+  const Width = props.selectedOptions.dimensions.width;
+  const Height = props.selectedOptions.dimensions.width;
+  const Format = props.selectedOptions.format;
 
   return (
     <div>
       <OptionsMenu
-        {...state}
+        state={{ Width, Height, Format }}
         minDimensions={props.minDimensions}
         maxDimensions={props.maxDimensions}
         onChange={(newState: State) => {
-          setState({ ...state, ...newState });
+          props.onChange(stateToOptions(newState));
         }}
       />
       <button onClick={props.onSubmit}> Submit </button>
@@ -52,13 +56,9 @@ const OptionsMenu: React.SFC<ControlPanelProps> = props => (
   <ControlPanel
     theme="dark"
     title="Demo Panel"
-    initialState={{
-      Width: props.Width,
-      Height: props.Height,
-      Format: props.Format
-    }}
+    initialState={props.state}
     onChange={(label: string, newvalue: any) => {
-      props.onChange({ [label]: newvalue });
+      props.onChange({ ...props.state, [label]: newvalue });
     }}
     width={500}
     style={{ marginRight: 30 }}

@@ -2,7 +2,7 @@
 import ee from "@google/earthengine";
 import privateKey from "../tile-generator-private-key.json";
 import isLand from "./isLand.js";
-import { TerrainType, Tile } from "../types";
+import { TerrainType, Tile } from "../../common/types";
 
 export default class EarthEngine {
   static async init() {
@@ -36,6 +36,7 @@ export default class EarthEngine {
   }
 
   extractGeometry(grid: any) {
+    // this causes problems with maps larger than about 10x10
     const featureCollection = grid.getInfo();
 
     return featureCollection.features.map((feature: any) => {
@@ -46,7 +47,10 @@ export default class EarthEngine {
   createLandTiles(grid: any): Array<Tile> {
     const featureCollection = isLand(grid);
 
-    return featureCollection.getInfo().features.map((feature: any) => {
+    // get "too many concurrent aggregations" on this
+    const local = featureCollection.getInfo();
+
+    return local.features.map((feature: any) => {
       const island = feature.properties.isLand;
       return {
         terrain: island ? TerrainType.grassland : TerrainType.coast

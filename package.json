@@ -30,7 +30,9 @@
     "react-leaflet-vectorgrid": "^2.2.1",
     "react-scripts": "2.1.5",
     "resource-router-middleware": "^0.7.0",
-    "typescript": "3.3.3333"
+    "sse-express": "^1.0.2",
+    "typescript": "3.3.3333",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "babel-node dist/server/main.js",

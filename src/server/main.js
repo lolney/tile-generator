@@ -4,12 +4,15 @@ import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import path from "path";
+import sseExpress from "sse-express";
 
 import config from "./config.json";
 import EarthEngine from "./earth-engine/EarthEngine.js";
 import OpenRequest from "./api/OpenRequest.js";
 
 let app = express();
+let requestMap = {};
+
 EarthEngine.init().then(earthEngine => {
   app.server = http.createServer(app);
 
@@ -39,12 +42,35 @@ EarthEngine.init().then(earthEngine => {
   // API starter
   app.post("/api/map", function(req, res) {
     const request = new OpenRequest(earthEngine);
-    const data = request.parseRequest(req.body);
+    let grid;
 
-    console.log(data);
+    try {
+      grid = request.parseRequest(req.body);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err.toString());
+      return;
+    }
+
+    requestMap[request.id] = request;
 
     res.setHeader("Content-Type", "application/json");
-    res.send({ data });
+    res.send({ grid, id: request.id });
+  });
+
+  // sse
+  app.get("/updates/:id", sseExpress, function(req, res) {
+    const request = requestMap[req.params.id];
+
+    if (!request) {
+      res.send(404);
+    } else {
+      for (const layer of request.completeJobs()) {
+        res.sse("layer", {
+          layer
+        });
+      }
+    }
   });
 
   app.server.listen(process.env.PORT || config.port, () => {

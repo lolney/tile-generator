@@ -3,7 +3,8 @@ import ee from "@google/earthengine";
 
 function setIsLand(square) {
   var mean = square.get("mean");
-  var land = ee.Algorithms.If(ee.Number(mean).lt(0.5), 0, 1);
+  // water mask is 1. if gt .5, then is water; else land.
+  var land = ee.Algorithms.If(ee.Number(mean).gt(0.5), 0, 1);
   return square.set({ isLand: land });
 }
 

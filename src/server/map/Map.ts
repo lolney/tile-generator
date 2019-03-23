@@ -1,4 +1,4 @@
-import { Tile } from "../types";
+import { Tile } from "../../common/types";
 
 export default class Map {
   tiles: Array<Tile>;

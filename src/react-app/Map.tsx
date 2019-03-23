@@ -10,10 +10,12 @@ import "./Map.css";
 
 import { LeafletEvent, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
+import { Tile, TerrainType } from "../common/types";
 
 interface MapProps {
   onBoundsChange: (bounds: LatLngBounds) => any;
   grid: Array<Polygon>;
+  layer: Array<Tile>;
 }
 
 export default class Map extends React.Component<MapProps> {
@@ -35,19 +37,41 @@ export default class Map extends React.Component<MapProps> {
       this.props.onBoundsChange(e.bounds);
       console.log(e.bounds.toBBoxString()); // lon, lat, lon, lat
     });
-
-    // @ts-ignore
-    //map.selectArea.setCtrlKey(true);
   }
 
   componentDidUpdate(prevProps: MapProps) {
     // Add hex grid
-    if (prevProps.grid != this.props.grid) {
-      L.geoJSON({
-        type: "GeometryCollection",
-        // @ts-ignore
-        geometries: this.props.grid
-      }).addTo(this.map);
+    if (
+      prevProps.grid != this.props.grid ||
+      prevProps.layer != this.props.layer
+    ) {
+      L.geoJSON(
+        {
+          type: "FeatureCollection",
+          // @ts-ignore
+          features: this.props.grid.map((hex, i) => ({
+            geometry: hex,
+            properties: this.props.layer[i],
+            type: "Feature"
+          }))
+        },
+        {
+          style: function(feature) {
+            if (feature === undefined || feature.properties === undefined) {
+              return {};
+            } else {
+              switch (feature.properties.terrain) {
+                case TerrainType.coast:
+                  return { color: "blue" };
+                case TerrainType.grassland:
+                  return { color: "green" };
+                default:
+                  return {};
+              }
+            }
+          }
+        }
+      ).addTo(this.map);
     }
   }
 

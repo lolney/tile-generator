@@ -1,5 +1,5 @@
 import Map from "./Map";
-import { Tile, TerrainType, FeatureType } from "../types";
+import { Tile, TerrainType, FeatureType } from "../common/types";
 
 describe("mergeTiles", () => {
   const tiles1: Array<Tile> = [
