@@ -8,7 +8,7 @@ import sseExpress from "sse-express";
 
 import config from "./config.json";
 import EarthEngine from "./earth-engine/EarthEngine.js";
-import OpenRequest from "./api/OpenRequest.js";
+import OpenRequest, { N_LAYERS } from "./api/OpenRequest.js";
 
 let app = express();
 let requestMap = {};
@@ -55,7 +55,7 @@ EarthEngine.init().then(earthEngine => {
     requestMap[request.id] = request;
 
     res.setHeader("Content-Type", "application/json");
-    res.send({ grid, id: request.id });
+    res.send({ grid, id: request.id, nLayers: N_LAYERS });
   });
 
   // sse

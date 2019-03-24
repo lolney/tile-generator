@@ -2,7 +2,8 @@
 import ee from "@google/earthengine";
 import privateKey from "../tile-generator-private-key.json";
 import isLand from "./isLand.js";
-import { TerrainType, Tile } from "../../common/types";
+import { TerrainType, Tile, Elevation } from "../../common/types";
+import findSlope from "./findSlope.js";
 
 export default class EarthEngine {
   static async init() {
@@ -55,6 +56,27 @@ export default class EarthEngine {
       return {
         terrain: island ? TerrainType.grassland : TerrainType.coast
       };
+    });
+  }
+
+  createElevationTiles(grid: any): Array<Tile> {
+    const featureCollection = findSlope(grid);
+
+    const local = featureCollection.getInfo();
+
+    return local.features.map((feature: any) => {
+      const meanSlope = feature.properties.mean;
+      let elevation;
+
+      if (meanSlope === undefined || meanSlope < 4) {
+        elevation = Elevation.flat;
+      } else if (meanSlope < 10) {
+        elevation = Elevation.hill;
+      } else {
+        elevation = Elevation.mountain;
+      }
+
+      return { elevation };
     });
   }
 }

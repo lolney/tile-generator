@@ -46,9 +46,9 @@ export default class AppContainer extends React.Component {
     const res = await response.json();
     this.setState({ grid: res.grid });
 
+    let remainingLayers = res.nLayers;
     let eventSource = new EventSource(`updates/${res.id}`);
 
-    let remainingLayers = 1;
     const callback = (e: Event) => {
       // @ts-ignore
       const data = JSON.parse(e.data);

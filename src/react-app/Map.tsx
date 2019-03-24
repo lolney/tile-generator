@@ -11,6 +11,7 @@ import "./Map.css";
 import { LeafletEvent, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
 import { Tile, TerrainType } from "../common/types";
+import { Elevation } from "../common/types";
 
 interface MapProps {
   onBoundsChange: (bounds: LatLngBounds) => any;
@@ -60,14 +61,32 @@ export default class Map extends React.Component<MapProps> {
             if (feature === undefined || feature.properties === undefined) {
               return {};
             } else {
-              switch (feature.properties.terrain) {
-                case TerrainType.coast:
-                  return { color: "blue" };
-                case TerrainType.grassland:
-                  return { color: "green" };
-                default:
-                  return {};
-              }
+              const color = (() => {
+                switch (feature.properties.terrain) {
+                  case TerrainType.coast:
+                    return { color: "blue" };
+                  case TerrainType.grassland:
+                    return { color: "green" };
+                  default:
+                    return {};
+                }
+              })();
+
+              const elevation = (() => {
+                switch (feature.properties.elevation) {
+                  case Elevation.flat:
+                    if (feature.properties.terrain != TerrainType.coast)
+                      return { fillColor: "green" };
+                  case Elevation.hill:
+                    return { fillColor: "brown" };
+                  case Elevation.mountain:
+                    return { fillColor: "black" };
+                  default:
+                }
+                return {};
+              })();
+
+              return { ...elevation, ...color };
             }
           }
         }
