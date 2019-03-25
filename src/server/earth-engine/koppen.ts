@@ -5,6 +5,8 @@ export function getForestType(koppen: Koppen): FeatureType {
   switch (koppen) {
     case Koppen.Af:
     case Koppen.Am:
+    case Koppen.Aw: // mix forest
+    case Koppen.As: // mix forest
       return FeatureType.jungle;
     default:
       return FeatureType.forest;

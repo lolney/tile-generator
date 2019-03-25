@@ -4,7 +4,7 @@ import { failure } from "io-ts";
 import uuidv4 from "uuid/v4";
 import createRawHexGrid from "../../common/createRawHexGrid";
 
-export const N_LAYERS = 1;
+export const N_LAYERS = 2;
 
 export default class OpenRequest {
   constructor(earthEngine) {
@@ -39,9 +39,10 @@ export default class OpenRequest {
     for (const method of [
       //this.earthEngine.createLandTiles,
       //this.earthEngine.createElevationTiles,
-      this.earthEngine.createClimateTiles
+      this.earthEngine.createClimateTiles,
+      this.earthEngine.createForestTiles
     ]) {
-      let tiles = await method(this.grid);
+      let tiles = await method.bind(this.earthEngine)(this.grid);
       this.map.addLayer(tiles);
       yield this.map.tiles;
     }

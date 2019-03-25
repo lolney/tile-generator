@@ -2,10 +2,12 @@
 import ee from "@google/earthengine";
 import privateKey from "../tile-generator-private-key.json";
 import isLand from "./isLand.js";
-import { TerrainType, Tile, Elevation } from "../../common/types";
+import { TerrainType, Tile, Elevation, FeatureType } from "../../common/types";
 import findSlope from "./findSlope.js";
-import { getClimateType, getTerrainType } from "./koppen.js";
-import { Polygon } from "geojson";
+import { getClimateType, getTerrainType, getForestType } from "./koppen.js";
+import { Polygon, GeoJsonObject } from "geojson";
+import isForest from "./isForest.js";
+import createHexGrid from "./createHexGrid.js";
 
 export default class EarthEngine {
   static async init() {
@@ -47,27 +49,20 @@ export default class EarthEngine {
     });
   }
 
-  createLandTiles(grid: any): Array<Tile> {
-    const featureCollection = isLand(grid);
-
-    // get "too many concurrent aggregations" on this
-    const local = featureCollection.getInfo();
-
-    return local.features.map((feature: any) => {
-      const island = feature.properties.isLand;
+  createLandTiles(grid: Array<Polygon>): Array<Tile> {
+    const process = (properties: any) => {
+      const island = properties.isLand;
       return {
         terrain: island ? TerrainType.grassland : TerrainType.coast
       };
-    });
+    };
+
+    return this.createEETiles(grid, isLand, process);
   }
 
-  createElevationTiles(grid: any): Array<Tile> {
-    const featureCollection = findSlope(grid);
-
-    const local = featureCollection.getInfo();
-
-    return local.features.map((feature: any) => {
-      const meanSlope = feature.properties.mean;
+  createElevationTiles(grid: Array<Polygon>): Array<Tile> {
+    const process = (properties: any) => {
+      const meanSlope = properties.mean;
       let elevation;
 
       if (meanSlope === undefined || meanSlope < 4) {
@@ -79,6 +74,43 @@ export default class EarthEngine {
       }
 
       return { elevation };
+    };
+
+    return this.createEETiles(grid, findSlope, process);
+  }
+
+  createForestTiles(grid: Array<Polygon>) {
+    const process = async (properties: any, geometry: Polygon) => {
+      const index = properties.mean;
+      const isForest = index < 1.75; // 1: forest; 2: non-forest
+
+      if (!isForest) return {};
+
+      const [lng, lat] = geometry.coordinates[0][0];
+      const koppen = await getClimateType(lng, lat);
+
+      if (!koppen) return {};
+
+      const feature = getForestType(koppen);
+
+      return { feature };
+    };
+
+    return Promise.all(this.createEETiles(grid, isForest, process));
+  }
+
+  createEETiles(
+    grid: any,
+    analysis: Function,
+    process: (properties: any, geometry: Polygon) => Promise<Tile> | Tile
+  ) {
+    const earthGrid = createHexGrid(grid);
+    const featureCollection = analysis(earthGrid);
+
+    const local = featureCollection.getInfo();
+
+    return local.features.map((feature: any) => {
+      return process(feature.properties, feature.geometry);
     });
   }
 

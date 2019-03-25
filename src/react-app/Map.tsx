@@ -12,6 +12,7 @@ import { LeafletEvent, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
 import { Tile, TerrainType } from "../common/types";
 import { Elevation } from "../common/types";
+import { FeatureType } from "../common/types";
 
 interface MapProps {
   onBoundsChange: (bounds: LatLngBounds) => any;
@@ -96,7 +97,18 @@ export default class Map extends React.Component<MapProps> {
                 return {};
               })();
 
-              return { ...elevation, ...color };
+              const terrainFeature = (() => {
+                switch (feature.properties.feature) {
+                  case FeatureType.forest:
+                    return { fillColor: "DarkOliveGreen" };
+                  case FeatureType.jungle:
+                    return { fillColor: "black" };
+                  default:
+                    return { fillColor: "white" };
+                }
+              })();
+
+              return { ...elevation, ...color, ...terrainFeature };
             }
           }
         }
