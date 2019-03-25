@@ -1,10 +1,10 @@
 import Map from "../map/Map";
-import createHexGrid from "../earth-engine/createHexGrid";
 import { MapOptionsT } from "../../common/types";
 import { failure } from "io-ts";
 import uuidv4 from "uuid/v4";
+import createRawHexGrid from "../../common/createRawHexGrid";
 
-export const N_LAYERS = 3;
+export const N_LAYERS = 1;
 
 export default class OpenRequest {
   constructor(earthEngine) {
@@ -22,7 +22,7 @@ export default class OpenRequest {
     const { width, height } = options.dimensions;
 
     // Start jobs
-    this.grid = createHexGrid({
+    this.grid = createRawHexGrid({
       width,
       height,
       lon_start: options.bounds._southWest.lng,
@@ -32,13 +32,13 @@ export default class OpenRequest {
 
     this.map = new Map(width * height);
 
-    return this.earthEngine.extractGeometry(this.grid);
+    return this.grid;
   }
 
   async *completeJobs() {
     for (const method of [
-      this.earthEngine.createLandTiles,
-      this.earthEngine.createElevationTiles,
+      //this.earthEngine.createLandTiles,
+      //this.earthEngine.createElevationTiles,
       this.earthEngine.createClimateTiles
     ]) {
       let tiles = await method(this.grid);

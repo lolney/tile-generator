@@ -76,6 +76,7 @@ export enum Koppen {
   Dwa,
   Dwb,
   Dwd,
+  Dwc,
   Dsa,
   Dsb,
   Dsc,

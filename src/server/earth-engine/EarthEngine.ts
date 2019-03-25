@@ -5,6 +5,7 @@ import isLand from "./isLand.js";
 import { TerrainType, Tile, Elevation } from "../../common/types";
 import findSlope from "./findSlope.js";
 import { getClimateType, getTerrainType } from "./koppen.js";
+import { Polygon } from "geojson";
 
 export default class EarthEngine {
   static async init() {
@@ -81,7 +82,7 @@ export default class EarthEngine {
     });
   }
 
-  createClimateTiles(grid: any): Promise<Array<Tile>> {
+  /*createClimateTiles(grid: any): Promise<Array<Tile>> {
     const local = grid.getInfo();
 
     return Promise.all(
@@ -90,6 +91,21 @@ export default class EarthEngine {
         const koppen = await getClimateType(lng, lat);
         const terrain = getTerrainType(koppen);
         return { terrain };
+      })
+    );
+  }*/
+
+  createClimateTiles(grid: Array<Polygon>): Promise<Array<Tile>> {
+    return Promise.all(
+      grid.map(async (geometry: Polygon) => {
+        const [lng, lat] = geometry.coordinates[0][0];
+        const koppen = await getClimateType(lng, lat);
+
+        if (koppen === undefined) return {};
+        else {
+          const terrain = getTerrainType(koppen);
+          return { terrain };
+        }
       })
     );
   }

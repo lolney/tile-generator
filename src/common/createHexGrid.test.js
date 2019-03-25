@@ -1,4 +1,4 @@
-import { createHexagon, offsets, createRawHexGrid } from "./createHexGrid";
+import createRawHexGrid, { createHexagon, offsets } from "./createRawHexGrid";
 
 describe("createHexagon", () => {
   it("outputs a hexagon", () => {

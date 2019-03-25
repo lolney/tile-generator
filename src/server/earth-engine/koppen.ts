@@ -13,11 +13,13 @@ export function getForestType(koppen: Koppen): FeatureType {
 
 export function getTerrainType(koppen: Koppen): TerrainType {
   switch (koppen) {
-    case Koppen.Dfc:
+    case Koppen.Dfc: // might sometimes want grassland/plains
     case Koppen.Dfd:
-    case Koppen.Dsc:
+    case Koppen.Dsc: // might sometimes want grassland/plains
     case Koppen.Dsd:
+    case Koppen.Dwc: // might sometimes want grassland/plains
     case Koppen.Dwd:
+    case Koppen.ET: // might sometimes want ice
       return TerrainType.tundra;
     case Koppen.Dsa:
     case Koppen.Dsb:
@@ -46,7 +48,6 @@ export function getTerrainType(koppen: Koppen): TerrainType {
     case Koppen.Cwc:
       return TerrainType.grassland;
     case Koppen.EF:
-    case Koppen.ET:
       return TerrainType.ice;
     case Koppen.Ocean:
       return TerrainType.coast;
@@ -69,10 +70,14 @@ export async function getClimateType(lng: number, lat: number) {
   try {
     const res = await client.query(query);
     const row = res.rows[0];
+    if (row === undefined) {
+      return undefined;
+    }
+
     const str = row["climates_f"];
     const koppen = dbStringToClimateType(str);
 
-    if (koppen == undefined) {
+    if (koppen === undefined) {
       throw new Error("Unexpected climate type: " + str);
     }
 
