@@ -25,3 +25,5 @@ yarn-error.log*
 tile-generator-private-key\.json
 
 dist/
+
+\.env

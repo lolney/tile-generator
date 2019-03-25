@@ -64,9 +64,19 @@ export default class Map extends React.Component<MapProps> {
               const color = (() => {
                 switch (feature.properties.terrain) {
                   case TerrainType.coast:
+                    return { color: "cyan" };
+                  case TerrainType.ocean:
                     return { color: "blue" };
                   case TerrainType.grassland:
                     return { color: "green" };
+                  case TerrainType.plains:
+                    return { color: "gold" };
+                  case TerrainType.desert:
+                    return { color: "sandybrown" };
+                  case TerrainType.tundra:
+                    return { color: "grey" };
+                  case TerrainType.ice:
+                    return { color: "white" };
                   default:
                     return {};
                 }

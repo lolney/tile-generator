@@ -28,4 +28,18 @@ describe("mergeTiles", () => {
       { terrain: TerrainType.tundra }
     ]);
   });
+
+  it("overwrites exisitng features with the second", () => {
+    const map = new Map(2);
+
+    const tiles2: Array<Tile> = [{ terrain: TerrainType.coast }, {}];
+
+    map.addLayer(tiles1);
+    map.addLayer(tiles2);
+
+    expect(map.tiles).toEqual([
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.tundra }
+    ]);
+  });
 });

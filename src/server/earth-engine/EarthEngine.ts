@@ -4,6 +4,7 @@ import privateKey from "../tile-generator-private-key.json";
 import isLand from "./isLand.js";
 import { TerrainType, Tile, Elevation } from "../../common/types";
 import findSlope from "./findSlope.js";
+import { getClimateType, getTerrainType } from "./koppen.js";
 
 export default class EarthEngine {
   static async init() {
@@ -78,6 +79,19 @@ export default class EarthEngine {
 
       return { elevation };
     });
+  }
+
+  createClimateTiles(grid: any): Promise<Array<Tile>> {
+    const local = grid.getInfo();
+
+    return Promise.all(
+      local.features.map(async (feature: any) => {
+        const [lng, lat] = feature.geometry.coordinates[0][0];
+        const koppen = await getClimateType(lng, lat);
+        const terrain = getTerrainType(koppen);
+        return { terrain };
+      })
+    );
   }
 }
 

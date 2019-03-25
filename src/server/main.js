@@ -59,13 +59,13 @@ EarthEngine.init().then(earthEngine => {
   });
 
   // sse
-  app.get("/updates/:id", sseExpress, function(req, res) {
+  app.get("/updates/:id", sseExpress, async function(req, res) {
     const request = requestMap[req.params.id];
 
     if (!request) {
       res.send(404);
     } else {
-      for (const layer of request.completeJobs()) {
+      for await (const layer of request.completeJobs()) {
         res.sse("layer", {
           layer
         });

@@ -4,7 +4,7 @@ import { MapOptionsT } from "../../common/types";
 import { failure } from "io-ts";
 import uuidv4 from "uuid/v4";
 
-export const N_LAYERS = 2;
+export const N_LAYERS = 3;
 
 export default class OpenRequest {
   constructor(earthEngine) {
@@ -35,12 +35,13 @@ export default class OpenRequest {
     return this.earthEngine.extractGeometry(this.grid);
   }
 
-  *completeJobs() {
+  async *completeJobs() {
     for (const method of [
       this.earthEngine.createLandTiles,
-      this.earthEngine.createElevationTiles
+      this.earthEngine.createElevationTiles,
+      this.earthEngine.createClimateTiles
     ]) {
-      let tiles = method(this.grid);
+      let tiles = await method(this.grid);
       this.map.addLayer(tiles);
       yield this.map.tiles;
     }

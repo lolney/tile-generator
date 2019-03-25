@@ -31,6 +31,7 @@ export enum TerrainType {
   grassland,
   plains,
   tundra,
+  desert,
   ice,
   coast,
   ocean
@@ -46,6 +47,42 @@ export enum Elevation {
   mountain,
   hill,
   flat
+}
+
+// --- Koppen climate --- //
+
+export enum Koppen {
+  Af,
+  Am,
+  Aw,
+  As,
+  BWh,
+  BWk,
+  BSh,
+  BSk,
+  Cfa,
+  Cfb,
+  Cfc,
+  Cwa,
+  Cwb,
+  Cwc,
+  Csa,
+  Csb,
+  Csc,
+  Dfa,
+  Dfb,
+  Dfc,
+  Dfd,
+  Dwa,
+  Dwb,
+  Dwd,
+  Dsa,
+  Dsb,
+  Dsc,
+  Dsd,
+  ET,
+  EF,
+  Ocean
 }
 
 // -------  io-ts dynamic types -------- //
