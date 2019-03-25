@@ -1,6 +1,6 @@
 import createGrid from "./createGrid";
 import ee from "@google/earthengine";
-import { createFindMean } from "./tileAnalysis";
+import { createFindMean, reduceRegions } from "./tileAnalysis";
 
 function setIsLand(square) {
   var mean = square.get("mean");
@@ -19,13 +19,8 @@ export default function(grid) {
   var dataset = ee.Image("MODIS/MOD44W/MOD44W_005_2000_02_24");
   var waterMask = dataset.select("water_mask");
 
-  if (!grid) grid = createGrid(-180, 180, 0, 90);
-
-  const findMean = createFindMean(waterMask, "water_mask");
-
   // map squares -> means
-  var waterTiles = grid
-    .map(findMean)
+  var waterTiles = reduceRegions(waterMask, grid)
     .filter(hasMean)
     .map(setIsLand);
 

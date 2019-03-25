@@ -107,11 +107,19 @@ export default class EarthEngine {
     const earthGrid = createHexGrid(grid);
     const featureCollection = analysis(earthGrid);
 
+    // Note: with large tile sizes, there's a problem with this stage
+    // Can try first exporting to drive, then loading from there
+    // Or, actually seems to be a problem with sending too much?
     const local = featureCollection.getInfo();
 
     return local.features.map((feature: any) => {
       return process(feature.properties, feature.geometry);
     });
+
+    /* need cloud storage
+    ee.batch.Export.table.toAsset(featureCollection);
+    return [{}];
+    */
   }
 
   /*createClimateTiles(grid: any): Promise<Array<Tile>> {

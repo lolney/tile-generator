@@ -28,7 +28,6 @@ export function getTerrainType(koppen: Koppen): TerrainType {
     case Koppen.BSh:
     case Koppen.BSk:
     case Koppen.Csa:
-    case Koppen.Csb:
     case Koppen.Csc:
       return TerrainType.plains;
     case Koppen.BWh:
@@ -42,6 +41,7 @@ export function getTerrainType(koppen: Koppen): TerrainType {
     case Koppen.Dfb:
     case Koppen.Dwa:
     case Koppen.Dwb:
+    case Koppen.Csb: // warm summer med; mixed with plains
     case Koppen.Cfa:
     case Koppen.Cfb:
     case Koppen.Cfc:

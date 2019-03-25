@@ -1,17 +1,19 @@
 import ee from "@google/earthengine";
-import { createFindMean } from "./tileAnalysis";
+import { reduceRegions } from "./tileAnalysis";
+
+// Map image:
+// set isForest
+// set isWetland
 
 export default function(grid) {
-  var dataset = ee
+  /*var dataset = ee
     .ImageCollection("JAXA/ALOS/PALSAR/YEARLY/FNF")
     .filterDate("2017-01-01", "2017-12-31")
     .first();
-  var mask = dataset.select("fnf");
+  var mask = dataset.select("fnf");*/
 
-  const findMean = createFindMean(mask, "fnf");
+  var dataset = ee.Image("COPERNICUS/CORINE/V18_5_1/100m/2012");
+  var mask = dataset.select("landcover");
 
-  // map squares -> means
-  var tiles = grid.map(findMean);
-
-  return tiles;
+  return reduceRegions(mask, grid);
 }

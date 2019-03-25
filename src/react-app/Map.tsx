@@ -104,7 +104,7 @@ export default class Map extends React.Component<MapProps> {
                   case FeatureType.jungle:
                     return { fillColor: "black" };
                   default:
-                    return { fillColor: "white" };
+                    return {};
                 }
               })();
 

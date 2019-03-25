@@ -38,9 +38,9 @@ export default class OpenRequest {
   async *completeJobs() {
     for (const method of [
       //this.earthEngine.createLandTiles,
-      //this.earthEngine.createElevationTiles,
-      this.earthEngine.createClimateTiles,
-      this.earthEngine.createForestTiles
+      this.earthEngine.createElevationTiles,
+      this.earthEngine.createClimateTiles
+      //this.earthEngine.createForestTiles
     ]) {
       let tiles = await method.bind(this.earthEngine)(this.grid);
       this.map.addLayer(tiles);

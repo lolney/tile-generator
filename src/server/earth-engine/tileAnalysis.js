@@ -1,5 +1,10 @@
 import ee from "@google/earthengine";
 
+/**
+ * Should use reducRegions over this unless timing out
+ * @param {ee.Image} mask
+ * @param {string} band
+ */
 export function createFindMean(mask, band) {
   const findMean = square => {
     var meanDictionary = mask.reduceRegion({
@@ -16,4 +21,12 @@ export function createFindMean(mask, band) {
   };
 
   return findMean;
+}
+
+export function reduceRegions(image, grid) {
+  return image.reduceRegions({
+    reducer: ee.Reducer.mean(),
+    collection: grid,
+    scale: 300
+  });
 }
