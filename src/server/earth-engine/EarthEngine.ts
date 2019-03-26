@@ -53,7 +53,7 @@ export default class EarthEngine {
     const process = (properties: any) => {
       const island = properties.isLand;
       return {
-        terrain: island ? TerrainType.grassland : TerrainType.coast
+        terrain: island ? TerrainType.grass : TerrainType.coast
       };
     };
 

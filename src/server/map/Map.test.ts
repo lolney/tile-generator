@@ -3,7 +3,7 @@ import { Tile, TerrainType, FeatureType } from "../../common/types";
 
 describe("mergeTiles", () => {
   const tiles1: Array<Tile> = [
-    { terrain: TerrainType.grassland },
+    { terrain: TerrainType.grass },
     { terrain: TerrainType.tundra }
   ];
 
@@ -24,7 +24,7 @@ describe("mergeTiles", () => {
     map.addLayer(tiles2);
 
     expect(map.tiles).toEqual([
-      { terrain: TerrainType.grassland, feature: FeatureType.forest },
+      { terrain: TerrainType.grass, feature: FeatureType.forest },
       { terrain: TerrainType.tundra }
     ]);
   });

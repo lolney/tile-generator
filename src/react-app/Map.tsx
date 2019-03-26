@@ -68,7 +68,7 @@ export default class Map extends React.Component<MapProps> {
                     return { color: "cyan" };
                   case TerrainType.ocean:
                     return { color: "blue" };
-                  case TerrainType.grassland:
+                  case TerrainType.grass:
                     return { color: "green" };
                   case TerrainType.plains:
                     return { color: "gold" };

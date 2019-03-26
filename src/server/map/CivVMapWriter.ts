@@ -59,7 +59,7 @@ export default class CivVMapWriter extends MapWriter {
 
   private getTerrainId(terrain: TerrainType | undefined) {
     switch (terrain) {
-      case TerrainType.grassland:
+      case TerrainType.grass:
         return terrainTypes.TERRAIN_GRASS;
       case TerrainType.plains:
         return terrainTypes.TERRAIN_PLAINS;

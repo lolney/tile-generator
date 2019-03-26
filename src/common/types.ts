@@ -38,7 +38,7 @@ type RiverType = {
 };
 
 export enum TerrainType {
-  grassland,
+  grass,
   plains,
   tundra,
   desert,
