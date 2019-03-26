@@ -49,7 +49,7 @@ export default class EarthEngine {
     });
   }
 
-  createLandTiles(grid: Array<Polygon>): Array<Tile> {
+  async createLandTiles(grid: Array<Polygon>): Promise<Array<Tile>> {
     const process = (properties: any) => {
       const island = properties.isLand;
       return {
@@ -60,7 +60,7 @@ export default class EarthEngine {
     return this.createEETiles(grid, isLand, process);
   }
 
-  createElevationTiles(grid: Array<Polygon>): Array<Tile> {
+  async createElevationTiles(grid: Array<Polygon>): Promise<Array<Tile>> {
     const process = (properties: any) => {
       const meanSlope = properties.mean;
       let elevation;

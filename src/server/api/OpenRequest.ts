@@ -8,7 +8,7 @@ import CivVMap from "../map/CivVMap";
 import EarthEngine from "../earth-engine/EarthEngine";
 import { Polygon } from "geojson";
 
-export const N_LAYERS = 1;
+export const N_LAYERS = 3;
 
 export default class OpenRequest {
   complete: boolean;
@@ -56,9 +56,9 @@ export default class OpenRequest {
   async *completeJobs(earthEngine: EarthEngine) {
     for (const method of [
       //this.earthEngine.createLandTiles,
-      //this.earthEngine.createElevationTiles,
-      earthEngine.createClimateTiles
-      //this.earthEngine.createForestTiles
+      earthEngine.createElevationTiles,
+      earthEngine.createClimateTiles,
+      earthEngine.createForestTiles
     ]) {
       let tiles = await method.bind(earthEngine)(this.grid);
       this.map.addLayer(tiles);
