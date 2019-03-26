@@ -4,6 +4,7 @@ import React from "react";
 import { MapOptions, Options, Tile } from "../common/types";
 import { LatLng, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
+import download from "downloadjs";
 
 type State = {
   options: MapOptions;
@@ -24,6 +25,7 @@ export default class AppContainer extends React.Component {
     layer: []
   };
 
+  // todo: make lifecycle more explicit
   async onSubmit() {
     if (this.state.activeJob) {
       console.log("job currently active");
@@ -58,6 +60,13 @@ export default class AppContainer extends React.Component {
       if (remainingLayers == 0) {
         eventSource.removeEventListener("layer", callback);
 
+        fetch(`/api/map/${res.id}`)
+          .then(function(resp) {
+            return resp.blob();
+          })
+          .then(function(blob) {
+            download(blob, "generatedMap.Civ5Map");
+          });
         this.resetState();
       }
     };

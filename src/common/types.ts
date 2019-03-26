@@ -25,7 +25,17 @@ export interface Tile {
   terrain?: TerrainType;
   elevation?: Elevation;
   feature?: FeatureType;
+  river?: RiverType;
 }
+
+type RiverType = {
+  northEast?: boolean;
+  northWest?: boolean;
+  east?: boolean;
+  west?: boolean;
+  southEast?: boolean;
+  southWest?: boolean;
+};
 
 export enum TerrainType {
   grassland,
@@ -38,15 +48,20 @@ export enum TerrainType {
 }
 
 export enum FeatureType {
+  ice,
   marsh,
   forest,
-  jungle
+  jungle,
+  oasis,
+  floodplains,
+  atoll,
+  fallout
 }
 
 export enum Elevation {
-  mountain,
+  flat,
   hill,
-  flat
+  mountain
 }
 
 // --- Koppen climate --- //

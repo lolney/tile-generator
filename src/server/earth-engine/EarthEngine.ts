@@ -192,5 +192,7 @@ END OPTION 2
     https://forums.civfanatics.com/threads/civ5map-file-format.418566/
     - A Javascript parser (for replays, so does more):
     https://github.com/aiwebb/civ5replay/blob/gh-pages/js/Replay.js#L135
+    - A Civ 6 save parser:
+    https://github.com/pydt/civ6-save-parser/blob/master/index.js
         
  */

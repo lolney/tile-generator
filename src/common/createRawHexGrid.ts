@@ -1,10 +1,21 @@
+import { Polygon } from "geojson";
+
+type coords = [number, number];
+type params = {
+  width: number;
+  height: number;
+  lon_start: number;
+  lon_end: number;
+  lat_start: number;
+};
+
 export default function createRawHexGrid({
   width,
   height,
   lon_start,
   lon_end,
   lat_start
-}) {
+}: params): Polygon[] {
   // lock aspect ratio to width
   var unit = (lon_end - lon_start) / width;
 
@@ -13,7 +24,10 @@ export default function createRawHexGrid({
   for (let row = 0; row < height; row++) {
     let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
 
-    let start = [lon_offset + lon_start, 0.25 + lat_start + unit * 0.75 * row];
+    let start: coords = [
+      lon_offset + lon_start,
+      0.25 + lat_start + unit * 0.75 * row
+    ];
 
     // for each col
     for (let col = 0; col < width; col++) {
@@ -27,7 +41,7 @@ export default function createRawHexGrid({
   return polys;
 }
 
-export function addOffsets(offsets, start, unit) {
+export function addOffsets(offsets: coords[], start: coords, unit: number) {
   const [sa, sb] = start;
   return offsets.map(offset => {
     const [a, b] = offset;
@@ -35,7 +49,7 @@ export function addOffsets(offsets, start, unit) {
   });
 }
 
-export const offsets = [
+export const offsets: coords[] = [
   // lng, lat
   [0, 0],
   [0.5, 0.25],
@@ -46,7 +60,7 @@ export const offsets = [
   [0, 0]
 ];
 
-export function createHexagon(start, unit) {
+export function createHexagon(start: coords, unit: number): Polygon {
   return {
     type: "Polygon",
     coordinates: [addOffsets(offsets, start, unit)]

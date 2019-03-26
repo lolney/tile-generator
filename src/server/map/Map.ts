@@ -3,11 +3,14 @@ import { Tile } from "../../common/types";
 export default class Map {
   tiles: Array<Tile>;
 
-  constructor(ntiles: number) {
-    this.tiles = new Array(ntiles);
-
-    for (let i = 0; i < this.tiles.length; i++) {
-      this.tiles[i] = {};
+  constructor(tiles: number | Array<Tile>) {
+    if (tiles instanceof Array) {
+      this.tiles = tiles;
+    } else {
+      this.tiles = new Array(tiles);
+      for (let i = 0; i < this.tiles.length; i++) {
+        this.tiles[i] = {};
+      }
     }
   }
 

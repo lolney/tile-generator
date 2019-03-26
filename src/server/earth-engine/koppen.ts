@@ -70,6 +70,10 @@ export async function getClimateType(lng: number, lat: number) {
   `;
 
   try {
+    // Note on performance:
+    // - Takes several seconds for large (eg, 50x50) maps
+    // - Most CPU time is spent in native code (~67%) or garbage collection
+    // - Roughly 12 connections are opened at once
     const res = await client.query(query);
     const row = res.rows[0];
     if (row === undefined) {

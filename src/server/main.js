@@ -41,11 +41,10 @@ EarthEngine.init().then(earthEngine => {
 
   // API starter
   app.post("/api/map", function(req, res) {
-    const request = new OpenRequest(earthEngine);
-    let grid;
+    let request;
 
     try {
-      grid = request.parseRequest(req.body);
+      request = OpenRequest.parseRequest(req.body);
     } catch (err) {
       console.log(err);
       res.status(400).send(err.toString());
@@ -55,7 +54,7 @@ EarthEngine.init().then(earthEngine => {
     requestMap[request.id] = request;
 
     res.setHeader("Content-Type", "application/json");
-    res.send({ grid, id: request.id, nLayers: N_LAYERS });
+    res.send({ grid: request.grid, id: request.id, nLayers: N_LAYERS });
   });
 
   // sse
@@ -65,11 +64,23 @@ EarthEngine.init().then(earthEngine => {
     if (!request) {
       res.send(404);
     } else {
-      for await (const layer of request.completeJobs()) {
+      for await (const layer of request.completeJobs(earthEngine)) {
         res.sse("layer", {
           layer
         });
       }
+    }
+  });
+
+  app.get("/api/map/:id", async (req, res) => {
+    const request = requestMap[req.params.id];
+
+    if (!request || !request.complete) {
+      res.send(404);
+    } else {
+      const buffer = request.createFile();
+      res.write(buffer, "binary");
+      res.end(undefined, "binary");
     }
   });
 
