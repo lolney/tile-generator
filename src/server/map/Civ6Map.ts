@@ -1,5 +1,11 @@
 import Map from "./Map";
-import { Tile, TerrainType, Elevation, FeatureType } from "../../common/types";
+import {
+  Tile,
+  TerrainType,
+  Elevation,
+  FeatureType,
+  MapConfigurable
+} from "../../common/types";
 import { Map as DBMap, Players } from "./Civ6Map.types.";
 import uuid from "uuid/v4";
 
@@ -16,19 +22,16 @@ type MapAttributes = {
   Ruleset: string;
 };
 
-type Params = {
-  name: string;
-  width: number;
-  height: number;
-};
-
 export default class Civ6Map extends Map {
   attributes: MapAttributes;
   metadata: MetaData;
   map: DBMap;
   players: Players[];
 
-  constructor(tiles: number | Array<Tile>, { name, width, height }: Params) {
+  constructor(
+    tiles: number | Array<Tile>,
+    { name, width, height, nPlayers }: MapConfigurable
+  ) {
     super(tiles);
 
     this.metadata = {

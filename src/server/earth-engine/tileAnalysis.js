@@ -27,6 +27,6 @@ export function reduceRegions(image, grid) {
   return image.reduceRegions({
     reducer: ee.Reducer.mean(),
     collection: grid,
-    scale: 300
+    scale: 500
   });
 }

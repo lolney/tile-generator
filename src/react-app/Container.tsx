@@ -61,11 +61,15 @@ export default class AppContainer extends React.Component {
         eventSource.removeEventListener("layer", callback);
 
         fetch(`/api/map/${res.id}`)
-          .then(function(resp) {
-            return resp.blob();
-          })
-          .then(function(blob) {
-            download(blob, "generatedMap.Civ5Map");
+          .then(async resp => ({
+            // @ts-ignore (enforced on server)
+            filename: resp.headers
+              .get("Content-Disposition")
+              .split("filename=")[1],
+            blob: await resp.blob()
+          }))
+          .then(function({ filename, blob }) {
+            download(blob, filename);
           });
         this.resetState();
       }

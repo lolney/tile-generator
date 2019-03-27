@@ -78,7 +78,13 @@ EarthEngine.init().then(earthEngine => {
     if (!request || !request.complete) {
       res.send(404);
     } else {
-      const buffer = request.createFile();
+      const buffer = await request.createFile();
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=${request.getFileName()}`
+      );
+      res.setHeader("Content-Type", "application/octet-stream");
+
       res.write(buffer, "binary");
       res.end(undefined, "binary");
     }

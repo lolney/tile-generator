@@ -3,20 +3,22 @@ import { Plots } from "./Civ6Map.types.";
 import Civ6Map from "./Civ6Map";
 import { Tile } from "../../common/types";
 import fs from "fs";
+import { reject } from "q";
 
 // Tables of interest:
 // Plots, PlotRivers, PlotResources, PlotFeatures, PlotCliffs, Players?,
 // MetaData, MapAttributes, Map
-export default class CivVIMapWriter {
+export default class Civ6MapWriter {
   map: Civ6Map;
   db: sqlite3.Database;
+  path: string;
 
   constructor(map: Civ6Map, path?: string) {
     this.map = map;
-    path = path ? path : ":memory:";
+    this.path = path ? path : ":memory:";
 
     this.db = new sqlite3.Database(
-      path,
+      this.path,
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
       (err: Error | null) => {
         if (err) {
@@ -26,13 +28,25 @@ export default class CivVIMapWriter {
     );
   }
 
-  async write() {
+  async write(): Promise<Buffer> {
+    await this.createDb();
+    return new Promise((resolve, reject) => {
+      fs.readFile(this.path, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  async createDb() {
     const headers = this.getMetaDataQueries();
     const body = this.getPlotsQuery();
-    var schema = fs.readFileSync(
-      "/home/luke/Projects/tile-generator/tile-generator/src/server/map/Civ6MapScheme.sql",
-      { encoding: "utf8" }
-    );
+    var schema = fs.readFileSync("./src/server/map/Civ6MapScheme.sql", {
+      encoding: "utf8"
+    });
 
     const tables = schema.split(";");
 

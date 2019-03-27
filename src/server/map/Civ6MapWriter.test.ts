@@ -15,18 +15,17 @@ const testMap = new Civ6Map(
   {
     name: "test",
     width: 2,
-    height: 2
+    height: 2,
+    nPlayers: 1,
+    description: ""
   }
 );
 
 describe("Civ6", () => {
   it("MapWriter correctly writes tiles", async () => {
-    const writer = new Civ6MapWriter(
-      testMap,
-      "/home/luke/Projects/tile-generator/tile-generator/test.Civ6Map"
-    );
+    const writer = new Civ6MapWriter(testMap);
 
-    await writer.write();
+    await writer.createDb();
 
     const plots = await writer.getPlots();
 

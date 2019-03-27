@@ -1,13 +1,5 @@
-import { Tile } from "../../common/types";
+import { Tile, MapConfigurable } from "../../common/types";
 import Map from "./Map";
-
-type HeaderConfigurable = {
-  width: number;
-  height: number;
-  nPlayers: number;
-  name: string;
-  description: string;
-};
 
 type HeaderConstant = {
   version: number;
@@ -19,7 +11,7 @@ type HeaderConstant = {
 };
 
 export type CivVMapHeader = HeaderConstant &
-  HeaderConfigurable & {
+  MapConfigurable & {
     mapsize: string;
   };
 
@@ -56,7 +48,7 @@ const CIV_CONSTANT_HEADER: HeaderConstant = {
 export default class CivVMap extends Map {
   header: CivVMapHeader;
 
-  constructor(tiles: number | Array<Tile> = [], params: HeaderConfigurable) {
+  constructor(tiles: number | Array<Tile> = [], params: MapConfigurable) {
     super(tiles);
     this.header = {
       ...CIV_CONSTANT_HEADER,

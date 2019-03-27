@@ -19,6 +19,16 @@ export type MapOptions = Options & {
   bounds: LatLngBounds;
 };
 
+// --- Server ----- //
+
+export type MapConfigurable = {
+  width: number;
+  height: number;
+  nPlayers: number;
+  name: string;
+  description: string;
+};
+
 // --- Tile types --- //
 
 export interface Tile {
