@@ -21,7 +21,10 @@ const testMap = new Civ6Map(
 
 describe("Civ6", () => {
   it("MapWriter correctly writes tiles", async () => {
-    const writer = new Civ6MapWriter(testMap);
+    const writer = new Civ6MapWriter(
+      testMap,
+      "/home/luke/Projects/tile-generator/tile-generator/test.Civ6Map"
+    );
 
     await writer.write();
 
@@ -30,5 +33,11 @@ describe("Civ6", () => {
     expect(plots).toHaveLength(4);
     expect(plots[0].TerrainType).toBe("TERRAIN_OCEAN");
     expect(plots[0].ID).toBe(0);
+  });
+
+  it("getQueryFromEntries", async () => {
+    const writer = new Civ6MapWriter(testMap);
+
+    console.log(writer.getQueryFromEntries("Map", [writer.map.map]));
   });
 });

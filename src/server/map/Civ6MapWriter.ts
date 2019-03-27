@@ -27,7 +27,7 @@ export default class CivVIMapWriter {
   }
 
   async write() {
-    const header = this.getMetaDataQuery();
+    const headers = this.getMetaDataQueries();
     const body = this.getPlotsQuery();
     var schema = fs.readFileSync(
       "/home/luke/Projects/tile-generator/tile-generator/src/server/map/Civ6MapScheme.sql",
@@ -40,7 +40,9 @@ export default class CivVIMapWriter {
       if (table != "") await this.run(table + ";");
     }
 
-    await this.run(header);
+    for (const header of headers) {
+      await this.run(header);
+    }
     await this.run(body);
   }
 
@@ -58,27 +60,35 @@ export default class CivVIMapWriter {
     });
   }
 
-  getMetaDataQuery() {
-    const metadata = this.getNameValueQuery(this.map.metadata);
-    const attributes = this.getNameValueQuery(this.map.attributes);
-
-    const row = `(${Object.values(this.map.map).join(",")})`;
-    const map = this.getQuery(
-      "Map",
-      [
-        "ID",
-        "Width",
-        "Height",
-        "TopLatitude",
-        "BottomLatitude",
-        "WrapX",
-        "WrapY",
-        "MapSizeType"
-      ],
-      [row]
+  getMetaDataQueries() {
+    const metadata = this.getNameValueQuery("MetaData", this.map.metadata);
+    const attributes = this.getNameValueQuery(
+      "MapAttributes",
+      this.map.attributes
     );
 
-    return [metadata, attributes, map].join("\n");
+    const map = this.getQueryFromEntries("Map", [this.map.map]);
+    const players = this.getQueryFromEntries("Players", this.map.players);
+
+    return [metadata, attributes, map, players];
+  }
+
+  getQueryFromEntries(table: string, objs: any[]) {
+    const format = (obj: any) => {
+      if (typeof obj === "string") return `'${obj}'`;
+      if (typeof obj === "boolean") return obj ? 1 : 0;
+      else return obj;
+    };
+
+    const rows = objs.map(
+      obj =>
+        `(${Object.values(obj)
+          .map(format)
+          .join(",")})`
+    );
+    const fields = Object.keys(objs[0]);
+
+    return this.getQuery(table, fields, rows);
   }
 
   getPlotsQuery() {
@@ -89,11 +99,11 @@ export default class CivVIMapWriter {
     );
   }
 
-  getNameValueQuery(obj: any) {
+  getNameValueQuery(table: string, obj: any) {
     const rows = Object.entries(obj).map(
       ([key, value]) => `('${key}', '${value}')`
     );
-    return this.getQuery("MetaData", ["Name", "Value"], rows);
+    return this.getQuery(table, ["Name", "Value"], rows);
   }
 
   getTileInsertQuery(
