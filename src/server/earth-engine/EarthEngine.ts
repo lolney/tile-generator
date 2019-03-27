@@ -68,7 +68,7 @@ export default class EarthEngine {
       if (meanSlope === undefined || meanSlope < 4) {
         elevation = Elevation.flat;
       } else if (meanSlope < 10) {
-        elevation = Elevation.hill;
+        elevation = Elevation.hills;
       } else {
         elevation = Elevation.mountain;
       }

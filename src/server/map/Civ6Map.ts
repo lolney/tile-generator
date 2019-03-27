@@ -74,6 +74,14 @@ export default class Civ6Map extends Map {
     );
 
     this.players[0].Status = "Human";
+
+    const barbs = Civ6Map.createCivilization(63, "CIVILIZATION_BARBARIAN");
+    this.players.push({
+      ...barbs,
+      Initialized: true,
+      CivilizationType: "CIVILIZATION_BARBARIAN",
+      CivilizationLevelType: "CIVILIZATION_LEVEL_TRIBE"
+    });
   }
 
   static createCivilization(ID: number, color: string): Players {
@@ -95,14 +103,13 @@ export default class Civ6Map extends Map {
     const { elevation, terrain } = tile;
 
     if (!terrain) return "TERRAIN_GRASS";
-    else if (!elevation) {
-      const terrainS: string = TerrainType[terrain];
+
+    const terrainS: string = TerrainType[terrain];
+    if (elevation === undefined || elevation === Elevation.flat)
       return `TERRAIN_${terrainS.toUpperCase()}`;
-    } else {
-      const terrainS: string = TerrainType[terrain];
-      const elevationS: string = Elevation[elevation];
-      return `TERRAIN_${terrainS.toUpperCase()}_${terrainS.toUpperCase()}`;
-    }
+
+    const elevationS: string = Elevation[elevation];
+    return `TERRAIN_${terrainS.toUpperCase()}_${elevationS.toUpperCase()}`;
   }
 
   static getFeatureType(tile: Tile) {

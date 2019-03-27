@@ -88,7 +88,7 @@ export default class Map extends React.Component<MapProps> {
                   case Elevation.flat:
                     if (feature.properties.terrain != TerrainType.coast)
                       return { fillColor: "green" };
-                  case Elevation.hill:
+                  case Elevation.hills:
                     return { fillColor: "brown" };
                   case Elevation.mountain:
                     return { fillColor: "black" };

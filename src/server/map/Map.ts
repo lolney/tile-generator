@@ -1,4 +1,4 @@
-import { Tile } from "../../common/types";
+import { Tile, TerrainType, Elevation } from "../../common/types";
 
 export default class Map {
   tiles: Array<Tile>;
@@ -15,6 +15,24 @@ export default class Map {
   }
 
   addLayer(tiles: Array<Tile>) {
-    this.tiles = this.tiles.map((tile, i) => ({ ...tile, ...tiles[i] }));
+    this.tiles = this.tiles.map((tile, i) => {
+      const result = { ...tile, ...tiles[i] };
+
+      // Remove elevation if it's a water tile
+      if (
+        result.terrain != undefined &&
+        (result.terrain === TerrainType.coast ||
+          result.terrain == TerrainType.ocean)
+      ) {
+        if (
+          result.elevation != undefined &&
+          result.elevation != Elevation.flat
+        ) {
+          delete result.elevation;
+        }
+      }
+
+      return result;
+    });
   }
 }

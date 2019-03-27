@@ -1,5 +1,5 @@
 import Map from "./Map";
-import { Tile, TerrainType, FeatureType } from "../../common/types";
+import { Tile, TerrainType, FeatureType, Elevation } from "../../common/types";
 
 describe("mergeTiles", () => {
   const tiles1: Array<Tile> = [
@@ -40,6 +40,23 @@ describe("mergeTiles", () => {
     expect(map.tiles).toEqual([
       { terrain: TerrainType.coast },
       { terrain: TerrainType.tundra }
+    ]);
+  });
+
+  it("doesn't allow hills or mountain on Ocean", () => {
+    const map = new Map(2);
+
+    const tiles2: Array<Tile> = [
+      { terrain: TerrainType.coast, elevation: Elevation.hills },
+      { terrain: TerrainType.coast, elevation: Elevation.mountain }
+    ];
+
+    map.addLayer(tiles1);
+    map.addLayer(tiles2);
+
+    expect(map.tiles).toEqual([
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.coast }
     ]);
   });
 });

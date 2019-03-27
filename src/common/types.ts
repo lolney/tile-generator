@@ -70,7 +70,7 @@ export enum FeatureType {
 
 export enum Elevation {
   flat,
-  hill,
+  hills,
   mountain
 }
 
