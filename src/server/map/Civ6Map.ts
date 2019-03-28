@@ -50,7 +50,7 @@ export default class Civ6Map extends Map {
       WrapY: false,
       TopLatitude: 90,
       BottomLatitude: -90,
-      MapSizeType: "MAPSIZE_STANDARD"
+      MapSizeType: "MAPSIZE_DUEL"
     };
 
     this.attributes = {

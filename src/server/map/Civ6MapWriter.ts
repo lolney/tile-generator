@@ -3,7 +3,12 @@ import { Plots } from "./Civ6Map.types.";
 import Civ6Map from "./Civ6Map";
 import { Tile } from "../../common/types";
 import fs from "fs";
+import path from "path";
 import { reject } from "q";
+import { fromPredicate } from "fp-ts/lib/Either";
+
+const TEMPLATE_FILE = path.join(__dirname, "../../../CustomMap.Civ6Map");
+const SAVE_DIRECTORY = path.join(__dirname, "../../../maps");
 
 // Tables of interest:
 // Plots, PlotRivers, PlotResources, PlotFeatures, PlotCliffs, Players?,
@@ -13,9 +18,14 @@ export default class Civ6MapWriter {
   db: sqlite3.Database;
   path: string;
 
-  constructor(map: Civ6Map, path?: string) {
+  constructor(map: Civ6Map, filename?: string) {
     this.map = map;
-    this.path = path ? path : ":memory:";
+
+    if (filename !== undefined) {
+      // Copy template file to save directory
+      this.path = path.join(SAVE_DIRECTORY, filename);
+      fs.copyFileSync(TEMPLATE_FILE, this.path);
+    } else this.path = ":memory:";
 
     this.db = new sqlite3.Database(
       this.path,
@@ -29,7 +39,7 @@ export default class Civ6MapWriter {
   }
 
   async write(): Promise<Buffer> {
-    await this.createDb();
+    await this.writeExistingDb();
     return new Promise((resolve, reject) => {
       fs.readFile(this.path, (err, data) => {
         if (err) {
@@ -41,6 +51,9 @@ export default class Civ6MapWriter {
     });
   }
 
+  /**
+   * Populate all required tables
+   */
   async createDb() {
     const headers = this.getMetaDataQueries();
     const body = this.getPlotsQuery();
@@ -57,6 +70,25 @@ export default class Civ6MapWriter {
     for (const header of headers) {
       await this.run(header);
     }
+    await this.run(body);
+  }
+
+  /**
+   * Add a set of plots to an existing db
+   */
+  async writeExistingDb() {
+    const deletes = ["Map", "Plots", "StartPositions"].map(
+      table => `DELETE FROM ${table};`
+    );
+
+    const map = this.getQueryFromEntries("Map", [this.map.map]);
+    const body = this.getPlotsQuery();
+
+    for (const del of deletes) {
+      await this.run(del);
+    }
+
+    await this.run(map);
     await this.run(body);
   }
 

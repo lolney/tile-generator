@@ -1,6 +1,6 @@
 Web app for generating Civilization maps from Google Earth Engine climate/terrain data.
 
-## Development
+### Development
 
 ```
 npm install
@@ -26,7 +26,7 @@ npm run dev
 npm start
 ```
 
-## Database setup
+### Database setup
 
 tile-generator uses PostGIS for certain geospatial queries.
 
@@ -47,9 +47,17 @@ CREATE DATABASE tilegenerator;
 CREATE EXTENSION postgis;
 ```
 
+### Downloading and adding data sources
+
 Download the Koppen data from https://geoafrikana.com/resources/, then:
 
 ```
 shp2pgsql -s 4326 world_climates_completed_koppen_geiger.shp | psql -h loca
 lhost -d tilegenerator -U postgres
+```
+
+River centerlines, downloaded from https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-rivers-lake-centerlines/:
+
+```
+shp2pgsql -s 4326 /home/luke/Downloads/river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.shp | psql -h localhost -d tilegenerator -U postgres
 ```

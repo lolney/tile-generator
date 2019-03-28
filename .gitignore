@@ -27,3 +27,7 @@ tile-generator-private-key\.json
 dist/
 
 \.env
+
+maps/
+
+EarthStandard\.Civ6Map
