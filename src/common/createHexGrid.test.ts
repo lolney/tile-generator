@@ -4,7 +4,7 @@ describe("createHexagon", () => {
   it("outputs a hexagon", () => {
     const hex = createHexagon([0, 0], 1);
 
-    expect(hex).toEqual(offsets);
+    expect(hex.coordinates).toEqual([offsets]);
   });
 });
 
@@ -27,13 +27,13 @@ describe("createHexGrid", () => {
 
   it("even rows are offset by .5 unit length", () => {
     for (let i = 0; i < n; i += 2 * m) {
-      expect(grid[i][0][0]).toEqual(unit * 0.5);
+      expect(grid[i].coordinates[0][0][0]).toEqual(unit * 0.5);
     }
   });
 
   it("last elem of each row reaches lon_end", () => {
     for (let i = m - 1; i < n; i += m) {
-      expect(grid[i][3][0]).toEqual(100);
+      expect(grid[i].coordinates[3][0][0]).toEqual(100);
     }
   });
 });

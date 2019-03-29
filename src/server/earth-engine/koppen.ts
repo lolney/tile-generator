@@ -57,8 +57,6 @@ export function getTerrainType(koppen: Koppen): TerrainType {
 }
 
 export async function getClimateType(lng: number, lat: number) {
-  const client = await db.connect();
-
   const query = `
     SELECT * FROM "world_climates_completed_koppen_geiger" where
       ST_Intersects(
@@ -69,28 +67,24 @@ export async function getClimateType(lng: number, lat: number) {
     );
   `;
 
-  try {
-    // Note on performance:
-    // - Takes several seconds for large (eg, 50x50) maps
-    // - Most CPU time is spent in native code (~67%) or garbage collection
-    // - Roughly 12 connections are opened at once
-    const res = await client.query(query);
-    const row = res.rows[0];
-    if (row === undefined) {
-      return undefined;
-    }
-
-    const str = row["climates_f"];
-    const koppen = dbStringToClimateType(str);
-
-    if (koppen === undefined) {
-      throw new Error("Unexpected climate type: " + str);
-    }
-
-    return koppen;
-  } finally {
-    client.release();
+  // Note on performance:
+  // - Takes several seconds for large (eg, 50x50) maps
+  // - Most CPU time is spent in native code (~67%) or garbage collection
+  // - Roughly 12 connections are opened at once
+  const rows = await db.doQuery(query);
+  const row = rows[0];
+  if (row === undefined) {
+    return undefined;
   }
+
+  const str = row["climates_f"];
+  const koppen = dbStringToClimateType(str);
+
+  if (koppen === undefined) {
+    throw new Error("Unexpected climate type: " + str);
+  }
+
+  return koppen;
 }
 
 const koppenLookup: Map<string, Koppen> = new Map();
