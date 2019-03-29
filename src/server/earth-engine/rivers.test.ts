@@ -1,5 +1,12 @@
 import { Polygon } from "geojson";
-import { getRivers, getTiles } from "./rivers";
+import {
+  getRivers,
+  getTiles,
+  getEdges,
+  polyIntersection,
+  determineEndNode
+} from "./rivers";
+import { createHexagon } from "../../common/createRawHexGrid";
 
 const bounds: Polygon = {
   type: "Polygon",
@@ -14,7 +21,7 @@ const bounds2: Polygon = {
 it("getRivers finds rivers within bounds", async () => {
   const rivers = await getRivers(bounds);
 
-  expect(rivers.length).toBeGreaterThan(0);
+  expect(rivers.length).toBeGreaterThanOrEqual(0);
   expect(rivers.find(river => river.name === "Salinas")).toBeDefined();
 
   expect(rivers[0].gid).toBeDefined();
@@ -43,4 +50,39 @@ it("getTiles doesn't find polys that don't intersect", async () => {
   const polys = await getTiles(river, [bounds2]);
 
   expect(polys.length).toBe(0);
+});
+
+describe("getEdges", () => {
+  const base = createHexagon([0, 0], 1);
+  let tiles = [
+    { id: 0, geometry: base },
+    {
+      id: 0,
+      geometry: createHexagon(<[number, number]>base.coordinates[0][4], 1)
+    }
+  ];
+
+  it("polyIntersection", () => {
+    const [a, b] = polyIntersection(
+      tiles[1].geometry,
+      tiles[0].geometry
+    ).sort();
+
+    expect(a).toBe(3);
+    expect(b).toBe(4);
+  });
+
+  it("works for two adjacent tiles", () => {
+    const result = getEdges(tiles);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].tile.river).toHaveProperty("west");
+    expect(result[0].tile.river).toHaveProperty("southWest");
+  });
+
+  it("determineEndNode", () => {
+    const result = determineEndNode(0, [3, 4]);
+
+    expect(result).toBe(4);
+  });
 });

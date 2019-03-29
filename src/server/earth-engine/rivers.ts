@@ -1,7 +1,8 @@
 import { Polygon, MultiLineString } from "geojson";
-import { Tile } from "../../common/types";
+import { Tile, RiverType } from "../../common/types";
 import db from "../db";
 import randomstring from "randomstring";
+import _ from "lodash";
 
 /**
  * Algorithm:
@@ -27,6 +28,35 @@ type IndexedPolygon = {
   geometry: Polygon;
 };
 
+type IndexedTile = {
+  id: number;
+  tile: Tile;
+};
+
+/**
+ * Create the river tiles for the map bounded by `bounds`
+ * @param bounds
+ * @param tiles
+ */
+export default async function createRiverTiles(
+  bounds: Polygon,
+  tiles: Polygon[]
+): Promise<IndexedTile[]> {
+  //
+  const rivers = await getRivers(bounds);
+  const indexedTiles: IndexedPolygon[] = [];
+  for (const river of rivers) {
+    const riverTiles = await getTiles(river, tiles);
+    indexedTiles.concat(riverTiles);
+  }
+
+  return getEdges(indexedTiles);
+}
+
+/**
+ * Stage 1: Find all rivers with the bounding box
+ * @param bounds
+ */
 export async function getRivers(bounds: Polygon): Promise<River[]> {
   const taggedBounds = {
     ...bounds,
@@ -43,15 +73,11 @@ export async function getRivers(bounds: Polygon): Promise<River[]> {
   return rows.map(river => ({ ...river, geom: JSON.parse(river.geom) }));
 }
 
-function isNeighbor(a: Polygon, b: Polygon) {
-  const coordsA = new Set(a.coordinates[0]);
-  const coordsB = b.coordinates[0];
-
-  const intersection = coordsB.filter(b_i => coordsA.has(b_i));
-
-  return intersection.length > 0;
-}
-
+/**
+ * Stage 2: Map the rivers to tiles
+ * @param river
+ * @param tiles
+ */
 export async function getTiles(
   river: River,
   tiles: Polygon[]
@@ -127,14 +153,139 @@ export async function getTiles(
   }
 }
 
-export function getEdges(tiles: IndexedPolygon[]): Tile[] {
+/**
+ * Stage 3: Map the rivers to edges of the tiles
+ */
+export function getEdges(tiles: IndexedPolygon[]): IndexedTile[] {
   // denote tiles t_i, t_i+1, t_i+2 as a, b, c
-  // a, b and b, c share nodes A and B, respectively
-  // find a path from A to B, marking the respective edges in tile b
+  // a, b and b, c share two nodes each
+
+  // have: node1, starting node btw a and b (index 5 in b)
+
+  // can choose node2 or node3, nodes shared btw b and c
+  // (index 1,2 in b; 5,4 in c)
+  // -1 -1 = -2, 5 - 2 = 3
+  // therefore, choose 1 (5 in c)
+  // mark 5,0, 0,1 as rivers
+
+  // to consider later:
+  // ending properly at water bodies
+  const out: IndexedTile[] = [];
+  let node = 0;
 
   for (let i = 0; i < tiles.length - 1; i++) {
     const a = tiles[i];
     const b = tiles[i + 1];
+
+    const intersection = <[number, number]>(
+      polyIntersection(b.geometry, a.geometry)
+    );
+
+    const { tile, nextNode } = chooseEdges(node, intersection, a, b.geometry);
+    node = nextNode;
+    out.push(tile);
   }
-  return [];
+
+  return out;
+}
+
+/**
+ * Finds the indexes in the coordinate array of b that intersect with a
+ * @param a
+ * @param b
+ */
+export function polyIntersection(a: Polygon, b: Polygon) {
+  const getKeys = (geom: Polygon) =>
+    geom.coordinates[0].map(coords => coords.toString());
+  const coordsA = new Set(getKeys(a));
+  const coordsB = getKeys(b);
+
+  const intersection: Number[] = [];
+  coordsB.forEach((b_i, i) => {
+    if (coordsA.has(b_i)) intersection.push(i);
+  });
+
+  return intersection;
+}
+
+const N_NODES = 6;
+
+function chooseEdges(
+  prevNode: number,
+  nextSharedNodes: [number, number],
+  tile: IndexedPolygon,
+  nextTile: Polygon
+): { tile: IndexedTile; nextNode: number } {
+  //
+  const myNextNode = determineEndNode(prevNode, nextSharedNodes);
+
+  // match the node in the current tile with the next
+  const nextCoords = tile.geometry.coordinates[0][myNextNode];
+  const nextNode = nextTile.coordinates[0].findIndex(val =>
+    _.isEqual(nextCoords, val)
+  );
+
+  const river = createRiver(prevNode, myNextNode);
+
+  return { nextNode, tile: { id: tile.id, tile: { river } } };
+}
+
+export function determineEndNode(
+  prevNode: number,
+  nextSharedNodes: [number, number]
+) {
+  const prevNodeNeg = prevNode - N_NODES;
+  const [a, b] = nextSharedNodes;
+
+  const diffA = Math.min(prevNodeNeg - a, prevNode - a);
+  const diffB = Math.min(prevNodeNeg - b, prevNode - b);
+
+  const myNextNode = diffA < diffB ? a : b;
+
+  return myNextNode;
+}
+
+function createRiver(prevNode: number, myNextNode: number): RiverType {
+  let i = prevNode;
+  const river: RiverType = {};
+  let delta =
+    diffGoingBack(prevNode, myNextNode) < diffGoingForward(prevNode, myNextNode)
+      ? -1
+      : 1;
+
+  while (i != myNextNode) {
+    let i_next = (i + delta) % N_NODES;
+    if (i_next < 0) i_next += N_NODES;
+
+    const pair: [number, number] = [i, i_next];
+    const side = getSide(pair);
+    // @ts-ignore
+    river[side] = true;
+
+    i = i_next;
+  }
+
+  return river;
+}
+
+function getSide(pair: [number, number]): string {
+  const sorted = pair.sort();
+
+  if (_.isEqual(sorted, [0, 1])) return "northWest";
+  if (_.isEqual(sorted, [1, 2])) return "northEast";
+  if (_.isEqual(sorted, [2, 3])) return "east";
+  if (_.isEqual(sorted, [3, 4])) return "southEast";
+  if (_.isEqual(sorted, [4, 5])) return "southWest";
+  if (_.isEqual(sorted, [0, 5])) return "west";
+  else throw new Error(`Unexpected edge ${sorted}`);
+}
+
+function diffGoingBack(a: number, b: number) {
+  if (a > b) return a - b;
+  else return a - (b - N_NODES);
+}
+
+function diffGoingForward(a: number, b: number) {
+  if (a > b) return b - (a - N_NODES);
+  else return b - a;
 }

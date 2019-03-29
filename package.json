@@ -28,6 +28,7 @@
     "leaflet-area-select": "^1.0.3",
     "leaflet-css": "^0.1.0",
     "leaflet-virtual-grid": "^1.0.7",
+    "lodash": "^4.17.11",
     "morgan": "^1.9.1",
     "path": "^0.12.7",
     "pg": "^7.9.0",

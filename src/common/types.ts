@@ -38,7 +38,7 @@ export interface Tile {
   river?: RiverType;
 }
 
-type RiverType = {
+export type RiverType = {
   northEast?: boolean;
   northWest?: boolean;
   east?: boolean;
