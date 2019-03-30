@@ -1,13 +1,6 @@
 // @ts-ignore: noImplicitAny
 import ee from "@google/earthengine";
 import privateKey from "../tile-generator-private-key.json";
-import isLand from "./isLand.js";
-import { TerrainType, Tile, Elevation, FeatureType } from "../../common/types";
-import findSlope from "./findSlope.js";
-import { getClimateType, getTerrainType, getForestType } from "./koppen.js";
-import { Polygon, GeoJsonObject } from "geojson";
-import isForest from "./isForest.js";
-import createHexGrid from "./createHexGrid.js";
 
 export default class EarthEngine {
   static async init() {
@@ -38,116 +31,6 @@ export default class EarthEngine {
     });
 
     return new EarthEngine();
-  }
-
-  extractGeometry(grid: any) {
-    // this causes problems with maps larger than about 10x10
-    const featureCollection = grid.getInfo();
-
-    return featureCollection.features.map((feature: any) => {
-      return feature.geometry;
-    });
-  }
-
-  async createLandTiles(grid: Array<Polygon>): Promise<Array<Tile>> {
-    const process = (properties: any) => {
-      const island = properties.isLand;
-      return {
-        terrain: island ? TerrainType.grass : TerrainType.coast
-      };
-    };
-
-    return this.createEETiles(grid, isLand, process);
-  }
-
-  async createElevationTiles(grid: Array<Polygon>): Promise<Array<Tile>> {
-    const process = (properties: any) => {
-      const meanSlope = properties.mean;
-      let elevation;
-
-      if (meanSlope === undefined || meanSlope < 4) {
-        elevation = Elevation.flat;
-      } else if (meanSlope < 10) {
-        elevation = Elevation.hills;
-      } else {
-        elevation = Elevation.mountain;
-      }
-
-      return { elevation };
-    };
-
-    return this.createEETiles(grid, findSlope, process);
-  }
-
-  createForestTiles(grid: Array<Polygon>) {
-    const process = async (properties: any, geometry: Polygon) => {
-      const index = properties.mean;
-      const isForest = index < 1.75; // 1: forest; 2: non-forest
-
-      if (!isForest) return {};
-
-      const [lng, lat] = geometry.coordinates[0][0];
-      const koppen = await getClimateType(lng, lat);
-
-      if (!koppen) return {};
-
-      const feature = getForestType(koppen);
-
-      return { feature };
-    };
-
-    return Promise.all(this.createEETiles(grid, isForest, process));
-  }
-
-  createEETiles(
-    grid: any,
-    analysis: Function,
-    process: (properties: any, geometry: Polygon) => Promise<Tile> | Tile
-  ) {
-    const earthGrid = createHexGrid(grid);
-    const featureCollection = analysis(earthGrid);
-
-    // Note: with large tile sizes, there's a problem with this stage
-    // Can try first exporting to drive, then loading from there
-    // Or, actually seems to be a problem with sending too much?
-    const local = featureCollection.getInfo();
-
-    return local.features.map((feature: any) => {
-      return process(feature.properties, feature.geometry);
-    });
-
-    /* need cloud storage
-    ee.batch.Export.table.toAsset(featureCollection);
-    return [{}];
-    */
-  }
-
-  /*createClimateTiles(grid: any): Promise<Array<Tile>> {
-    const local = grid.getInfo();
-
-    return Promise.all(
-      local.features.map(async (feature: any) => {
-        const [lng, lat] = feature.geometry.coordinates[0][0];
-        const koppen = await getClimateType(lng, lat);
-        const terrain = getTerrainType(koppen);
-        return { terrain };
-      })
-    );
-  }*/
-
-  createClimateTiles(grid: Array<Polygon>): Promise<Array<Tile>> {
-    return Promise.all(
-      grid.map(async (geometry: Polygon) => {
-        const [lng, lat] = geometry.coordinates[0][0];
-        const koppen = await getClimateType(lng, lat);
-
-        if (koppen === undefined) return {};
-        else {
-          const terrain = getTerrainType(koppen);
-          return { terrain };
-        }
-      })
-    );
   }
 }
 

@@ -15,6 +15,11 @@ export interface Options {
   format: GameString;
 }
 
+export type LatLngBounds = {
+  _southWest: { lat: number; lng: number };
+  _northEast: { lat: number; lng: number };
+};
+
 export type MapOptions = Options & {
   bounds: LatLngBounds;
 };
@@ -120,7 +125,7 @@ const GameStringT = t.keyof({
 
 const DimensionsT = t.type({ width: t.number, height: t.number });
 
-const LatLngBoundsT = t.type({
+export const LatLngBoundsT = t.type({
   _southWest: t.type({ lat: t.number, lng: t.number }),
   _northEast: t.type({ lat: t.number, lng: t.number })
 });

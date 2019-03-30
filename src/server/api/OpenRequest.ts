@@ -11,12 +11,13 @@ import uuidv4 from "uuid/v4";
 import createRawHexGrid from "../../common/createRawHexGrid";
 import CivVMapWriter from "../map/CivVMapWriter";
 import CivVMap from "../map/CivVMap";
-import EarthEngine from "../earth-engine/EarthEngine";
 import { Polygon } from "geojson";
 import Civ6Map from "../map/Civ6Map";
 import Civ6MapWriter from "../map/Civ6MapWriter";
+import { LatLngBounds } from "leaflet";
+import MapBuilder from "../map/MapBuilder";
 
-export const N_LAYERS = 3;
+export const N_LAYERS = 4;
 
 interface MapInterface {
   new (tiles: number | Tile[], params: MapConfigurable): Map;
@@ -24,14 +25,14 @@ interface MapInterface {
 
 export default class OpenRequest {
   complete: boolean;
-  grid: Polygon[];
+  mapBuilder: MapBuilder;
   map: Map;
   id: string;
 
-  constructor(grid: Polygon[], map: Map) {
+  constructor(grid: Polygon[], map: Map, bounds: LatLngBounds) {
     this.id = uuidv4();
     this.complete = false;
-    this.grid = grid;
+    this.mapBuilder = new MapBuilder(grid, bounds);
     this.map = map;
   }
 
@@ -44,14 +45,15 @@ export default class OpenRequest {
     });
 
     const { width, height } = options.dimensions;
+    const bounds = MapBuilder.deserializeBounds(options.bounds);
 
     // Start jobs
     const grid = createRawHexGrid({
       width,
       height,
-      lon_start: options.bounds._southWest.lng,
-      lon_end: options.bounds._northEast.lng,
-      lat_start: options.bounds._southWest.lat
+      lon_start: bounds.getWest(),
+      lon_end: bounds.getEast(),
+      lat_start: bounds.getSouth()
     });
 
     let MapType = OpenRequest.getMapType(req.format);
@@ -64,17 +66,17 @@ export default class OpenRequest {
       description: ""
     });
 
-    return new OpenRequest(grid, map);
+    return new OpenRequest(grid, map, bounds);
   }
 
-  async *completeJobs(earthEngine: EarthEngine) {
+  async *completeJobs() {
     for (const method of [
-      //this.earthEngine.createLandTiles,
-      earthEngine.createElevationTiles,
-      earthEngine.createClimateTiles,
-      earthEngine.createForestTiles
+      this.mapBuilder.createLandTiles,
+      this.mapBuilder.createElevationTiles,
+      this.mapBuilder.createClimateTiles,
+      this.mapBuilder.createForestTiles
     ]) {
-      let tiles = await method.bind(earthEngine)(this.grid);
+      let tiles = await method.bind(this.mapBuilder)();
       this.map.addLayer(tiles);
       yield this.map.tiles;
     }
