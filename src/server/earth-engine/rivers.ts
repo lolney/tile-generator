@@ -39,33 +39,40 @@ type IndexedTile = {
  * @param tiles
  */
 export default async function createRiverTiles(
-  bounds: Polygon,
+  bounds: Polygon | string,
   tiles: Polygon[]
 ): Promise<IndexedTile[]> {
   //
   const rivers = await getRivers(bounds);
-  const indexedTiles: IndexedPolygon[] = [];
+  let indexedTiles: IndexedTile[] = [];
+
+  // TODO: group rivers by name
   for (const river of rivers) {
     const riverTiles = await getTiles(river, tiles);
-    indexedTiles.concat(riverTiles);
+    const edges = getEdges(riverTiles);
+    indexedTiles = indexedTiles.concat(edges);
   }
 
-  return getEdges(indexedTiles);
+  return indexedTiles;
 }
 
 /**
  * Stage 1: Find all rivers with the bounding box
  * @param bounds
  */
-export async function getRivers(bounds: Polygon): Promise<River[]> {
-  const taggedBounds = {
-    ...bounds,
-    crs: { type: "name", properties: { name: "EPSG:4326" } }
-  };
+export async function getRivers(bounds: Polygon | string): Promise<River[]> {
+  if (typeof bounds == "object") {
+    const taggedBounds = {
+      ...bounds,
+      crs: { type: "name", properties: { name: "EPSG:4326" } }
+    };
+    bounds = `ST_GeomFromGeoJSON('${JSON.stringify(taggedBounds)}')`;
+  }
+
   const query = `select a.name, a.gid, ST_AsGeoJSON(a.geom) as geom
     from "ne_10m_rivers_lake_centerlines_scale_rank" as a
     where ST_WITHIN(a.geom,
-        ST_GeomFromGeoJSON('${JSON.stringify(taggedBounds)}')
+        ${bounds}
     ); `;
 
   const rows = await db.doQuery(query);
@@ -85,6 +92,7 @@ export async function getTiles(
   const selectedTiles: IndexedPolygon[] = [];
 
   // insert geom into a new table
+  // TODO: only do this once per batch
   const tableName = "tiles_" + randomstring.generate(10);
   const query = `
    CREATE TABLE ${tableName}
@@ -137,12 +145,30 @@ export async function getTiles(
           id: intersects.id,
           geometry: JSON.parse(intersects.geometry)
         };
-        selectedTiles.push(polygon);
+
+        if (selectedTiles.length == 0) selectedTiles.push(polygon);
+        else {
+          const last = selectedTiles[selectedTiles.length - 1];
+          if (polygon.id !== last.id) {
+            // when encountering a new polygon A:
+            // if it's a neighbor of the prev, add A to list
+            // else, add all tiles between the two first, then add A
+            const intersection = polyIntersection(
+              polygon.geometry,
+              last.geometry
+            );
+
+            if (intersection.length === 2) selectedTiles.push(polygon);
+            else
+              console.log(
+                `Found 2 polygons that aren't adjacent: (${last.id}, ${
+                  polygon.id
+                }), ${intersection.length}`
+              );
+          }
+        }
       }
     }
-    // when encountering a new polygon A:
-    // if it's a neighbor of the prev, add A to list
-    // else, add all tiles between the two first, then add A
 
     // could do binary search, but segment length is small
     return selectedTiles;
@@ -181,6 +207,13 @@ export function getEdges(tiles: IndexedPolygon[]): IndexedTile[] {
       polyIntersection(b.geometry, a.geometry)
     );
 
+    if (intersection.length != 2)
+      throw new Error(
+        `Polygons don't intersect twice, but ${intersection.length}x: ${
+          a.id
+        }, ${b.id}`
+      );
+
     const { tile, nextNode } = chooseEdges(node, intersection, a, b.geometry);
     node = nextNode;
     out.push(tile);
@@ -195,8 +228,12 @@ export function getEdges(tiles: IndexedPolygon[]): IndexedTile[] {
  * @param b
  */
 export function polyIntersection(a: Polygon, b: Polygon) {
+  const truncate = (a: number) => Math.floor(a * 10 ** 8) / 10 ** 8;
   const getKeys = (geom: Polygon) =>
-    geom.coordinates[0].map(coords => coords.toString());
+    geom.coordinates[0]
+      .slice(0, -1)
+      .map(coords => coords.map(coord => truncate(coord)))
+      .map(coords => coords.toString());
   const coordsA = new Set(getKeys(a));
   const coordsB = getKeys(b);
 

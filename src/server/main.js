@@ -54,7 +54,11 @@ EarthEngine.init().then(earthEngine => {
     requestMap[request.id] = request;
 
     res.setHeader("Content-Type", "application/json");
-    res.send({ grid: request.grid, id: request.id, nLayers: N_LAYERS });
+    res.send({
+      grid: request.mapBuilder.grid,
+      id: request.id,
+      nLayers: N_LAYERS
+    });
   });
 
   // sse

@@ -6,7 +6,7 @@ import {
   polyIntersection,
   determineEndNode
 } from "./rivers";
-import { createHexagon } from "../../common/createRawHexGrid";
+import createRawHexGrid, { createHexagon } from "../../common/createRawHexGrid";
 
 const bounds: Polygon = {
   type: "Polygon",
@@ -31,7 +31,7 @@ it("getRivers finds rivers within bounds", async () => {
   expect(rivers[0].geom.coordinates).toBeDefined();
 });
 
-it("getTiles finds poly that intersect with river segements", async () => {
+it("getTiles finds poly that intersects with river segements", async () => {
   const rivers = await getRivers(bounds);
 
   const river = rivers[0];
@@ -51,6 +51,8 @@ it("getTiles doesn't find polys that don't intersect", async () => {
 
   expect(polys.length).toBe(0);
 });
+
+it("getTiles works with hex grid", async () => {});
 
 describe("getEdges", () => {
   const base = createHexagon([0, 0], 1);

@@ -17,7 +17,7 @@ import Civ6MapWriter from "../map/Civ6MapWriter";
 import { LatLngBounds } from "leaflet";
 import MapBuilder from "../map/MapBuilder";
 
-export const N_LAYERS = 4;
+export const N_LAYERS = 5;
 
 interface MapInterface {
   new (tiles: number | Tile[], params: MapConfigurable): Map;
@@ -74,7 +74,8 @@ export default class OpenRequest {
       this.mapBuilder.createLandTiles,
       this.mapBuilder.createElevationTiles,
       this.mapBuilder.createClimateTiles,
-      this.mapBuilder.createForestTiles
+      this.mapBuilder.createForestTiles,
+      this.mapBuilder.createRiverTiles
     ]) {
       let tiles = await method.bind(this.mapBuilder)();
       this.map.addLayer(tiles);

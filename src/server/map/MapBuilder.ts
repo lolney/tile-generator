@@ -1,6 +1,7 @@
-import { LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
 import createHexGrid from "../earth-engine/createHexGrid";
+// @ts-ignore
+import { LatLngBounds } from "leaflet-headless";
 import {
   Tile,
   TerrainType,
@@ -28,8 +29,8 @@ export default class MapBuilder {
 
   static deserializeBounds(bounds: LatLngBoundsT): LatLngBounds {
     return new LatLngBounds(
-      [bounds._southWest.lng, bounds._southWest.lat],
-      [bounds._northEast.lng, bounds._northEast.lat]
+      [bounds._southWest.lat, bounds._southWest.lng],
+      [bounds._northEast.lat, bounds._northEast.lng]
     );
   }
 
@@ -115,19 +116,6 @@ export default class MapBuilder {
         */
   }
 
-  /*createClimateTiles(grid: any): Promise<Array<Tile>> {
-      const local = grid.getInfo();
-  
-      return Promise.all(
-        local.features.map(async (feature: any) => {
-          const [lng, lat] = feature.geometry.coordinates[0][0];
-          const koppen = await getClimateType(lng, lat);
-          const terrain = getTerrainType(koppen);
-          return { terrain };
-        })
-      );
-    }*/
-
   createClimateTiles(): Promise<Array<Tile>> {
     return Promise.all(
       this.grid.map(async (geometry: Polygon) => {
@@ -144,7 +132,7 @@ export default class MapBuilder {
   }
 
   async createRiverTiles(): Promise<Tile[]> {
-    const indexedTiles = await createRiverTiles(this.grid[0], this.grid);
+    const indexedTiles = await createRiverTiles(this.getEnvelope(), this.grid);
 
     const tiles = this.grid.map((_, i) => ({}));
 
