@@ -55,7 +55,7 @@ const OptionsWrapper: React.SFC<OptionsProps> = props => {
 const OptionsMenu: React.SFC<ControlPanelProps> = props => (
   <ControlPanel
     theme="dark"
-    title="Demo Panel"
+    title="Map Options"
     initialState={props.state}
     onChange={(label: string, newvalue: any) => {
       props.onChange({ ...props.state, [label]: newvalue });

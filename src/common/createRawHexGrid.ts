@@ -22,6 +22,7 @@ export default function createRawHexGrid({
   var polys = [];
   // for each row
   for (let row = 0; row < height; row++) {
+    // Offset to the right if odd row
     let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
 
     let start: coords = [

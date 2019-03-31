@@ -1,7 +1,7 @@
 import ee from "@google/earthengine";
 
 /**
- * Should use reducRegions over this unless timing out
+ * Should use reduceRegions over this, unless timing out
  * @param {ee.Image} mask
  * @param {string} band
  */

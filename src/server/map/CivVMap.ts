@@ -49,7 +49,7 @@ export default class CivVMap extends Map {
   header: CivVMapHeader;
 
   constructor(tiles: number | Array<Tile> = [], params: MapConfigurable) {
-    super(tiles);
+    super(tiles, params);
     this.header = {
       ...CIV_CONSTANT_HEADER,
       mapsize: "WORLDSIZE_STANDARD",

@@ -60,3 +60,33 @@ describe("mergeTiles", () => {
     ]);
   });
 });
+
+describe("getNeighboringIndex", () => {
+  const map = new Map(8, {
+    width: 2,
+    height: 4,
+    name: "",
+    description: "",
+    nPlayers: 1
+  });
+
+  it("returns undefined when asked for an element to west, but on first of row", () => {
+    expect(map.getNeighboringIndex(0, "west")).toBe(undefined);
+    expect(map.getNeighboringIndex(2, "west")).toBe(undefined);
+  });
+
+  it("returns correct western index", () => {
+    expect(map.getNeighboringIndex(1, "west")).toBe(0);
+    expect(map.getNeighboringIndex(3, "west")).toBe(2);
+  });
+
+  it("returns correct northEastern index", () => {
+    expect(map.getNeighboringIndex(2, "northEast")).toBe(1);
+    expect(map.getNeighboringIndex(4, "northEast")).toBe(2);
+  });
+
+  it("returns undefined when northEastern index does not exist", () => {
+    expect(map.getNeighboringIndex(3, "northEast")).toBe(undefined);
+    expect(map.getNeighboringIndex(0, "northEast")).toBe(undefined);
+  });
+});

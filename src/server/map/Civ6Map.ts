@@ -1,12 +1,13 @@
-import Map from "./Map";
+import TileMap from "./Map";
 import {
   Tile,
   TerrainType,
   Elevation,
   FeatureType,
-  MapConfigurable
+  MapConfigurable,
+  RiverType
 } from "../../common/types";
-import { Map as DBMap, Players } from "./Civ6Map.types.";
+import { Map as DBMap, Players, PlotRivers } from "./Civ6Map.types";
 import uuid from "uuid/v4";
 
 type MetaData = {
@@ -22,17 +23,16 @@ type MapAttributes = {
   Ruleset: string;
 };
 
-export default class Civ6Map extends Map {
+export default class Civ6Map extends TileMap {
   attributes: MapAttributes;
   metadata: MetaData;
   map: DBMap;
   players: Players[];
 
-  constructor(
-    tiles: number | Array<Tile>,
-    { name, width, height, nPlayers }: MapConfigurable
-  ) {
-    super(tiles);
+  constructor(tiles: number | Array<Tile>, configurable: MapConfigurable) {
+    super(tiles, configurable);
+
+    const { name, width, height } = configurable;
 
     this.metadata = {
       ID: uuid(),
@@ -120,5 +120,86 @@ export default class Civ6Map extends Map {
       const featureS: string = FeatureType[feature];
       return `FEATURE_${featureS.toUpperCase()}`;
     }
+  }
+
+  getRiverType(plot: Tile, index: number, plotRivers: PlotRiversMap) {
+    const riverType = plot.river;
+    if (!riverType) return;
+
+    if (riverType.east || riverType.southWest || riverType.southEast) {
+      const plotRiver = plotRivers.get(index);
+      if (riverType.east) {
+        plotRiver.IsWOfRiver = true;
+      }
+      if (riverType.southWest) {
+        plotRiver.IsNEOfRiver = true;
+      }
+      if (riverType.southEast) {
+        plotRiver.IsNWOfRiver = true;
+      }
+    }
+
+    const fields: Array<[keyof RiverType, keyof PlotRivers]> = [
+      ["west", "IsWOfRiver"],
+      ["northWest", "IsNWOfRiver"],
+      ["northEast", "IsNEOfRiver"]
+    ];
+
+    for (const [tileDirection, civ6Direction] of fields) {
+      if (riverType[tileDirection]) {
+        // tile to the <direction>, if it exists
+        const newIndex = this.getNeighboringIndex(index, tileDirection);
+        if (newIndex !== undefined) {
+          const plotRiver = plotRivers.get(newIndex);
+          plotRiver[civ6Direction] = true;
+        }
+      }
+    }
+  }
+
+  getRivers(): PlotRivers[] {
+    const plotRivers = new PlotRiversMap();
+    this.tiles.forEach((tile, i) => {
+      this.getRiverType(tile, i, plotRivers);
+    });
+
+    return plotRivers.asArray();
+  }
+}
+
+export class PlotRiversMap {
+  map: Map<number, PlotRivers>;
+
+  constructor() {
+    this.map = new Map();
+  }
+
+  createPlotRiver(index: number) {
+    return {
+      ID: index,
+      IsNEOfRiver: false,
+      IsWOfRiver: false,
+      IsNWOfRiver: false,
+      EFlowDirection: -1,
+      SWFlowDirection: -1,
+      SEFlowDirection: -1
+    };
+  }
+
+  get(index: number) {
+    let elem = this.map.get(index);
+    if (!elem) {
+      elem = this.createPlotRiver(index);
+      this.map.set(index, elem);
+    }
+    return elem;
+  }
+
+  asArray() {
+    const out: PlotRivers[] = [];
+    for (const val of this.map.values()) {
+      out.push(val);
+    }
+    return out;
   }
 }

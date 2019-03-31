@@ -222,17 +222,21 @@ export function getEdges(tiles: IndexedPolygon[]): IndexedTile[] {
   return out;
 }
 
+// Add a cushion for floating point errors
+const truncate = (a: number) => Math.floor(a * 2 ** 10) / 2 ** 10;
+const truncateCoords = (coords: number[]) =>
+  coords.map(coord => truncate(coord));
+
 /**
  * Finds the indexes in the coordinate array of b that intersect with a
  * @param a
  * @param b
  */
 export function polyIntersection(a: Polygon, b: Polygon) {
-  const truncate = (a: number) => Math.floor(a * 10 ** 8) / 10 ** 8;
   const getKeys = (geom: Polygon) =>
     geom.coordinates[0]
-      .slice(0, -1)
-      .map(coords => coords.map(coord => truncate(coord)))
+      .slice(0, -1) // last elem of polygon is the same as the first
+      .map(truncateCoords)
       .map(coords => coords.toString());
   const coordsA = new Set(getKeys(a));
   const coordsB = getKeys(b);
@@ -259,7 +263,7 @@ function chooseEdges(
   // match the node in the current tile with the next
   const nextCoords = tile.geometry.coordinates[0][myNextNode];
   const nextNode = nextTile.coordinates[0].findIndex(val =>
-    _.isEqual(nextCoords, val)
+    _.isEqual(truncateCoords(nextCoords), truncateCoords(val))
   );
 
   const river = createRiver(prevNode, myNextNode);
@@ -295,7 +299,7 @@ function createRiver(prevNode: number, myNextNode: number): RiverType {
     if (i_next < 0) i_next += N_NODES;
 
     const pair: [number, number] = [i, i_next];
-    const side = getSide(pair);
+    const side = getEdge(pair);
     // @ts-ignore
     river[side] = true;
 
@@ -305,7 +309,7 @@ function createRiver(prevNode: number, myNextNode: number): RiverType {
   return river;
 }
 
-function getSide(pair: [number, number]): string {
+function getEdge(pair: [number, number]): string {
   const sorted = pair.sort();
 
   if (_.isEqual(sorted, [0, 1])) return "northWest";

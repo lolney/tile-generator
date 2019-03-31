@@ -1,11 +1,9 @@
 import sqlite3 from "sqlite3";
-import { Plots } from "./Civ6Map.types.";
+import { Plots } from "./Civ6Map.types";
 import Civ6Map from "./Civ6Map";
 import { Tile } from "../../common/types";
 import fs from "fs";
 import path from "path";
-import { reject } from "q";
-import { fromPredicate } from "fp-ts/lib/Either";
 
 const TEMPLATE_FILE = path.join(__dirname, "../../../CustomMap.Civ6Map");
 const SAVE_DIRECTORY = path.join(__dirname, "../../../maps");
@@ -77,19 +75,28 @@ export default class Civ6MapWriter {
    * Add a set of plots to an existing db
    */
   async writeExistingDb() {
-    const deletes = ["Map", "Plots", "StartPositions"].map(
-      table => `DELETE FROM ${table};`
-    );
+    const deletes = [
+      "Map",
+      "Plots",
+      "StartPositions",
+      "PlotRivers",
+      "PlotResources",
+      "PlotFeatures",
+      "PlotCliffs"
+    ].map(table => `DELETE FROM ${table};`);
 
     const map = this.getQueryFromEntries("Map", [this.map.map]);
-    const body = this.getPlotsQuery();
+    const body = [this.getPlotsQuery(), this.getRiversQuery()];
 
     for (const del of deletes) {
       await this.run(del);
     }
 
     await this.run(map);
-    await this.run(body);
+
+    for (const query of body) {
+      await this.run(query);
+    }
   }
 
   async run(query: string) {
@@ -143,6 +150,10 @@ export default class Civ6MapWriter {
       ["ID", "TerrainType", "ContinentType", "IsImpassable"],
       (tile, i) => `(${i}, '${Civ6Map.getTerrainType(tile)}', '', 0)`
     );
+  }
+
+  getRiversQuery() {
+    return this.getQueryFromEntries("PlotRivers", this.map.getRivers());
   }
 
   getNameValueQuery(table: string, obj: any) {

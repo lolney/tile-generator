@@ -3,7 +3,7 @@ import React from "react";
 import L from "leaflet";
 // @ts-ignore: noImplicitAny
 import "leaflet-area-select";
-// Leaflet.Grid
+import _ from "lodash";
 
 import "leaflet/dist/leaflet.css";
 import "./Map.css";
@@ -108,7 +108,18 @@ export default class Map extends React.Component<MapProps> {
                 }
               })();
 
-              return { ...elevation, ...color, ...terrainFeature };
+              const rivers = (() => {
+                if (
+                  !feature.properties.river ||
+                  _.isEqual(feature.properties.river, {})
+                ) {
+                  return {};
+                } else {
+                  return { fillColor: "blue" };
+                }
+              })();
+
+              return { ...elevation, ...color, ...terrainFeature, ...rivers };
             }
           }
         }
