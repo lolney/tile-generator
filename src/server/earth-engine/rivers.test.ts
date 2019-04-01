@@ -4,9 +4,13 @@ import {
   getTiles,
   getEdges,
   polyIntersection,
-  determineEndNode
+  determineEndNode,
+  findClosestNode,
+  mapRiversToEdges,
+  _mapRiversToEdges
 } from "./rivers";
 import createRawHexGrid, { createHexagon } from "../../common/createRawHexGrid";
+import { polygon } from "leaflet";
 
 const bounds: Polygon = {
   type: "Polygon",
@@ -57,10 +61,11 @@ it("getTiles works with hex grid", async () => {});
 describe("getEdges", () => {
   const base = createHexagon([0, 0], 1);
   let tiles = [
-    { id: 0, geometry: base },
+    { id: 0, geometry: base, rivers: [] },
     {
       id: 0,
-      geometry: createHexagon(<[number, number]>base.coordinates[0][4], 1)
+      geometry: createHexagon(<[number, number]>base.coordinates[0][4], 1),
+      rivers: []
     }
   ];
 
@@ -74,10 +79,10 @@ describe("getEdges", () => {
     expect(b).toBe(4);
   });
 
-  it("works for two adjacent tiles", () => {
-    const result = getEdges(tiles);
+  it("works for two adjacent tiles", async () => {
+    const result = await getEdges(tiles);
 
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(2);
     expect(result[0].tile.river).toHaveProperty("west");
     expect(result[0].tile.river).toHaveProperty("southWest");
   });
@@ -86,5 +91,39 @@ describe("getEdges", () => {
     const result = determineEndNode(0, [3, 4]);
 
     expect(result).toBe(4);
+  });
+});
+
+describe("findClosestNode", () => {
+  it("finds a node that's right on", async () => {
+    const node = await findClosestNode(bounds, [-120, 35]);
+    expect(node).toBe(0);
+  });
+
+  it("finds a node that's close", async () => {
+    const node = await findClosestNode(bounds, [-122, 41]);
+    expect(node).toBe(2);
+  });
+});
+
+describe("mapRiversToEdges", () => {
+  it("creates an empty river if only river is closest to node 0", async () => {
+    const river = await _mapRiversToEdges(
+      bounds,
+      [<[number, number]>bounds.coordinates[0][0]],
+      0
+    );
+
+    expect(river).toEqual({});
+  });
+
+  it("if only one river R, create a river to point closest to R", async () => {
+    const river = await _mapRiversToEdges(
+      bounds,
+      [<[number, number]>bounds.coordinates[0][1]],
+      0
+    );
+
+    expect(river).toEqual({ northWest: true });
   });
 });

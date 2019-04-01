@@ -25,11 +25,11 @@ export default class Map {
 
   getNeighboringIndex(index: number, direction: keyof RiverType) {
     // TODO: move this logic into a separate grid class?
-    const { width, height } = this.configurable;
+    const { width } = this.configurable;
     const col = index % width;
     const row = Math.floor(index / width);
 
-    const horizOffset = row % 2 == 0 ? 0 : 1;
+    const horizOffset = row % 2 == 1 ? 0 : 1;
 
     switch (direction) {
       case "east":

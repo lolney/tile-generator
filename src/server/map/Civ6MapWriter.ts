@@ -54,7 +54,7 @@ export default class Civ6MapWriter {
    */
   async createDb() {
     const headers = this.getMetaDataQueries();
-    const body = this.getPlotsQuery();
+    const body = this.getPlotsQueries();
     var schema = fs.readFileSync("./src/server/map/Civ6MapScheme.sql", {
       encoding: "utf8"
     });
@@ -68,7 +68,10 @@ export default class Civ6MapWriter {
     for (const header of headers) {
       await this.run(header);
     }
-    await this.run(body);
+
+    for (const insert of body) {
+      await this.run(insert);
+    }
   }
 
   /**
@@ -86,7 +89,7 @@ export default class Civ6MapWriter {
     ].map(table => `DELETE FROM ${table};`);
 
     const map = this.getQueryFromEntries("Map", [this.map.map]);
-    const body = [this.getPlotsQuery(), this.getRiversQuery()];
+    const body = this.getPlotsQueries();
 
     for (const del of deletes) {
       await this.run(del);
@@ -127,6 +130,8 @@ export default class Civ6MapWriter {
   }
 
   getQueryFromEntries(table: string, objs: any[]) {
+    if (objs.length == 0) return "";
+
     const format = (obj: any) => {
       if (typeof obj === "string") return `'${obj}'`;
       if (typeof obj === "boolean") return obj ? 1 : 0;
@@ -144,16 +149,18 @@ export default class Civ6MapWriter {
     return this.getQuery(table, fields, rows);
   }
 
-  getPlotsQuery() {
-    return this.getTileInsertQuery(
-      "Plots",
-      ["ID", "TerrainType", "ContinentType", "IsImpassable"],
-      (tile, i) => `(${i}, '${Civ6Map.getTerrainType(tile)}', '', 0)`
-    );
-  }
+  getPlotsQueries() {
+    const queries = [
+      this.getTileInsertQuery(
+        "Plots",
+        ["ID", "TerrainType", "ContinentType", "IsImpassable"],
+        (tile, i) => `(${i}, '${Civ6Map.getTerrainType(tile)}', '', 0)`
+      ),
 
-  getRiversQuery() {
-    return this.getQueryFromEntries("PlotRivers", this.map.getRivers());
+      this.getQueryFromEntries("PlotRivers", this.map.getRivers())
+    ].filter(query => query != "");
+
+    return queries;
   }
 
   getNameValueQuery(table: string, obj: any) {

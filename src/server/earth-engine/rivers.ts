@@ -26,12 +26,17 @@ type River = {
 type IndexedPolygon = {
   id: number;
   geometry: Polygon;
+  rivers: River[];
 };
 
 type IndexedTile = {
   id: number;
   tile: Tile;
 };
+
+type Coords = [number, number];
+
+type index = number;
 
 /**
  * Create the river tiles for the map bounded by `bounds`
@@ -47,9 +52,10 @@ export default async function createRiverTiles(
   let indexedTiles: IndexedTile[] = [];
 
   // TODO: group rivers by name
+  // ideally within postgis - groupby name, then combine the multiline strings
   for (const river of rivers) {
     const riverTiles = await getTiles(river, tiles);
-    const edges = getEdges(riverTiles);
+    const edges = await getEdges(riverTiles);
     indexedTiles = indexedTiles.concat(edges);
   }
 
@@ -143,7 +149,8 @@ export async function getTiles(
       if (intersects !== undefined) {
         const polygon: IndexedPolygon = {
           id: intersects.id,
-          geometry: JSON.parse(intersects.geometry)
+          geometry: JSON.parse(intersects.geometry),
+          rivers: [river]
         };
 
         if (selectedTiles.length == 0) selectedTiles.push(polygon);
@@ -165,6 +172,8 @@ export async function getTiles(
                   polygon.id
                 }), ${intersection.length}`
               );
+          } else {
+            last.rivers.push(river);
           }
         }
       }
@@ -182,7 +191,9 @@ export async function getTiles(
 /**
  * Stage 3: Map the rivers to edges of the tiles
  */
-export function getEdges(tiles: IndexedPolygon[]): IndexedTile[] {
+export async function getEdges(
+  tiles: IndexedPolygon[]
+): Promise<IndexedTile[]> {
   // denote tiles t_i, t_i+1, t_i+2 as a, b, c
   // a, b and b, c share two nodes each
 
@@ -193,19 +204,15 @@ export function getEdges(tiles: IndexedPolygon[]): IndexedTile[] {
   // -1 -1 = -2, 5 - 2 = 3
   // therefore, choose 1 (5 in c)
   // mark 5,0, 0,1 as rivers
-
-  // to consider later:
-  // ending properly at water bodies
   const out: IndexedTile[] = [];
+
   let node = 0;
 
   for (let i = 0; i < tiles.length - 1; i++) {
     const a = tiles[i];
     const b = tiles[i + 1];
 
-    const intersection = <[number, number]>(
-      polyIntersection(b.geometry, a.geometry)
-    );
+    const intersection = <Coords>polyIntersection(b.geometry, a.geometry);
 
     if (intersection.length != 2)
       throw new Error(
@@ -219,7 +226,117 @@ export function getEdges(tiles: IndexedPolygon[]): IndexedTile[] {
     out.push(tile);
   }
 
+  const last = tiles[tiles.length - 1];
+  if (last) {
+    out.push(await mapRiversToEdges(last, node));
+  }
+
   return out;
+}
+
+/**
+ * Consider all the river coords determined to be in IndexedPoly.
+ * Mapping these points to the closest nodes of the poly,
+ * find the node with a river close to it that's furthest from the start.
+ * Draw a river between these points.
+ * @param indexedPoly
+ * @param node
+ */
+async function mapRiversToEdges(
+  indexedPoly: IndexedPolygon,
+  node: number
+): Promise<IndexedTile> {
+  const getRiverCoords = function*() {
+    for (const river of indexedPoly.rivers) {
+      for (const coords of river.geom.coordinates[0]) {
+        let c = <Coords>coords;
+        yield c;
+      }
+    }
+  };
+
+  const river = await _mapRiversToEdges(
+    indexedPoly.geometry,
+    getRiverCoords(),
+    node
+  );
+  return { id: indexedPoly.id, tile: { river } };
+}
+
+export async function _mapRiversToEdges(
+  poly: Polygon,
+  coordsList: Iterable<Coords>,
+  node: number
+): Promise<RiverType> {
+  let furthest = node;
+  let greatestDistance = 0;
+
+  for (const coords of coordsList) {
+    const nextNode = await findClosestNode(poly, coords);
+    const distance = Math.min(
+      diffGoingBack(node, nextNode),
+      diffGoingForward(node, nextNode)
+    );
+    if (distance >= greatestDistance) {
+      greatestDistance = distance;
+      furthest = nextNode;
+    }
+  }
+
+  const river = createRiver(node, furthest);
+  return river;
+}
+
+/**
+ * Find the node of `poly` that's closest to `coords`
+ */
+export async function findClosestNode(
+  poly: Polygon,
+  coords: Coords
+): Promise<number> {
+  const pointFromText = ([lng, lat]: Coords) =>
+    `ST_GeomFromText(
+        'Point(${lng} ${lat})', 4326
+      )::geometry`;
+
+  const polyPoints = poly.coordinates[0]
+    .map(coords => pointFromText(<Coords>coords))
+    .slice(0, -1);
+
+  const tableName = "points_" + randomstring.generate(10);
+
+  await db.doQuery(`
+   CREATE TABLE ${tableName}
+   (
+       id integer,
+       geom geometry(Point,4326)
+   );
+  `);
+
+  try {
+    polyPoints.forEach(async (point, i) => {
+      await db.doQuery(`
+    INSERT INTO ${tableName} VALUES
+      (
+          ${i},
+          ${point}
+      );
+    `);
+    });
+
+    const query = `
+    SELECT ${tableName}.id
+    FROM ${tableName}
+    ORDER BY ST_Distance(${pointFromText(coords)}, ${tableName}.geom) ASC
+    LIMIT 1;
+  `;
+
+    const result = await db.doQuery(query);
+
+    return result[0].id;
+  } finally {
+    await db.doQuery(`DROP TABLE ${tableName}`);
+  }
 }
 
 // Add a cushion for floating point errors
@@ -253,7 +370,7 @@ const N_NODES = 6;
 
 function chooseEdges(
   prevNode: number,
-  nextSharedNodes: [number, number],
+  nextSharedNodes: Coords,
   tile: IndexedPolygon,
   nextTile: Polygon
 ): { tile: IndexedTile; nextNode: number } {
@@ -271,10 +388,12 @@ function chooseEdges(
   return { nextNode, tile: { id: tile.id, tile: { river } } };
 }
 
-export function determineEndNode(
-  prevNode: number,
-  nextSharedNodes: [number, number]
-) {
+/**
+ * Choose which of the `nextSharedNodes` is closest to `prevNode`
+ * @param prevNode
+ * @param nextSharedNodes
+ */
+export function determineEndNode(prevNode: number, nextSharedNodes: Coords) {
   const prevNodeNeg = prevNode - N_NODES;
   const [a, b] = nextSharedNodes;
 
@@ -286,6 +405,11 @@ export function determineEndNode(
   return myNextNode;
 }
 
+/**
+ * Create a river starting from `prevNode` and ending with `endNode`
+ * @param prevNode
+ * @param myNextNode
+ */
 function createRiver(prevNode: number, myNextNode: number): RiverType {
   let i = prevNode;
   const river: RiverType = {};
@@ -298,7 +422,7 @@ function createRiver(prevNode: number, myNextNode: number): RiverType {
     let i_next = (i + delta) % N_NODES;
     if (i_next < 0) i_next += N_NODES;
 
-    const pair: [number, number] = [i, i_next];
+    const pair: Coords = [i, i_next];
     const side = getEdge(pair);
     // @ts-ignore
     river[side] = true;
@@ -309,7 +433,7 @@ function createRiver(prevNode: number, myNextNode: number): RiverType {
   return river;
 }
 
-function getEdge(pair: [number, number]): string {
+function getEdge(pair: Coords): string {
   const sorted = pair.sort();
 
   if (_.isEqual(sorted, [0, 1])) return "northWest";
