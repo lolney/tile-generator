@@ -27,7 +27,6 @@ it("getRivers finds rivers within bounds", async () => {
   expect(rivers.length).toBeGreaterThanOrEqual(0);
   expect(rivers.find(river => river.name === "Salinas")).toBeDefined();
 
-  expect(rivers[0].gid).toBeDefined();
   expect(rivers[0].name).toBeDefined();
   expect(rivers[0].geom).toBeDefined();
   console.log(rivers[0].geom);

@@ -1,4 +1,4 @@
-import { Polygon, MultiLineString } from "geojson";
+import { Polygon, MultiLineString, LineString } from "geojson";
 import { Tile, RiverType } from "../../common/types";
 import db from "../db";
 import randomstring from "randomstring";
@@ -18,9 +18,8 @@ import _ from "lodash";
  */
 
 type River = {
-  gid: number;
   name: string;
-  geom: MultiLineString;
+  geom: LineString;
 };
 
 type IndexedPolygon = {
@@ -75,15 +74,24 @@ export async function getRivers(bounds: Polygon | string): Promise<River[]> {
     bounds = `ST_GeomFromGeoJSON('${JSON.stringify(taggedBounds)}')`;
   }
 
-  const query = `select a.name, a.gid, ST_AsGeoJSON(a.geom) as geom
-    from "ne_10m_rivers_lake_centerlines_scale_rank" as a
+  const query = `select a.name, ST_AsGeoJSON(a.geom) as geom
+    from "rivers_merge" as a
     where ST_WITHIN(a.geom,
         ${bounds}
     ); `;
 
   const rows = await db.doQuery(query);
 
-  return rows.map(river => ({ ...river, geom: JSON.parse(river.geom) }));
+  return rows.map(river => {
+    const geom = JSON.parse(river.geom);
+    geom.coordinates = geom.coordinates.map((coords: number[]) => {
+      if (coords.length == 2) return coords;
+      else {
+        return coords[0];
+      }
+    });
+    return { ...river, geom };
+  });
 }
 
 /**
@@ -112,23 +120,25 @@ export async function getTiles(
     await db.doQuery(query);
 
     // Insert tiles into new  table
-    tiles.forEach(async (tile, i) => {
-      const serializedTile = JSON.stringify({
-        ...tile,
-        crs: { type: "name", properties: { name: "EPSG:4326" } }
-      });
-      const query = `
+    await Promise.all(
+      tiles.map(async (tile, i) => {
+        const serializedTile = JSON.stringify({
+          ...tile,
+          crs: { type: "name", properties: { name: "EPSG:4326" } }
+        });
+        const query = `
             INSERT INTO ${tableName} VALUES
             (
                 ${i},
                 ST_GeomFromGeoJSON('${serializedTile}')
             );
         `;
-      await db.doQuery(query);
-    });
+        await db.doQuery(query);
+      })
+    );
 
     // query each element of the line segment
-    for (const coords of river.geom.coordinates[0]) {
+    for (const coords of river.geom.coordinates) {
       const [lng, lat] = coords;
 
       const query = `
@@ -248,10 +258,8 @@ async function mapRiversToEdges(
 ): Promise<IndexedTile> {
   const getRiverCoords = function*() {
     for (const river of indexedPoly.rivers) {
-      console.log(
-        `River: ${river.gid}, ${river.name}, Polys: ${indexedPoly.id}`
-      );
-      for (const coords of river.geom.coordinates[0]) {
+      console.log(`River: ${river.name}, Polys: ${indexedPoly.id}`);
+      for (const coords of river.geom.coordinates) {
         let c = <Coords>coords;
         yield c;
       }
@@ -337,8 +345,6 @@ export async function findClosestNode(
   `;
 
     const result = await db.doQuery(query);
-
-    console.log(result);
 
     return result[0].id;
   } finally {
