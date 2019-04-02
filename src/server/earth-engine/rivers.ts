@@ -172,9 +172,9 @@ export async function getTiles(
                   polygon.id
                 }), ${intersection.length}`
               );
-          } else {
+          } /*else {
             last.rivers.push(river);
-          }
+          }*/
         }
       }
     }
@@ -248,6 +248,9 @@ async function mapRiversToEdges(
 ): Promise<IndexedTile> {
   const getRiverCoords = function*() {
     for (const river of indexedPoly.rivers) {
+      console.log(
+        `River: ${river.gid}, ${river.name}, Polys: ${indexedPoly.id}`
+      );
       for (const coords of river.geom.coordinates[0]) {
         let c = <Coords>coords;
         yield c;
@@ -314,15 +317,17 @@ export async function findClosestNode(
   `);
 
   try {
-    polyPoints.forEach(async (point, i) => {
-      await db.doQuery(`
-    INSERT INTO ${tableName} VALUES
-      (
-          ${i},
-          ${point}
-      );
-    `);
-    });
+    await Promise.all(
+      polyPoints.map(async (point, i) =>
+        db.doQuery(`
+          INSERT INTO ${tableName} VALUES
+            (
+                ${i},
+                ${point}
+            );
+          `)
+      )
+    );
 
     const query = `
     SELECT ${tableName}.id
@@ -333,9 +338,11 @@ export async function findClosestNode(
 
     const result = await db.doQuery(query);
 
+    console.log(result);
+
     return result[0].id;
   } finally {
-    await db.doQuery(`DROP TABLE ${tableName}`);
+    db.doQuery(`DROP TABLE ${tableName}`);
   }
 }
 

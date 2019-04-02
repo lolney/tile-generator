@@ -25,8 +25,8 @@ describe("createHexGrid", () => {
     expect(grid.length).toEqual(m * n);
   });
 
-  it("even rows are offset by .5 unit length", () => {
-    for (let i = 0; i < n; i += 2 * m) {
+  it("odd rows are offset by .5 unit length", () => {
+    for (let i = 1; i < n; i += 2 * m) {
       expect(grid[i].coordinates[0][0][0]).toEqual(unit * 0.5);
     }
   });

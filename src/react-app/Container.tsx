@@ -80,9 +80,9 @@ export default class AppContainer extends React.Component {
 
   resetState() {
     this.setState({
-      grid: [],
-      activeJob: false,
-      layer: []
+      //grid: [],
+      //layer: [],
+      activeJob: false
     });
   }
 

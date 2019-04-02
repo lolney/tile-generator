@@ -22,6 +22,15 @@ interface MapProps {
 
 export default class Map extends React.Component<MapProps> {
   map?: L.Map;
+  state: {
+    layer?: L.GeoJSON<any>;
+  };
+
+  constructor(props: MapProps) {
+    super(props);
+
+    this.state = {};
+  }
 
   componentDidMount() {
     this.map = L.map("map").setView([38, 0], 4);
@@ -47,7 +56,9 @@ export default class Map extends React.Component<MapProps> {
       prevProps.grid != this.props.grid ||
       prevProps.layer != this.props.layer
     ) {
-      L.geoJSON(
+      if (this.map && this.state.layer) this.map.removeLayer(this.state.layer);
+
+      const layer = L.geoJSON(
         {
           type: "FeatureCollection",
           // @ts-ignore
@@ -124,6 +135,8 @@ export default class Map extends React.Component<MapProps> {
           }
         }
       ).addTo(this.map);
+
+      this.setState({ layer });
     }
   }
 

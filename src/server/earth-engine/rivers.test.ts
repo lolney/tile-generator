@@ -6,7 +6,6 @@ import {
   polyIntersection,
   determineEndNode,
   findClosestNode,
-  mapRiversToEdges,
   _mapRiversToEdges
 } from "./rivers";
 import createRawHexGrid, { createHexagon } from "../../common/createRawHexGrid";
@@ -121,6 +120,16 @@ describe("mapRiversToEdges", () => {
     const river = await _mapRiversToEdges(
       bounds,
       [<[number, number]>bounds.coordinates[0][1]],
+      0
+    );
+
+    expect(river).toEqual({ northWest: true });
+  });
+
+  it("with multiple rivers, choose the furthest", async () => {
+    const river = await _mapRiversToEdges(
+      bounds,
+      <[number, number][]>bounds.coordinates[0],
       0
     );
 
