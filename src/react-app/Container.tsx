@@ -26,6 +26,10 @@ export default class AppContainer extends React.Component {
   };
 
   // todo: make lifecycle more explicit
+  // begin: enter 'activeJob' state
+  // on fetch: reset grid and layers. create listener for updates
+  // on recive update: update layer
+  // on updates complete: leave 'activeJob' state
   async onSubmit() {
     if (this.state.activeJob) {
       console.log("job currently active");
@@ -46,7 +50,7 @@ export default class AppContainer extends React.Component {
     });
 
     const res = await response.json();
-    this.setState({ grid: res.grid });
+    this.setState({ grid: res.grid, layer: [] });
 
     let remainingLayers = res.nLayers;
     let eventSource = new EventSource(`updates/${res.id}`);
@@ -80,8 +84,6 @@ export default class AppContainer extends React.Component {
 
   resetState() {
     this.setState({
-      //grid: [],
-      //layer: [],
       activeJob: false
     });
   }

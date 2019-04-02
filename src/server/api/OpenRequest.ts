@@ -71,9 +71,9 @@ export default class OpenRequest {
 
   async *completeJobs() {
     for (const method of [
+      this.mapBuilder.createClimateTiles,
       this.mapBuilder.createLandTiles,
       this.mapBuilder.createElevationTiles,
-      this.mapBuilder.createClimateTiles,
       this.mapBuilder.createForestTiles,
       this.mapBuilder.createRiverTiles
     ]) {

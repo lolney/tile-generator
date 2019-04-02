@@ -7,4 +7,5 @@ SELECT name, ST_LineMerge(
                  )
                ) AS geom
 FROM ne_10m_rivers_lake_centerlines_scale_rank
+WHERE featurecla LIKE 'River'
 GROUP BY name;

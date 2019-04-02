@@ -3,6 +3,8 @@ import { Tile, RiverType } from "../../common/types";
 import db from "../db";
 import randomstring from "randomstring";
 import _ from "lodash";
+import "core-js/features/array/flat";
+import { type } from "os";
 
 /**
  * Algorithm:
@@ -50,10 +52,9 @@ export default async function createRiverTiles(
   const rivers = await getRivers(bounds);
   let indexedTiles: IndexedTile[] = [];
 
-  // TODO: group rivers by name
-  // ideally within postgis - groupby name, then combine the multiline strings
   for (const river of rivers) {
     const riverTiles = await getTiles(river, tiles);
+    console.log(`River ${river.name} has tiles: ${riverTiles.map(t => t.id)}`);
     const edges = await getEdges(riverTiles);
     indexedTiles = indexedTiles.concat(edges);
   }
@@ -84,12 +85,16 @@ export async function getRivers(bounds: Polygon | string): Promise<River[]> {
 
   return rows.map(river => {
     const geom = JSON.parse(river.geom);
-    geom.coordinates = geom.coordinates.map((coords: number[]) => {
-      if (coords.length == 2) return coords;
-      else {
-        return coords[0];
-      }
-    });
+    geom.coordinates = geom.coordinates
+      .map((coords: number[] | number[][]) => {
+        if (typeof coords[0] === "number") return [coords];
+        if (typeof (<number[][]>coords)[0][0] === "number") {
+          return coords;
+        } else {
+          throw new Error(`Coords is unexpected type: ${coords}`);
+        }
+      })
+      .flat(1);
     return { ...river, geom };
   });
 }
@@ -163,6 +168,8 @@ export async function getTiles(
           rivers: [river]
         };
 
+        console.log(`found river ${river.name} for polygon ${polygon.id}`);
+
         if (selectedTiles.length == 0) selectedTiles.push(polygon);
         else {
           const last = selectedTiles[selectedTiles.length - 1];
@@ -182,9 +189,7 @@ export async function getTiles(
                   polygon.id
                 }), ${intersection.length}`
               );
-          } /*else {
-            last.rivers.push(river);
-          }*/
+          }
         }
       }
     }

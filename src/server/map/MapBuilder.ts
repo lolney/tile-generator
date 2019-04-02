@@ -74,7 +74,7 @@ export default class MapBuilder {
     return this.createEETiles(findSlope, process);
   }
 
-  createForestTiles() {
+  async createForestTiles() {
     const process = async (properties: any, geometry: Polygon) => {
       const index = properties.mean;
       const isForest = index < 1.75; // 1: forest; 2: non-forest
