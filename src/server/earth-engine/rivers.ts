@@ -78,6 +78,7 @@ export async function getRivers(bounds: Polygon | string): Promise<River[]> {
   const query = `select a.name, ST_AsGeoJSON(a.geom) as geom
     from "rivers_merge" as a
     where ST_WITHIN(a.geom,
+    where ST_INTERSECTS(a.geom,
         ${bounds}
     ); `;
 
@@ -169,6 +170,7 @@ export async function getTiles(
         };
 
         console.log(`found river ${river.name} for polygon ${polygon.id}`);
+        // console.log(`found river ${river.name} for polygon ${polygon.id}`);
 
         if (selectedTiles.length == 0) selectedTiles.push(polygon);
         else {
