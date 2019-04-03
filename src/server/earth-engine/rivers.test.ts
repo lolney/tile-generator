@@ -126,12 +126,14 @@ describe("mapRiversToEdges", () => {
   });
 
   it("with multiple rivers, choose the furthest", async () => {
+    // create rivers from the coords of the bounds themselves -
+    // should stretch around the hex
     const river = await _mapRiversToEdges(
       bounds,
       <[number, number][]>bounds.coordinates[0],
       0
     );
 
-    expect(river).toEqual({ northWest: true });
+    expect(river).toEqual({ east: true, northEast: true, northWest: true });
   });
 });

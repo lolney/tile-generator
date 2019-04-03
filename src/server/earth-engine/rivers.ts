@@ -5,6 +5,7 @@ import randomstring from "randomstring";
 import _ from "lodash";
 import "core-js/features/array/flat";
 import { type } from "os";
+import { serializeGeoJSON } from "../db/postgis";
 
 /**
  * Algorithm:
@@ -68,17 +69,12 @@ export default async function createRiverTiles(
  */
 export async function getRivers(bounds: Polygon | string): Promise<River[]> {
   if (typeof bounds == "object") {
-    const taggedBounds = {
-      ...bounds,
-      crs: { type: "name", properties: { name: "EPSG:4326" } }
-    };
-    bounds = `ST_GeomFromGeoJSON('${JSON.stringify(taggedBounds)}')`;
+    bounds = serializeGeoJSON(bounds);
   }
 
   const query = `select a.name, ST_AsGeoJSON(a.geom) as geom
     from "rivers_merge" as a
     where ST_WITHIN(a.geom,
-    where ST_INTERSECTS(a.geom,
         ${bounds}
     ); `;
 

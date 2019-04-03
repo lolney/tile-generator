@@ -1,5 +1,8 @@
 import { Koppen, FeatureType, TerrainType } from "../../common/types";
 import db from "../db";
+import { sample } from "../db/postgis";
+import { Polygon } from "geojson";
+import _ from "lodash";
 
 export function getForestType(koppen: Koppen): FeatureType {
   switch (koppen) {
@@ -54,6 +57,28 @@ export function getTerrainType(koppen: Koppen): TerrainType {
     case Koppen.Ocean:
       return TerrainType.coast;
   }
+}
+
+export async function getClimateTypeSampled(geom: Polygon) {
+  const query = `
+    SELECT * 
+    FROM 
+      "world_climates_completed_koppen_geiger",
+      (${sample(geom, 40)}) as points
+    where
+      ST_Intersects(
+        points.geom,
+        world_climates_completed_koppen_geiger.geom  
+    );
+  `;
+
+  const rows = await db.doQuery(query);
+  const climates = rows.map(row => row["climates_f"]);
+
+  return _.sortBy(
+    Object.entries(_.countBy(climates)),
+    ([key, count]) => count
+  ).map(([key, count]) => [dbStringToClimateType(key), count]);
 }
 
 export async function getClimateType(lng: number, lat: number) {

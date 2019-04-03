@@ -28,7 +28,7 @@ npm start
 
 ### Database setup
 
-tile-generator uses PostGIS for certain geospatial queries.
+tile-generator uses PostGIS for certain geospatial queries (version >= 2.3).
 
 Create a .env file in the root project directory with the following:
 
