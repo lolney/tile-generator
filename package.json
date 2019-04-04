@@ -46,7 +46,8 @@
     "sqlite3": "^4.0.6",
     "sse-express": "^1.0.2",
     "typescript": "3.3.3333",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "weighted-random": "^0.1.0"
   },
   "scripts": {
     "start": "babel-node dist/server/main.js",

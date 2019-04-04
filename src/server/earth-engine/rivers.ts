@@ -165,7 +165,6 @@ export async function getTiles(
           rivers: [river]
         };
 
-        console.log(`found river ${river.name} for polygon ${polygon.id}`);
         // console.log(`found river ${river.name} for polygon ${polygon.id}`);
 
         if (selectedTiles.length == 0) selectedTiles.push(polygon);

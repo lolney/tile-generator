@@ -9,7 +9,14 @@ export function serializeGeoJSON(geom: GeoJsonObject): string {
   return bounds;
 }
 
-export function sample(geom: Polygon, n: number) {
+export function sampleRows(geom: Polygon, n: number) {
+  return `
+    SELECT (ST_Dump(ST_GeneratePoints(
+        ${serializeGeoJSON(geom)}, ${n}))).geom
+    `;
+}
+
+export function sampleSingleGeom(geom: Polygon, n: number) {
   return `
     SELECT ST_GeneratePoints(
         ${serializeGeoJSON(geom)}, ${n}) as geom

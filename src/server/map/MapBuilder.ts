@@ -81,8 +81,7 @@ export default class MapBuilder {
 
       if (!isForest) return {};
 
-      const [lng, lat] = geometry.coordinates[0][0];
-      const koppen = await getClimateType(lng, lat);
+      const koppen = await getClimateType(geometry);
 
       if (!koppen) return {};
 
@@ -119,8 +118,7 @@ export default class MapBuilder {
   createClimateTiles(): Promise<Array<Tile>> {
     return Promise.all(
       this.grid.map(async (geometry: Polygon) => {
-        const [lng, lat] = geometry.coordinates[0][0];
-        const koppen = await getClimateType(lng, lat);
+        const koppen = await getClimateType(geometry);
 
         if (koppen === undefined) return {};
         else {

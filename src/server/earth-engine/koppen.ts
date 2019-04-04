@@ -1,8 +1,10 @@
 import { Koppen, FeatureType, TerrainType } from "../../common/types";
 import db from "../db";
-import { sample } from "../db/postgis";
+import { sampleRows } from "../db/postgis";
 import { Polygon } from "geojson";
 import _ from "lodash";
+// @ts-ignore
+import weightedRandom from "weighted-random";
 
 export function getForestType(koppen: Koppen): FeatureType {
   switch (koppen) {
@@ -59,16 +61,26 @@ export function getTerrainType(koppen: Koppen): TerrainType {
   }
 }
 
+export async function getClimateType(geom: Polygon) {
+  const combined = await getClimateTypeSampled(geom);
+
+  const [climates, counts] = _.unzip(combined);
+  const index = weightedRandom(counts);
+
+  return climates[index];
+}
+
 export async function getClimateTypeSampled(geom: Polygon) {
   const query = `
-    SELECT * 
+    SELECT climates_f, ST_AsGeoJSON(points.geom)
     FROM 
-      "world_climates_completed_koppen_geiger",
-      (${sample(geom, 40)}) as points
-    where
+      (${sampleRows(geom, 40)}) as points
+    JOIN
+      "world_climates_completed_koppen_geiger" as climate  
+    ON
       ST_Intersects(
         points.geom,
-        world_climates_completed_koppen_geiger.geom  
+        climate.geom  
     );
   `;
 
@@ -77,11 +89,11 @@ export async function getClimateTypeSampled(geom: Polygon) {
 
   return _.sortBy(
     Object.entries(_.countBy(climates)),
-    ([key, count]) => count
+    ([_, count]) => count
   ).map(([key, count]) => [dbStringToClimateType(key), count]);
 }
 
-export async function getClimateType(lng: number, lat: number) {
+export async function getClimateTypeSingle(lng: number, lat: number) {
   const query = `
     SELECT * FROM "world_climates_completed_koppen_geiger" where
       ST_Intersects(
