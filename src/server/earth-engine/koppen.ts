@@ -62,7 +62,7 @@ export function getTerrainType(koppen: Koppen): TerrainType {
 }
 
 export async function getClimateType(geom: Polygon) {
-  const combined = await getClimateTypeSampled(geom);
+  const combined = await getClimateTypeSampled(geom, 8);
 
   const [climates, counts] = _.unzip(combined);
   const index = weightedRandom(counts);
@@ -70,11 +70,11 @@ export async function getClimateType(geom: Polygon) {
   return climates[index];
 }
 
-export async function getClimateTypeSampled(geom: Polygon) {
+export async function getClimateTypeSampled(geom: Polygon, n: number) {
   const query = `
-    SELECT climates_f, ST_AsGeoJSON(points.geom)
+    SELECT climates_f
     FROM 
-      (${sampleRows(geom, 40)}) as points
+      (${sampleRows(geom, n)}) as points
     JOIN
       "world_climates_completed_koppen_geiger" as climate  
     ON
@@ -87,10 +87,10 @@ export async function getClimateTypeSampled(geom: Polygon) {
   const rows = await db.doQuery(query);
   const climates = rows.map(row => row["climates_f"]);
 
-  return _.sortBy(
-    Object.entries(_.countBy(climates)),
-    ([_, count]) => count
-  ).map(([key, count]) => [dbStringToClimateType(key), count]);
+  return Object.entries(_.countBy(climates)).map(([key, count]) => [
+    dbStringToClimateType(key),
+    count
+  ]);
 }
 
 export async function getClimateTypeSingle(lng: number, lat: number) {

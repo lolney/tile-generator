@@ -31,7 +31,7 @@ const easternUS: Polygon = {
 
 describe("koppen sampled", () => {
   it("returns proper values for the eastern US", async () => {
-    const result = await getClimateTypeSampled(easternUS);
+    const result = await getClimateTypeSampled(easternUS, 40);
     const types = result.map(([climate, _]) => climate);
 
     expect(types).toContain(Koppen.Cfa);
@@ -56,7 +56,7 @@ describe("koppen sampled", () => {
       ]
     };
 
-    const sampled = await getClimateTypeSampled(poly);
+    const sampled = await getClimateTypeSampled(poly, 10);
     const single = await getClimateTypeSingle(10, 10);
     const main = await getClimateType(poly);
 
