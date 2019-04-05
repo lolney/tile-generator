@@ -20,14 +20,14 @@ export default function createRawHexGrid({
   var unit = (lon_end - lon_start) / width;
 
   var polys = [];
-  // for each row
+  // for each row, starting at the top (highest latitude)
   for (let row = 0; row < height; row++) {
     // Offset to the right if even row
-    let lon_offset = row % 2 == 1 ? 0.5 * unit : 0;
+    let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
 
     let start: coords = [
       lon_offset + lon_start,
-      0.25 + lat_start + unit * 0.75 * row
+      0.25 + lat_start - unit * 0.75 * row
     ];
 
     // for each col

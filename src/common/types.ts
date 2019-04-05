@@ -24,6 +24,17 @@ export type MapOptions = Options & {
   bounds: LatLngBounds;
 };
 
+export enum MapLayers {
+  climate,
+  land,
+  elevation,
+  forest,
+  rivers
+}
+
+//export type LayersType = { [P in MapLayers]?: Array<Tile> };
+export type LayersType = Record<string, Array<Tile>>;
+
 // --- Server ----- //
 
 export type MapConfigurable = {

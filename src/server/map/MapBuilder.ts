@@ -6,7 +6,8 @@ import {
   Tile,
   TerrainType,
   Elevation,
-  LatLngBounds as LatLngBoundsT
+  LatLngBounds as LatLngBoundsT,
+  MapLayers
 } from "../../common/types";
 import isForest from "../earth-engine/isForest";
 import {
@@ -42,6 +43,21 @@ export default class MapBuilder {
         4326
       )
     `;
+  }
+
+  async createLayer(layer: MapLayers) {
+    switch (layer) {
+      case MapLayers.climate:
+        return this.createClimateTiles();
+      case MapLayers.elevation:
+        return this.createElevationTiles();
+      case MapLayers.forest:
+        return this.createForestTiles();
+      case MapLayers.land:
+        return this.createLandTiles();
+      case MapLayers.rivers:
+        return this.createRiverTiles();
+    }
   }
 
   async createLandTiles(): Promise<Array<Tile>> {

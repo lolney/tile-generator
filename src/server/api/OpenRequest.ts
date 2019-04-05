@@ -4,7 +4,8 @@ import {
   MapOptions,
   GameString,
   Tile,
-  MapConfigurable
+  MapConfigurable,
+  MapLayers
 } from "../../common/types";
 import { failure } from "io-ts";
 import uuidv4 from "uuid/v4";
@@ -17,7 +18,7 @@ import Civ6MapWriter from "../map/Civ6MapWriter";
 import { LatLngBounds } from "leaflet";
 import MapBuilder from "../map/MapBuilder";
 
-export const N_LAYERS = 5;
+export const N_LAYERS = Object.values(MapLayers).length;
 
 interface MapInterface {
   new (tiles: number | Tile[], params: MapConfigurable): Map;
@@ -53,7 +54,7 @@ export default class OpenRequest {
       height,
       lon_start: bounds.getWest(),
       lon_end: bounds.getEast(),
-      lat_start: bounds.getSouth()
+      lat_start: bounds.getNorth()
     });
 
     let MapType = OpenRequest.getMapType(req.format);
@@ -70,16 +71,12 @@ export default class OpenRequest {
   }
 
   async *completeJobs() {
-    for (const method of [
-      this.mapBuilder.createClimateTiles,
-      this.mapBuilder.createLandTiles,
-      this.mapBuilder.createElevationTiles,
-      this.mapBuilder.createForestTiles,
-      this.mapBuilder.createRiverTiles
-    ]) {
-      let tiles = await method.bind(this.mapBuilder)();
-      this.map.addLayer(tiles);
-      yield this.map.tiles;
+    for (const layer of Object.values(MapLayers)) {
+      if (!isNaN(layer)) {
+        let tiles = await this.mapBuilder.createLayer(layer);
+        this.map.addLayer(tiles);
+        yield { [MapLayers[layer]]: tiles };
+      }
     }
     this.complete = true;
   }

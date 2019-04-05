@@ -81,12 +81,12 @@ describe("getNeighboringIndex", () => {
   });
 
   it("returns correct northEastern index", () => {
-    expect(map.getNeighboringIndex(2, "northEast")).toBe(1);
-    expect(map.getNeighboringIndex(4, "northEast")).toBe(2);
+    expect(map.getNeighboringIndex(2, "northEast")).toBe(0);
+    expect(map.getNeighboringIndex(4, "northEast")).toBe(3);
   });
 
-  it("returns undefined when northEastern index does not exist", () => {
-    expect(map.getNeighboringIndex(3, "northEast")).toBe(undefined);
-    expect(map.getNeighboringIndex(0, "northEast")).toBe(undefined);
+  it("returns undefined when northWestern index does not exist", () => {
+    expect(map.getNeighboringIndex(2, "northWest")).toBe(undefined);
+    expect(map.getNeighboringIndex(0, "northWest")).toBe(undefined);
   });
 });

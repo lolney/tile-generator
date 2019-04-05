@@ -29,7 +29,7 @@ export default class Map {
     const col = index % width;
     const row = Math.floor(index / width);
 
-    const horizOffset = row % 2 == 1 ? 0 : 1;
+    const even = row % 2 == 0;
 
     switch (direction) {
       case "east":
@@ -37,13 +37,13 @@ export default class Map {
       case "west":
         return this.getIndex(row, col - 1);
       case "northEast":
-        return this.getIndex(row - 1, col + horizOffset);
+        return this.getIndex(row - 1, col + (even ? 1 : 0));
       case "southEast":
-        return this.getIndex(row + 1, col + horizOffset);
+        return this.getIndex(row + 1, col + (even ? 1 : 0));
       case "northWest":
-        return this.getIndex(row - 1, col - horizOffset);
+        return this.getIndex(row - 1, col - (even ? 0 : 1));
       case "southWest":
-        return this.getIndex(row + 1, col - horizOffset);
+        return this.getIndex(row + 1, col - (even ? 0 : 1));
     }
   }
 

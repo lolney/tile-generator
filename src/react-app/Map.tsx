@@ -10,23 +10,106 @@ import "./Map.css";
 
 import { LeafletEvent, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
-import { Tile, TerrainType } from "../common/types";
+import { Tile, TerrainType, LayersType, MapLayers } from "../common/types";
 import { Elevation } from "../common/types";
 import { FeatureType } from "../common/types";
 
 interface MapProps {
   onBoundsChange: (bounds: LatLngBounds) => any;
   grid: Array<Polygon>;
-  layer: Array<Tile>;
+  layers: LayersType;
 }
 
-export default class Map extends React.Component<MapProps> {
+interface MapDisplayProps {
+  onBoundsChange: (bounds: LatLngBounds) => any;
+  grid: Array<Polygon>;
+  layer: Array<Tile>;
+  layerType: string | undefined;
+}
+
+interface MapOptionsProps {
+  onLayerSelect: (option: string) => void;
+  selectedLayer: string | undefined;
+  receivedLayers: Record<string, boolean>;
+}
+
+export default class MapContainer extends React.Component<MapProps> {
+  state: {
+    selectedLayer?: string;
+  };
+
+  constructor(props: MapProps) {
+    super(props);
+
+    this.state = {
+      selectedLayer: undefined
+    };
+  }
+
+  render() {
+    const hasLayer = (layer: string) =>
+      this.props.layers[layer] ? true : false;
+
+    console.log("rendering with layers", this.props.layers);
+    const receivedLayers: Record<string, boolean> = _.fromPairs(
+      Object.values(MapLayers)
+        .filter(key => typeof key == "string")
+        .map((key: string) => [key, hasLayer(key)])
+    );
+
+    const layer =
+      this.state.selectedLayer == undefined
+        ? undefined
+        : this.props.layers[this.state.selectedLayer];
+
+    const passedLayer = layer ? layer : [];
+
+    return (
+      <div>
+        <Map
+          onBoundsChange={this.props.onBoundsChange}
+          grid={this.props.grid}
+          layer={passedLayer}
+          layerType={this.state.selectedLayer}
+        />
+        <MapOptions
+          onLayerSelect={(selectedLayer: string) =>
+            this.setState({ selectedLayer })
+          }
+          selectedLayer={this.state.selectedLayer}
+          receivedLayers={receivedLayers}
+        />
+      </div>
+    );
+  }
+}
+
+const MapOptions: React.SFC<MapOptionsProps> = (props: MapOptionsProps) => (
+  <div>
+    {Object.entries(props.receivedLayers).map(([layer, enabled]) => (
+      <span key={layer}>
+        {layer}
+        <input
+          type="radio"
+          value={layer}
+          disabled={!enabled}
+          onChange={() => props.onLayerSelect(layer)}
+          checked={
+            props.selectedLayer !== undefined && props.selectedLayer == layer
+          }
+        />
+      </span>
+    ))}
+  </div>
+);
+
+class Map extends React.Component<MapDisplayProps> {
   map?: L.Map;
   state: {
     layer?: L.GeoJSON<any>;
   };
 
-  constructor(props: MapProps) {
+  constructor(props: MapDisplayProps) {
     super(props);
 
     this.state = {};
@@ -50,7 +133,7 @@ export default class Map extends React.Component<MapProps> {
     });
   }
 
-  componentDidUpdate(prevProps: MapProps) {
+  componentDidUpdate(prevProps: MapDisplayProps) {
     // Add hex grid
     if (
       prevProps.grid != this.props.grid ||

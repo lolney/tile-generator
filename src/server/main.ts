@@ -4,17 +4,19 @@ import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import path from "path";
+// @ts-ignore
 import sseExpress from "sse-express";
 
 import config from "./config.json";
 import EarthEngine from "./earth-engine/EarthEngine.js";
 import OpenRequest, { N_LAYERS } from "./api/OpenRequest.js";
+import { AddressInfo } from "net";
 
 let app = express();
-let requestMap = {};
+let requestMap: Map<string, OpenRequest> = new Map();
 
 EarthEngine.init().then(earthEngine => {
-  app.server = http.createServer(app);
+  const server = http.createServer(app);
 
   // logger
   app.use(morgan("dev"));
@@ -51,7 +53,7 @@ EarthEngine.init().then(earthEngine => {
       return;
     }
 
-    requestMap[request.id] = request;
+    requestMap.set(request.id, request);
 
     res.setHeader("Content-Type", "application/json");
     res.send({
@@ -63,12 +65,13 @@ EarthEngine.init().then(earthEngine => {
 
   // sse
   app.get("/updates/:id", sseExpress, async function(req, res) {
-    const request = requestMap[req.params.id];
+    const request = requestMap.get(req.params.id);
 
     if (!request) {
       res.send(404);
     } else {
-      for await (const layer of request.completeJobs(earthEngine)) {
+      for await (const layer of request.completeJobs()) {
+        // @ts-ignore
         res.sse("layer", {
           layer
         });
@@ -77,7 +80,7 @@ EarthEngine.init().then(earthEngine => {
   });
 
   app.get("/api/map/:id", async (req, res) => {
-    const request = requestMap[req.params.id];
+    const request = requestMap.get(req.params.id);
 
     if (!request || !request.complete) {
       res.send(404);
@@ -94,8 +97,11 @@ EarthEngine.init().then(earthEngine => {
     }
   });
 
-  app.server.listen(process.env.PORT || config.port, () => {
-    console.log(`Started on port ${app.server.address().port}`);
+  server.listen(process.env.PORT || config.port, () => {
+    const address = server.address();
+    console.log(
+      `Started on port ${address ? (<AddressInfo>address).port : "null"}`
+    );
   });
 });
 

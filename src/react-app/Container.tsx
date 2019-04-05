@@ -1,7 +1,13 @@
 import Map from "./Map";
 import OptionsMenu from "./Options";
 import React from "react";
-import { MapOptions, Options, Tile } from "../common/types";
+import {
+  MapOptions,
+  Options,
+  Tile,
+  MapLayers,
+  LayersType
+} from "../common/types";
 import { LatLng, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
 import download from "downloadjs";
@@ -10,7 +16,7 @@ type State = {
   options: MapOptions;
   grid: Array<Polygon>;
   activeJob: boolean;
-  layer: Array<Tile>;
+  layers: LayersType;
 };
 
 export default class AppContainer extends React.Component {
@@ -22,7 +28,7 @@ export default class AppContainer extends React.Component {
     },
     grid: [],
     activeJob: false,
-    layer: []
+    layers: {}
   };
 
   // todo: make lifecycle more explicit
@@ -50,7 +56,7 @@ export default class AppContainer extends React.Component {
     });
 
     const res = await response.json();
-    this.setState({ grid: res.grid, layer: [] });
+    this.setState({ grid: res.grid, layers: {} });
 
     let remainingLayers = res.nLayers;
     let eventSource = new EventSource(`updates/${res.id}`);
@@ -58,7 +64,7 @@ export default class AppContainer extends React.Component {
     const callback = (e: Event) => {
       // @ts-ignore
       const data = JSON.parse(e.data);
-      this.setState({ layer: data.layer });
+      this.setState({ layers: { ...this.state.layers, ...data.layer } });
       remainingLayers--;
 
       if (remainingLayers == 0) {
@@ -97,7 +103,7 @@ export default class AppContainer extends React.Component {
               this.setState({ options: { ...this.state.options, bounds } });
             }
           }}
-          layer={this.state.layer}
+          layers={this.state.layers}
           grid={this.state.grid}
         />
         <OptionsMenu

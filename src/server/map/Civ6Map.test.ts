@@ -22,7 +22,6 @@ describe("getRiverType", () => {
     expect(result[0].IsWOfRiver).toEqual(true);
   });
 
-  // affects west, northWest, southWest neighbors
   it("affects west, northWest, southWest neighbors", () => {
     const plotRivers = new PlotRiversMap();
     const map = new Civ6Map([{}, { river: { west: true } }, {}, {}], base);
@@ -39,17 +38,17 @@ describe("getRiverType", () => {
   it("can rewrite tiles that are affected by rivers on multiple tiles", () => {
     const plotRivers = new PlotRiversMap();
     const map = new Civ6Map(
-      [{}, { river: { east: true } }, { river: { northEast: true } }, {}],
+      [{ river: { east: true } }, {}, {}, { river: { northWest: true } }],
       base
     );
 
-    map.getRiverType(map.tiles[1], 1, plotRivers);
-    map.getRiverType(map.tiles[2], 2, plotRivers);
+    map.getRiverType(map.tiles[0], 0, plotRivers);
+    map.getRiverType(map.tiles[3], 3, plotRivers);
 
     const result = plotRivers.asArray();
 
     expect(result).toHaveLength(1);
     expect(result[0].IsWOfRiver).toEqual(true);
-    expect(result[0].IsNEOfRiver).toEqual(true);
+    expect(result[0].IsNWOfRiver).toEqual(true);
   });
 });
