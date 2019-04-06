@@ -7,7 +7,8 @@ import {
   TerrainType,
   Elevation,
   LatLngBounds as LatLngBoundsT,
-  MapLayers
+  MapLayers,
+  FeatureType
 } from "../../common/types";
 import isForest from "../earth-engine/isForest";
 import {
@@ -18,6 +19,7 @@ import {
 import isLand from "../earth-engine/isLand";
 import findSlope from "../earth-engine/findSlope";
 import createRiverTiles from "../earth-engine/rivers";
+import isMarsh from "../earth-engine/isMarsh";
 
 export default class MapBuilder {
   grid: Polygon[];
@@ -91,9 +93,10 @@ export default class MapBuilder {
   }
 
   async createForestTiles() {
+    const FOREST_THRESHOLD = 0.75;
     const process = async (properties: any, geometry: Polygon) => {
       const index = properties.mean;
-      const isForest = index < 1.75; // 1: forest; 2: non-forest
+      const isForest = index < FOREST_THRESHOLD + 1; // 1: forest; 2: non-forest
 
       if (!isForest) return {};
 
@@ -107,6 +110,20 @@ export default class MapBuilder {
     };
 
     return Promise.all(this.createEETiles(isForest, process));
+  }
+
+  async createMarshTiles(): Promise<Array<Tile>> {
+    const MARSH_THRESHOLD = 0.25;
+
+    const process = async (properties: any, geometry: Polygon) => {
+      const mean = properties.mean;
+      const isMarsh = mean > MARSH_THRESHOLD; // 1: forest; 2: non-forest
+
+      if (!isMarsh) return {};
+      return { feature: FeatureType.marsh };
+    };
+
+    return Promise.all(this.createEETiles(isMarsh, process));
   }
 
   createEETiles(

@@ -1,7 +1,7 @@
 import { Polygon } from "geojson";
 
 type coords = [number, number];
-type params = {
+export type params = {
   width: number;
   height: number;
   lon_start: number;
