@@ -1,22 +1,18 @@
 import Map from "./Map";
 import OptionsMenu from "./Options";
 import React from "react";
-import {
-  MapOptions,
-  Options,
-  Tile,
-  MapLayers,
-  LayersType
-} from "../common/types";
-import { LatLng, LatLngBounds } from "leaflet";
+import { MapOptions, Options, LayersType, MapLayers } from "../common/types";
+import { LatLng, LatLngBounds, layerGroup } from "leaflet";
 import { Polygon } from "geojson";
 import download from "downloadjs";
+import { NumberType } from "io-ts";
 
 type State = {
   options: MapOptions;
   grid: Array<Polygon>;
   activeJob: boolean;
   layers: LayersType;
+  loadingLayer?: string;
 };
 
 export default class AppContainer extends React.Component {
@@ -56,18 +52,25 @@ export default class AppContainer extends React.Component {
     });
 
     const res = await response.json();
-    this.setState({ grid: res.grid, layers: {} });
+    const layerCounter = new LayerCounter();
+    this.setState({
+      grid: res.grid,
+      layers: {},
+      loadingLayer: layerCounter.next()
+    });
 
-    let remainingLayers = res.nLayers;
     let eventSource = new EventSource(`updates/${res.id}`);
 
     const callback = (e: Event) => {
       // @ts-ignore
       const data = JSON.parse(e.data);
-      this.setState({ layers: { ...this.state.layers, ...data.layer } });
-      remainingLayers--;
+      const loadingLayer = layerCounter.next();
+      this.setState({
+        layers: { ...this.state.layers, ...data.layer },
+        loadingLayer
+      });
 
-      if (remainingLayers == 0) {
+      if (loadingLayer === undefined) {
         eventSource.removeEventListener("layer", callback);
 
         fetch(`/api/map/${res.id}`)
@@ -105,6 +108,7 @@ export default class AppContainer extends React.Component {
           }}
           layers={this.state.layers}
           grid={this.state.grid}
+          loadingLayer={this.state.loadingLayer}
         />
         <OptionsMenu
           onChange={(options: Options) => {
@@ -120,5 +124,26 @@ export default class AppContainer extends React.Component {
         />
       </React.Fragment>
     );
+  }
+}
+
+class LayerCounter {
+  index: number;
+  layers: Array<string>;
+
+  constructor() {
+    this.layers = Object.values(MapLayers).filter(
+      layer => typeof layer === "string"
+    );
+    this.index = 0;
+  }
+
+  next() {
+    if (this.index === layerGroup.length) return undefined;
+    else {
+      const result = this.layers[this.index];
+      this.index++;
+      return result;
+    }
   }
 }

@@ -18,6 +18,7 @@ interface MapProps {
   onBoundsChange: (bounds: LatLngBounds) => any;
   grid: Array<Polygon>;
   layers: LayersType;
+  loadingLayer?: string;
 }
 
 interface MapDisplayProps {
@@ -31,6 +32,7 @@ interface MapOptionsProps {
   onLayerSelect: (option: string) => void;
   selectedLayer: string | undefined;
   receivedLayers: Record<string, boolean>;
+  loadingLayer?: string;
 }
 
 export default class MapContainer extends React.Component<MapProps> {
@@ -78,6 +80,7 @@ export default class MapContainer extends React.Component<MapProps> {
           }
           selectedLayer={this.state.selectedLayer}
           receivedLayers={receivedLayers}
+          loadingLayer={this.props.loadingLayer}
         />
       </div>
     );
@@ -85,11 +88,12 @@ export default class MapContainer extends React.Component<MapProps> {
 }
 
 const MapOptions: React.SFC<MapOptionsProps> = (props: MapOptionsProps) => (
-  <div>
+  <div className="layers-container">
     {Object.entries(props.receivedLayers).map(([layer, enabled]) => (
-      <span key={layer}>
-        {layer}
+      <span className="layer-display" key={layer}>
+        <span className="layer-text"> {layer} </span>
         <input
+          className="layer-dial"
           type="radio"
           value={layer}
           disabled={!enabled}

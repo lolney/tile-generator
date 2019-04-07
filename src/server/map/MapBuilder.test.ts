@@ -22,6 +22,19 @@ describe("MapBuilder", () => {
     await EarthEngine.init();
   });
 
+  it("deserializeBounds", () => {
+    const bounds = {
+      _southWest: { lat: 42.343320316410804, lng: -71.0863494873047 },
+      _northEast: { lat: 42.38086519582323, lng: -71.03004455566408 }
+    };
+    const deserialized: LatLngBounds = MapBuilder.deserializeBounds(bounds);
+
+    expect(bounds._northEast.lng).toEqual(deserialized.getEast());
+    expect(bounds._northEast.lat).toEqual(deserialized.getNorth());
+    expect(bounds._southWest.lng).toEqual(deserialized.getWest());
+    expect(bounds._southWest.lat).toEqual(deserialized.getSouth());
+  });
+
   describe("createMarshTiles", () => {
     /* Mississippi delta */
     const marshed = createFromGridConfig({

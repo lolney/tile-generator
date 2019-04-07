@@ -8,14 +8,14 @@ import path from "path";
 import sseExpress from "sse-express";
 
 import config from "./config.json";
-import EarthEngine from "./earth-engine/EarthEngine.js";
-import OpenRequest, { N_LAYERS } from "./api/OpenRequest.js";
+import EarthEngine from "./earth-engine/EarthEngine";
+import OpenRequest, { N_LAYERS } from "./api/OpenRequest";
 import { AddressInfo } from "net";
 
 let app = express();
 let requestMap: Map<string, OpenRequest> = new Map();
 
-EarthEngine.init().then(earthEngine => {
+export default EarthEngine.init().then(earthEngine => {
   const server = http.createServer(app);
 
   // logger
@@ -103,6 +103,6 @@ EarthEngine.init().then(earthEngine => {
       `Started on port ${address ? (<AddressInfo>address).port : "null"}`
     );
   });
-});
 
-export default app;
+  return app;
+});

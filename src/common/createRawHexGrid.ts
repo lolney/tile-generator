@@ -9,6 +9,10 @@ export type params = {
   lat_start: number;
 };
 
+/**
+ *
+ * @param params.lat_start: latitude at the northern end of the bounding boxs
+ */
 export default function createRawHexGrid({
   width,
   height,
@@ -25,10 +29,7 @@ export default function createRawHexGrid({
     // Offset to the right if even row
     let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
 
-    let start: coords = [
-      lon_offset + lon_start,
-      0.25 + lat_start - unit * 0.75 * row
-    ];
+    let start: coords = [lon_offset + lon_start, lat_start - unit * 0.75 * row];
 
     // for each col
     for (let col = 0; col < width; col++) {
