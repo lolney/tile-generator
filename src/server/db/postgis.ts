@@ -1,4 +1,5 @@
 import { Polygon, GeoJsonObject } from "geojson";
+import db from ".";
 
 export function serializeGeoJSON(geom: GeoJsonObject): string {
   const taggedBounds = {
@@ -21,4 +22,18 @@ export function sampleSingleGeom(geom: Polygon, n: number) {
     SELECT ST_GeneratePoints(
         ${serializeGeoJSON(geom)}, ${n}) as geom
     `;
+}
+
+export async function sampleRaster(table: string, geom: Polygon, n: number) {
+  const points = sampleRows(geom, n);
+  const query = `
+    SELECT ST_Value(raster, points) As value
+    FROM ${points} AS points, ${table}.rast AS raster
+    WHERE ST_Intersects(raster, points);
+  `;
+
+  const rows = await db.doQuery(query);
+  const value = rows[0]["value"];
+
+  return value;
 }

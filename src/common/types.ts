@@ -29,7 +29,8 @@ export enum MapLayers {
   land,
   elevation,
   forest,
-  rivers
+  rivers,
+  marsh
 }
 
 //export type LayersType = { [P in MapLayers]?: Array<Tile> };

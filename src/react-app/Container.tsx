@@ -70,21 +70,27 @@ export default class AppContainer extends React.Component {
         loadingLayer
       });
 
+      console.log("loading layer", loadingLayer);
+
       if (loadingLayer === undefined) {
         eventSource.removeEventListener("layer", callback);
 
         fetch(`/api/map/${res.id}`)
-          .then(async resp => ({
-            // @ts-ignore (enforced on server)
-            filename: resp.headers
-              .get("Content-Disposition")
-              .split("filename=")[1],
-            blob: await resp.blob()
-          }))
+          .then(async resp => {
+            if (resp.status == 404)
+              throw new Error(`Map file '${res.id}' does not exist`);
+            return {
+              // @ts-ignore (enforced on server)
+              filename: resp.headers
+                .get("Content-Disposition")
+                .split("filename=")[1],
+              blob: await resp.blob()
+            };
+          })
           .then(function({ filename, blob }) {
             download(blob, filename);
-          });
-        this.resetState();
+          })
+          .finally(() => this.resetState());
       }
     };
 
@@ -127,23 +133,18 @@ export default class AppContainer extends React.Component {
   }
 }
 
-class LayerCounter {
-  index: number;
-  layers: Array<string>;
+export class LayerCounter {
+  iter: IterableIterator<string>;
 
   constructor() {
-    this.layers = Object.values(MapLayers).filter(
+    const layers = Object.values(MapLayers).filter(
       layer => typeof layer === "string"
     );
-    this.index = 0;
+    this.iter = layers[Symbol.iterator]();
   }
 
   next() {
-    if (this.index === layerGroup.length) return undefined;
-    else {
-      const result = this.layers[this.index];
-      this.index++;
-      return result;
-    }
+    const { value } = this.iter.next();
+    return value;
   }
 }

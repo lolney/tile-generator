@@ -59,6 +59,12 @@ export default class MapContainer extends React.Component<MapProps> {
         .map((key: string) => [key, hasLayer(key)])
     );
 
+    if (
+      this.state.selectedLayer !== undefined &&
+      receivedLayers[this.state.selectedLayer] === false
+    )
+      this.setState({ selectedLayer: undefined });
+
     const layer =
       this.state.selectedLayer == undefined
         ? undefined
@@ -201,6 +207,8 @@ class Map extends React.Component<MapDisplayProps> {
                     return { fillColor: "DarkOliveGreen" };
                   case FeatureType.jungle:
                     return { fillColor: "black" };
+                  case FeatureType.marsh:
+                    return { fillColor: "lime" };
                   default:
                     return {};
                 }

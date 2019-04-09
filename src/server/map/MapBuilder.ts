@@ -47,7 +47,7 @@ export default class MapBuilder {
     `;
   }
 
-  async createLayer(layer: MapLayers) {
+  async createLayer(layer: MapLayers): Promise<Tile[]> {
     switch (layer) {
       case MapLayers.climate:
         return this.createClimateTiles();
@@ -59,6 +59,8 @@ export default class MapBuilder {
         return this.createLandTiles();
       case MapLayers.rivers:
         return this.createRiverTiles();
+      case MapLayers.marsh:
+        return this.createMarshTiles();
     }
   }
 
