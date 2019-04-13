@@ -27,9 +27,9 @@ export function sampleSingleGeom(geom: Polygon, n: number) {
 export async function sampleRaster(table: string, geom: Polygon, n: number) {
   const points = sampleRows(geom, n);
   const query = `
-    SELECT ST_Value(raster, points) As value
-    FROM ${points} AS points, ${table}.rast AS raster
-    WHERE ST_Intersects(raster, points);
+    SELECT ST_Value(raster.rast, points.geom) As value
+    FROM (${points}) AS points, ${table} AS raster
+    WHERE ST_Intersects(raster.rast, points.geom);
   `;
 
   const rows = await db.doQuery(query);

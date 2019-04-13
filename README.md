@@ -2,6 +2,12 @@ Web app for generating Civilization maps from Google Earth Engine climate/terrai
 
 ### Development
 
+Later versions of node currently don't work with node-postgres:
+
+```
+nvm use 8.10
+```
+
 ```
 npm install
 ```
@@ -52,12 +58,21 @@ CREATE EXTENSION postgis;
 Download the Koppen data from https://geoafrikana.com/resources/, then:
 
 ```
-shp2pgsql -s 4326 world_climates_completed_koppen_geiger.shp | psql -h loca
+shp2pgsql -s 4326 ./world_climates_completed_koppen_geiger.shp | psql -h loca
 lhost -d tilegenerator -U postgres
 ```
 
 River centerlines, downloaded from https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-rivers-lake-centerlines/:
 
 ```
-shp2pgsql -s 4326 /home/luke/Downloads/river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.shp | psql -h localhost -d tilegenerator -U postgres
+shp2pgsql -s 4326 ./river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.shp | psql -h localhost -d tilegenerator -U postgres
+```
+
+###### Water mask:
+
+- Run the script [](https://code.earthengine.google.com/67d5310441e9d02d8e630167d87f5070), exporting to Google Drive
+- Download the image from Drive, then run the following:
+
+```
+raster2pgsql -t 200x200 -s 4326 ~/Downloads/waterMask_500.tif | psql -h localhost -d tilegenerator -U postgres
 ```

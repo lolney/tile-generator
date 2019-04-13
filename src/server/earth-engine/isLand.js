@@ -1,11 +1,16 @@
-import createGrid from "./createGrid";
 import ee from "@google/earthengine";
-import { createFindMean, reduceRegions } from "./tileAnalysis";
+import { reduceRegions } from "./tileAnalysis";
+
+export const IS_WATER_IF_GREATER_THAN = 0.5;
 
 function setIsLand(square) {
   var mean = square.get("mean");
   // water mask is 1. if gt .5, then is water; else land.
-  var land = ee.Algorithms.If(ee.Number(mean).gt(0.5), 0, 1);
+  var land = ee.Algorithms.If(
+    ee.Number(mean).gt(IS_WATER_IF_GREATER_THAN),
+    0,
+    1
+  );
   return square.set({ isLand: land });
 }
 
