@@ -1,5 +1,5 @@
 import React from "react";
-//import { Map as LeafletMap, TileLayer } from "react-leaflet";
+import memoize from "memoizee";
 import L from "leaflet";
 // @ts-ignore: noImplicitAny
 import "leaflet-area-select";
@@ -35,35 +35,49 @@ interface MapOptionsProps {
   loadingLayer?: string;
 }
 
+type MapContainerState = {
+  selectedLayer?: string;
+};
+
 export default class MapContainer extends React.Component<MapProps> {
-  state: {
-    selectedLayer?: string;
+  state: MapContainerState = {
+    selectedLayer: undefined
   };
 
-  constructor(props: MapProps) {
-    super(props);
+  hasLayer = (layers: LayersType, layer: string) =>
+    layers[layer] ? true : false;
 
-    this.state = {
-      selectedLayer: undefined
-    };
-  }
-
-  render() {
-    const hasLayer = (layer: string) =>
-      this.props.layers[layer] ? true : false;
-
-    console.log("rendering with layers", this.props.layers);
+  getReceivedLayers = memoize((layers: LayersType) => {
     const receivedLayers: Record<string, boolean> = _.fromPairs(
       Object.values(MapLayers)
         .filter(key => typeof key == "string")
-        .map((key: string) => [key, hasLayer(key)])
+        .map((key: string) => [key, this.hasLayer(layers, key)])
     );
 
+    // If received layers have been reset, reset selection
     if (
       this.state.selectedLayer !== undefined &&
       receivedLayers[this.state.selectedLayer] === false
     )
       this.setState({ selectedLayer: undefined });
+
+    // If receiving a layer for the first time, set this one to selected
+    if (this.state.selectedLayer === undefined) {
+      const res = Object.entries(receivedLayers).find(
+        ([_, received]) => received
+      );
+
+      if (res != undefined) {
+        const [receivedLayer] = res;
+        this.setState({ selectedLayer: receivedLayer });
+      }
+    }
+
+    return receivedLayers;
+  });
+
+  render() {
+    const receivedLayers = this.getReceivedLayers(this.props.layers);
 
     const layer =
       this.state.selectedLayer == undefined
