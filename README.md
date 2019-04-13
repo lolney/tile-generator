@@ -58,14 +58,14 @@ CREATE EXTENSION postgis;
 Download the Koppen data from https://geoafrikana.com/resources/, then:
 
 ```
-shp2pgsql -s 4326 ./world_climates_completed_koppen_geiger.shp | psql -h loca
+shp2pgsql -I -s 4326 ~/Downloads/Koppen_Geiger Edited and Completed/Shapefiles/world_climates_completed_koppen_geiger.shp | psql -h loca
 lhost -d tilegenerator -U postgres
 ```
 
 River centerlines, downloaded from https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-rivers-lake-centerlines/:
 
 ```
-shp2pgsql -s 4326 ./river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.shp | psql -h localhost -d tilegenerator -U postgres
+shp2pgsql -I -s 4326 ~/Downloads/river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.shp | psql -h localhost -d tilegenerator -U postgres
 ```
 
 ###### Water mask:
@@ -74,5 +74,5 @@ shp2pgsql -s 4326 ./river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.
 - Download the image from Drive, then run the following:
 
 ```
-raster2pgsql -t 200x200 -s 4326 ~/Downloads/waterMask_500.tif | psql -h localhost -d tilegenerator -U postgres
+raster2pgsql -I -t 200x200 -s 4326 ~/Downloads/waterMask_500.tif | psql -h localhost -d tilegenerator -U postgres
 ```
