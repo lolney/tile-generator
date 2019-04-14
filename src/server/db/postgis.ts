@@ -1,6 +1,7 @@
 import { Polygon, GeoJsonObject } from "geojson";
 import db from ".";
 import { SAMPLES_PER_TILE } from "../constants";
+import { fstat } from "fs";
 
 export function serializeGeoJSON(geom: GeoJsonObject): string {
   const taggedBounds = {

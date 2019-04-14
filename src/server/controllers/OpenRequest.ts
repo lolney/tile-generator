@@ -73,6 +73,7 @@ export default class OpenRequest {
   async *completeJobs() {
     for (const layer of Object.values(MapLayers)) {
       if (!isNaN(layer)) {
+        console.log("Starting layer", layer);
         let tiles = await this.mapBuilder.createLayer(layer);
         this.map.addLayer(tiles);
         yield { [MapLayers[layer]]: tiles };

@@ -30,7 +30,6 @@ export default function createRawHexGrid({
     let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
 
     let start: coords = [lon_offset + lon_start, lat_start - unit * 0.75 * row];
-    console.log(start);
 
     // for each col
     for (let col = 0; col < width; col++) {

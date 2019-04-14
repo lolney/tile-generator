@@ -16,11 +16,14 @@ import {
   getClimateType,
   getTerrainType
 } from "../earth-engine/koppen";
-import isLand from "../earth-engine/isLand";
-import findSlope from "../earth-engine/findSlope";
 import createRiverTiles from "../earth-engine/rivers";
-import isMarsh from "../earth-engine/isMarsh";
-import { isLandLocal, findSlopeLocal } from "../earth-engine/rasterLocal";
+import {
+  isLandLocal,
+  findSlopeLocal,
+  isMarshLocal,
+  isForestLocal
+} from "../earth-engine/rasterLocal";
+import { logperformance } from "../logging";
 
 export default class MapBuilder {
   grid: Polygon[];
@@ -48,22 +51,24 @@ export default class MapBuilder {
     `;
   }
 
-  async createLayer(layer: MapLayers): Promise<Tile[]> {
-    switch (layer) {
-      case MapLayers.climate:
-        return this.createClimateTiles();
-      case MapLayers.elevation:
-        return this.createElevationTiles();
-      case MapLayers.forest:
-        return this.createForestTiles();
-      case MapLayers.land:
-        return this.createLandTiles();
-      case MapLayers.rivers:
-        return this.createRiverTiles();
-      case MapLayers.marsh:
-        return this.createMarshTiles();
+  createLayer = logperformance(
+    async (layer: MapLayers): Promise<Tile[]> => {
+      switch (layer) {
+        case MapLayers.climate:
+          return this.createClimateTiles();
+        case MapLayers.elevation:
+          return this.createElevationTiles();
+        case MapLayers.forest:
+          return this.createForestTiles();
+        case MapLayers.land:
+          return this.createLandTiles();
+        case MapLayers.rivers:
+          return this.createRiverTiles();
+        case MapLayers.marsh:
+          return this.createMarshTiles();
+      }
     }
-  }
+  );
 
   async createLandTiles(): Promise<Array<Tile>> {
     const results = await isLandLocal(this.grid);
@@ -91,38 +96,38 @@ export default class MapBuilder {
     });
   }
 
-  async createForestTiles() {
+  async createForestTiles(): Promise<Array<Tile>> {
     const FOREST_THRESHOLD = 0.75;
-    const process = async (properties: any, geometry: Polygon) => {
-      const index = properties.mean;
-      const isForest = index < FOREST_THRESHOLD + 1; // 1: forest; 2: non-forest
+    const results = await isForestLocal(this.grid);
+
+    const tilePromises = results.map(async (forestIndex, i) => {
+      const isForest = forestIndex && forestIndex < FOREST_THRESHOLD + 1; // 1: forest; 2: non-forest
 
       if (!isForest) return {};
 
+      const geometry = this.grid[i];
       const koppen = await getClimateType(geometry);
 
-      if (!koppen) return {};
+      if (koppen === undefined) return {};
 
       const feature = getForestType(koppen);
 
       return { feature };
-    };
+    });
 
-    return Promise.all(this.createEETiles(isForest, process));
+    return Promise.all(tilePromises);
   }
 
   async createMarshTiles(): Promise<Array<Tile>> {
     const MARSH_THRESHOLD = 0.25;
+    const results = await isMarshLocal(this.grid);
 
-    const process = async (properties: any, geometry: Polygon) => {
-      const mean = properties.mean;
-      const isMarsh = mean > MARSH_THRESHOLD; // 1: forest; 2: non-forest
+    return results.map((mean: number) => {
+      const isMarsh = mean > MARSH_THRESHOLD; // 1: marsh; 0: non-marsh
 
       if (!isMarsh) return {};
       return { feature: FeatureType.marsh };
-    };
-
-    return Promise.all(this.createEETiles(isMarsh, process));
+    });
   }
 
   createEETiles(

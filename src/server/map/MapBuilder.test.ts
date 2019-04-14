@@ -68,4 +68,52 @@ describe("MapBuilder", () => {
       }
     });
   });
+
+  describe("createForestTiles", () => {
+    /* Blue Ridge Mountains, NC */
+    const forested = createFromGridConfig({
+      width: 1,
+      height: 1,
+      lon_start: -83.784476,
+      lon_end: -83.3,
+      lat_start: 35.149286
+    });
+
+    /* Amazon */
+    const rainForested = createFromGridConfig({
+      width: 1,
+      height: 1,
+      lon_start: -66.206732,
+      lon_end: -65,
+      lat_start: -5
+    });
+
+    /* North Slope Alaska */
+    const nonForested = createFromGridConfig({
+      width: 10,
+      height: 10,
+      lon_start: -156.462222,
+      lon_end: -156,
+      lat_start: 70.699283
+    });
+
+    it("correcly identifies forested regions", async () => {
+      const result = await forested.createForestTiles();
+
+      expect(result[0].feature).toEqual(FeatureType.forest);
+    });
+
+    it("correcly identifies jungle regions", async () => {
+      const result = await rainForested.createForestTiles();
+      expect(result[0].feature).toEqual(FeatureType.jungle);
+    });
+
+    it("correcly identifies non-forested regions", async () => {
+      const result = await nonForested.createForestTiles();
+
+      for (const tile of result) {
+        expect(tile).toEqual({});
+      }
+    });
+  });
 });
