@@ -20,7 +20,7 @@ import isLand from "../earth-engine/isLand";
 import findSlope from "../earth-engine/findSlope";
 import createRiverTiles from "../earth-engine/rivers";
 import isMarsh from "../earth-engine/isMarsh";
-import isLandLocal from "../earth-engine/isLandLocal";
+import { isLandLocal, findSlopeLocal } from "../earth-engine/rasterLocal";
 
 export default class MapBuilder {
   grid: Polygon[];
@@ -68,17 +68,18 @@ export default class MapBuilder {
   async createLandTiles(): Promise<Array<Tile>> {
     const results = await isLandLocal(this.grid);
 
-    return results.map(isLand => ({
+    return results.map((isLand: boolean) => ({
       terrain: isLand ? TerrainType.grass : TerrainType.coast
     }));
   }
 
   async createElevationTiles(): Promise<Array<Tile>> {
-    const process = (properties: any) => {
-      const meanSlope = properties.mean;
+    const results = await findSlopeLocal(this.grid);
+
+    return results.map((meanSlope: number | undefined) => {
       let elevation;
 
-      if (meanSlope === undefined || meanSlope < 4) {
+      if (!meanSlope || meanSlope < 4) {
         elevation = Elevation.flat;
       } else if (meanSlope < 10) {
         elevation = Elevation.hills;
@@ -87,9 +88,7 @@ export default class MapBuilder {
       }
 
       return { elevation };
-    };
-
-    return this.createEETiles(findSlope, process);
+    });
   }
 
   async createForestTiles() {

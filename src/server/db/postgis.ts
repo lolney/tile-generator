@@ -1,5 +1,6 @@
 import { Polygon, GeoJsonObject } from "geojson";
 import db from ".";
+import { SAMPLES_PER_TILE } from "../constants";
 
 export function serializeGeoJSON(geom: GeoJsonObject): string {
   const taggedBounds = {
@@ -27,13 +28,23 @@ export function sampleSingleGeom(geom: Polygon, n: number) {
 export async function sampleRaster(table: string, geom: Polygon, n: number) {
   const points = sampleRows(geom, n);
   const query = `
-    SELECT ST_Value(raster.rast, points.geom) As value
-    FROM (${points}) AS points, ${table} AS raster
-    WHERE ST_Intersects(raster.rast, points.geom);
+    SELECT AVG(values.value) as avg 
+    FROM (
+      SELECT ST_Value(raster.rast, points.geom) As value
+      FROM (${points}) AS points, ${table} AS raster
+      WHERE ST_Intersects(raster.rast, points.geom)
+    ) as values 
+    WHERE values.value != double precision 'NaN';
   `;
 
   const rows = await db.doQuery(query);
-  const value = rows[0]["value"];
+  const value = rows[0]["avg"];
 
   return value;
+}
+
+export async function sampleRasterTiles(tiles: Polygon[], dbname: string) {
+  return Promise.all(
+    tiles.map(async geom => await sampleRaster(dbname, geom, SAMPLES_PER_TILE))
+  );
 }
