@@ -9,11 +9,14 @@ import sseExpress from "sse-express";
 
 import config from "./config.json";
 import EarthEngine from "./earth-engine/EarthEngine";
-import OpenRequest, { N_LAYERS } from "./api/OpenRequest";
 import { AddressInfo } from "net";
+import MapController from "./controllers/MapController.js";
+import UpdateController, {
+  UpdateExistsMiddleware
+} from "./controllers/UpdateController.js";
+import TilesController from "./controllers/TilesController.js";
 
 let app = express();
-let requestMap: Map<string, OpenRequest> = new Map();
 
 export default EarthEngine.init().then(earthEngine => {
   const server = http.createServer(app);
@@ -41,61 +44,10 @@ export default EarthEngine.init().then(earthEngine => {
     })
   );
 
-  // API starter
-  app.post("/api/map", function(req, res) {
-    let request;
-
-    try {
-      request = OpenRequest.parseRequest(req.body);
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err.toString());
-      return;
-    }
-
-    requestMap.set(request.id, request);
-
-    res.setHeader("Content-Type", "application/json");
-    res.send({
-      grid: request.mapBuilder.grid,
-      id: request.id,
-      nLayers: N_LAYERS
-    });
-  });
-
-  // sse
-  app.get("/updates/:id", sseExpress, async function(req, res) {
-    const request = requestMap.get(req.params.id);
-
-    if (!request) {
-      res.send(404);
-    } else {
-      for await (const layer of request.completeJobs()) {
-        // @ts-ignore
-        res.sse("layer", {
-          layer
-        });
-      }
-    }
-  });
-
-  app.get("/api/map/:id", async (req, res) => {
-    const request = requestMap.get(req.params.id);
-
-    if (!request || !request.complete) {
-      res.send(404);
-    } else {
-      const buffer = await request.createFile();
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename=${request.getFileName()}`
-      );
-      res.setHeader("Content-Type", "application/octet-stream");
-
-      res.write(buffer, "binary");
-      res.end(undefined, "binary");
-    }
-  });
+  // API
+  app.post("/api/map", TilesController);
+  app.get("/updates/:id", UpdateExistsMiddleware, sseExpress, UpdateController);
+  app.get("/api/map/:id", MapController);
 
   server.listen(process.env.PORT || config.port, () => {
     const address = server.address();
