@@ -1,14 +1,17 @@
 import requests from "../db/openRequest";
 import { Request, Response } from "express";
-import { nextTick } from "q";
 
 export default async function UpdateController(req: Request, res: Response) {
   const request = requests.get(req.params.id);
-  for await (const layer of request.completeJobs()) {
-    // @ts-ignore
-    res.sse("layer", {
-      layer
-    });
+  if (request) {
+    for await (const layer of request.completeJobs()) {
+      // @ts-ignore
+      res.sse("layer", {
+        layer
+      });
+    }
+  } else {
+    throw new Error(`Requested map ID that does not exist: ${req.params.id}`);
   }
 }
 

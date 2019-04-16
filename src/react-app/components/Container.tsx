@@ -1,11 +1,10 @@
 import Map from "./Map";
 import OptionsMenu from "./Options";
 import React from "react";
-import { MapOptions, Options, LayersType, MapLayers } from "../common/types";
-import { LatLng, LatLngBounds, layerGroup } from "leaflet";
+import { MapOptions, Options, LayersType, MapLayers } from "../../common/types";
+import { LatLng, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
 import download from "downloadjs";
-import { NumberType } from "io-ts";
 
 type State = {
   options: MapOptions;

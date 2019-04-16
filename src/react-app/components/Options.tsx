@@ -1,5 +1,10 @@
 import React from "react";
-import { Dimensions, Options, GameString, gameStrings } from "../common/types";
+import {
+  Dimensions,
+  Options,
+  GameString,
+  gameStrings
+} from "../../common/types";
 
 // @ts-ignore: noImplicitAny
 import ControlPanel, { Select, Range } from "react-control-panel";

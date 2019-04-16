@@ -3,6 +3,7 @@ import request from "supertest";
 
 /* 
 Requires ejecting and running tests with babel
+Or creating a babel hook?
 describe("api", () => {
   beforeAll(async () => {
     await app;

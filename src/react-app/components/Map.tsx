@@ -10,9 +10,9 @@ import "./Map.css";
 
 import { LeafletEvent, LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
-import { Tile, TerrainType, LayersType, MapLayers } from "../common/types";
-import { Elevation } from "../common/types";
-import { FeatureType } from "../common/types";
+import { Tile, TerrainType, LayersType, MapLayers } from "../../common/types";
+import { Elevation } from "../../common/types";
+import { FeatureType } from "../../common/types";
 
 interface MapProps {
   onBoundsChange: (bounds: LatLngBounds) => any;

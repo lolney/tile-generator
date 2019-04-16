@@ -58,18 +58,19 @@ export default class Map {
 
   addLayer(tiles: Array<Tile>) {
     this.tiles = this.tiles.map((tile, i) => {
-      const result = { ...tile, ...tiles[i] };
+      const addition = tiles[i];
+      const result = { ...tile, ...addition };
+
+      const isWater = (tile: Tile) =>
+        (result.terrain != undefined && tile.terrain === TerrainType.coast) ||
+        tile.terrain == TerrainType.ocean;
+
+      const isHilly = (tile: Tile) =>
+        tile.elevation != undefined && tile.elevation != Elevation.flat;
 
       // Remove elevation if it's a water tile
-      if (
-        result.terrain != undefined &&
-        (result.terrain === TerrainType.coast ||
-          result.terrain == TerrainType.ocean)
-      ) {
-        if (
-          result.elevation != undefined &&
-          result.elevation != Elevation.flat
-        ) {
+      if (isWater(result)) {
+        if (isHilly(result)) {
           delete result.elevation;
         }
       }
