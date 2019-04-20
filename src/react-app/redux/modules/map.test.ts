@@ -8,6 +8,10 @@ describe("map module", () => {
   });
   describe("receiveLayer", () => {
     it("dispatches downloadMap if on last layer", () => {});
+    it("updates layers", () => {});
   });
-  describe("downloadMap", () => {});
+  describe("downloadMap", () => {
+    it("should reset layer count on success", () => {});
+    it("should reset layer count on failure", () => {});
+  });
 });

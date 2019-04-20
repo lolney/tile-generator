@@ -30,7 +30,7 @@ const options = {
   }),
   mapDispatchToProps: (dispatch: any) => ({
     onChange: (options: Options) => dispatch(changeOptions(options)),
-    onSubmit: dispatch(submit())
+    onSubmit: () => dispatch(submit())
   })
 };
 

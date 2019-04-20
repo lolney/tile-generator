@@ -18,7 +18,8 @@ import Civ6MapWriter from "../map/Civ6MapWriter";
 import { LatLngBounds } from "leaflet";
 import MapBuilder from "../map/MapBuilder";
 
-export const N_LAYERS = Object.values(MapLayers).length;
+export const N_LAYERS = Object.values(MapLayers).filter(elem => isNaN(elem))
+  .length;
 
 interface MapInterface {
   new (tiles: number | Tile[], params: MapConfigurable): Map;

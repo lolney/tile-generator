@@ -70,6 +70,7 @@ const receiveLayers = (resp: Response) => async (dispatch: Dispatch) => {
   dispatch(
     receiveGrid({
       grid: res.grid,
+      totalLayers: res.nLayers,
       layers: {},
       mapId: res.id,
       removeSSEListener
@@ -78,6 +79,7 @@ const receiveLayers = (resp: Response) => async (dispatch: Dispatch) => {
 };
 
 const isLastLayer = (state: State) =>
+  state.mapData.totalLayers !== undefined &&
   state.mapData.totalLayers === state.mapData.loadingLayer.index;
 
 const receiveLayer = (e: Event) => (
@@ -91,6 +93,7 @@ const receiveLayer = (e: Event) => (
     type: RECEIVE_LAYER
   });
 
+  console.log(getState());
   if (isLastLayer(getState())) {
     const mapId = selectMapId(getState());
     dispatch(downloadMap(<string>mapId));
@@ -154,6 +157,12 @@ export const map = (
   { type, payload }: Action
 ): MapData => {
   switch (type) {
+    case RECEIVE_LAYER:
+      return {
+        ...state,
+        layers: { ...state.layers, ...payload.layer },
+        loadingLayer: { index: state.loadingLayer.index + 1 }
+      };
     case FINISHED_MAP:
       if (state.removeSSEListener) state.removeSSEListener();
     default:
