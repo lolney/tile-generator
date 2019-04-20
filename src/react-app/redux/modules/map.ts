@@ -1,99 +1,144 @@
-type Action = ReturnType<typeof receiveGrid> | ReturnType<typeof submitting>;
+import { State, SubmissionStatus, MapData } from "../types";
+import { MapOptions } from "../../../common/types";
+import download from "downloadjs";
 
-const initialState = {
-  grid: [],
-  remainingLayers: undefined,
-  layers: {}
-};
+type Action =
+  | ReturnType<typeof receiveGrid>
+  | ReturnType<typeof submitting>
+  | ReturnType<typeof finishedMap>
+  | ReturnType<typeof submitError>
+  | ReturnType<typeof clearError>;
+
+type ThunkAction =
+  | ReturnType<typeof submit>
+  | ReturnType<typeof receiveLayers>
+  | ReturnType<typeof receiveLayer>
+  | typeof downloadMap
+  | typeof finishedMap
+  | typeof submitError
+  | typeof clearError;
+type Dispatch = (f: ThunkAction | Action) => void;
 
 const SUBMITTING = "SUBMITTING";
-const RECEIVE_TILE = "RECEIVE_TITLE";
-const RECEIVE_LAYERS = "RECEIVE_LAYERS";
-const RECEIVE_MAP = "RECEIVE_MAP";
+const RECEIVE_LAYER = "RECEIVE_LAYERS";
 const RECEIVE_GRID = "RECEIVE_GRID";
+const FINISHED_MAP = "FINISHED_MAP";
+const CLEAR_ERROR = "CLEAR_ERROR";
 
-const submit = options => {
-  return dispatch => {
-    dispatch(submitting());
+const submit = (options: MapOptions) => (dispatch: Dispatch) => {
+  dispatch(submitting());
 
-    return fetch("/api/map", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(options)
-    }).then(
-      resp => dispatch(receiveGrid(resp)),
-      error => dispatch(submitError(error))
-    );
-  };
+  return fetch("/api/map", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(options)
+  }).then(
+    resp => dispatch(receiveLayers(resp)),
+    error => dispatch(submitError(error))
+  );
 };
 
-const receiveLayers = dispatch => async resp => {
+const receiveLayers = (resp: Response) => async (dispatch: Dispatch) => {
   const res = await resp.json();
-  const layerCounter = new LayerCounter();
 
   let eventSource = new EventSource(`updates/${res.id}`);
+  const callback = (e: Event) => dispatch(receiveLayer(e));
+  eventSource.addEventListener("layer", callback);
+  const removeSSEListener = () =>
+    eventSource.removeEventListener("layer", callback);
 
   dispatch(
     receiveGrid({
       grid: res.grid,
       layers: {},
-      loadingLayer: layerCounter.next(),
-      eventSource
+      mapId: res.id,
+      removeSSEListener
     })
-  );
-
-  eventSource.addEventListener("layer", (e: Event) =>
-    dispatch(receiveLayer(e))
   );
 };
 
-const receiveLayer = (e: Event) => {
+const isLastLayer = (state: State) =>
+  state.mapData.totalLayers === state.mapData.loadingLayer.index;
+
+const getMapId = (state: State) => state.mapData.mapId;
+
+const receiveLayer = (e: Event) => (
+  dispatch: Dispatch,
+  getState: () => State
+) => {
   // @ts-ignore
   const data = JSON.parse(e.data);
-  const loadingLayer = layerCounter.next();
-  this.setState({
-    layers: { ...this.state.layers, ...data.layer },
-    loadingLayer
+  dispatch({
+    payload: { layer: data.layer },
+    type: RECEIVE_LAYER
   });
 
-  console.log("loading layer", loadingLayer);
-
-  if (loadingLayer === undefined) {
-    eventSource.removeEventListener("layer", callback);
-
-    fetch(`/api/map/${res.id}`)
-      .then(async resp => {
-        if (resp.status == 404)
-          throw new Error(`Map file '${res.id}' does not exist`);
-        return {
-          // @ts-ignore (enforced on server)
-          filename: resp.headers
-            .get("Content-Disposition")
-            .split("filename=")[1],
-          blob: await resp.blob()
-        };
-      })
-      .then(function({ filename, blob }) {
-        download(blob, filename);
-      })
-      .finally(() => this.resetState());
+  if (isLastLayer(getState())) {
+    const mapId = getMapId(getState());
+    dispatch(downloadMap(mapId));
   }
 };
 
-const submitError = error => ({});
+const downloadMap = (mapId: string) => (dispatch: Dispatch): any =>
+  fetch(`/api/map/${mapId}`)
+    .then(async resp => {
+      if (resp.status == 404)
+        throw new Error(`Map file '${mapId}' does not exist`);
+      return {
+        // @ts-ignore (enforced on server)
+        filename: resp.headers.get("Content-Disposition").split("filename=")[1],
+        blob: await resp.blob()
+      };
+    })
+    .then(function({ filename, blob }) {
+      download(blob, filename);
+      dispatch(finishedMap());
+    })
+    .catch((error: Error) => dispatch(submitError(error.message)));
 
-const receiveGrid = resp => ({
+const finishedMap = () => ({
+  type: FINISHED_MAP,
+  payload: {
+    loadingLayer: {
+      index: 0,
+      name: undefined
+    },
+    submissionStatus: SubmissionStatus.none
+  }
+});
+
+const submitError = (errorMessage: string) => ({
+  type: FINISHED_MAP,
+  payload: {
+    loadingLayer: {
+      index: 0,
+      name: undefined
+    },
+    errorMessage,
+    submissionStatus: SubmissionStatus.errored
+  }
+});
+
+const clearError = () => ({
+  type: CLEAR_ERROR,
+  payload: { errorMessage: undefined, submissionStatus: SubmissionStatus.none }
+});
+
+const receiveGrid = (payload: any) => ({
   type: RECEIVE_GRID,
-  payload: {}
+  payload
 });
 
 const submitting = () => ({ type: SUBMITTING, payload: {} });
 
-export const map = (state = initialState, { type, payload }: Action) => {
+export const map = (
+  state: MapData | undefined,
+  { type, payload }: Action
+): MapData => {
   switch (type) {
     default:
-      return state;
+      return { ...state, ...payload };
   }
 };
