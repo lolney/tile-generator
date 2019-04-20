@@ -2,7 +2,7 @@ import { Polygon } from "geojson";
 import { LayersType, MapOptions } from "../../common/types";
 
 export type State = {
-  mapOptions: MapOptions;
+  settings: MapOptions;
   mapData: MapData;
   leaflet: any;
 };
@@ -12,13 +12,13 @@ export type MapData = {
   layers: LayersType;
   loadingLayer: {
     index: number;
-    name: string | undefined;
+    name?: string;
   };
-  mapId: string;
-  removeSSEListener: Function;
+  mapId?: string;
+  removeSSEListener?: Function;
   submissionStatus: SubmissionStatus;
-  errorMessage: string;
-  totalLayers: number;
+  errorMessage?: string;
+  totalLayers?: number;
 };
 
 export enum SubmissionStatus {

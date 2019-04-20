@@ -1,136 +1,48 @@
 import Map from "./Map";
-import OptionsMenu from "./Options";
-import React from "react";
-import { MapOptions, Options, LayersType, MapLayers } from "../../common/types";
-import { LatLng, LatLngBounds } from "leaflet";
-import { Polygon } from "geojson";
-import download from "downloadjs";
+import { Options, MapLayers } from "../../common/types";
+import { LatLngBounds } from "leaflet";
+import { connect } from "react-redux";
+import { State } from "../redux/types";
+import { changeBounds, changeOptions } from "../redux/modules/settings";
+import { submit } from "../redux/modules/map";
+import OptionsComponent from "./Options";
 
-type State = {
-  options: MapOptions;
-  grid: Array<Polygon>;
-  activeJob: boolean;
-  layers: LayersType;
-  loadingLayer?: string;
+const map = {
+  mapStateToProps: (state: State) => ({
+    layers: state.mapData.layers,
+    grid: state.mapData.grid,
+    loadingLayer: state.mapData.loadingLayer.name
+  }),
+
+  mapDispatchToProps: (dispatch: any) => ({
+    onBoundsChange: (bounds: LatLngBounds) => dispatch(changeBounds(bounds))
+  })
 };
 
-export default class AppContainer extends React.Component {
-  state: State = {
-    options: {
-      dimensions: { width: 10, height: 10 },
-      format: "Civ V",
-      bounds: new LatLngBounds(new LatLng(37, -121), new LatLng(38, -120))
-    },
-    grid: [],
-    activeJob: false,
-    layers: {}
-  };
-
-  // todo: make lifecycle more explicit
-  // begin: enter 'activeJob' state
-  // on fetch: reset grid and layers. create listener for updates
-  // on recive update: update layer
-  // on updates complete: leave 'activeJob' state
-  async onSubmit() {
-    if (this.state.activeJob) {
-      console.log("job currently active");
-      return;
+const options = {
+  mapStateToProps: (state: State) => ({
+    minDimensions: { width: 10, height: 10 },
+    maxDimensions: { width: 120, height: 120 },
+    selectedOptions: {
+      format: state.settings.format,
+      dimensions: state.settings.dimensions
     }
+  }),
+  mapDispatchToProps: (dispatch: any) => ({
+    onChange: (options: Options) => dispatch(changeOptions(options)),
+    onSubmit: dispatch(submit())
+  })
+};
 
-    console.log("submitted" + JSON.stringify(this.state.options));
-    this.setState({ activeJob: true });
-    const response = await fetch("/api/map", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(this.state.options)
-    }).catch(e => {
-      this.resetState();
-      throw e;
-    });
+export const OptionsContainer = connect(
+  options.mapStateToProps,
+  options.mapDispatchToProps
+)(OptionsComponent);
 
-    const res = await response.json();
-    const layerCounter = new LayerCounter();
-    this.setState({
-      grid: res.grid,
-      layers: {},
-      loadingLayer: layerCounter.next()
-    });
-
-    let eventSource = new EventSource(`updates/${res.id}`);
-
-    const callback = (e: Event) => {
-      // @ts-ignore
-      const data = JSON.parse(e.data);
-      const loadingLayer = layerCounter.next();
-      this.setState({
-        layers: { ...this.state.layers, ...data.layer },
-        loadingLayer
-      });
-
-      console.log("loading layer", loadingLayer);
-
-      if (loadingLayer === undefined) {
-        eventSource.removeEventListener("layer", callback);
-
-        fetch(`/api/map/${res.id}`)
-          .then(async resp => {
-            if (resp.status == 404)
-              throw new Error(`Map file '${res.id}' does not exist`);
-            return {
-              // @ts-ignore (enforced on server)
-              filename: resp.headers
-                .get("Content-Disposition")
-                .split("filename=")[1],
-              blob: await resp.blob()
-            };
-          })
-          .then(function({ filename, blob }) {
-            download(blob, filename);
-          })
-          .finally(() => this.resetState());
-      }
-    };
-
-    eventSource.addEventListener("layer", callback);
-  }
-
-  resetState() {
-    this.setState({
-      activeJob: false
-    });
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <Map
-          onBoundsChange={(bounds: LatLngBounds) => {
-            if (!this.state.activeJob) {
-              this.setState({ options: { ...this.state.options, bounds } });
-            }
-          }}
-          layers={this.state.layers}
-          grid={this.state.grid}
-          loadingLayer={this.state.loadingLayer}
-        />
-        <OptionsMenu
-          onChange={(options: Options) => {
-            this.setState({ options: { ...this.state.options, ...options } });
-          }}
-          selectedOptions={{
-            format: this.state.options.format,
-            dimensions: this.state.options.dimensions
-          }}
-          minDimensions={{ width: 10, height: 10 }}
-          maxDimensions={{ width: 120, height: 120 }}
-          onSubmit={this.onSubmit.bind(this)}
-        />
-      </React.Fragment>
-    );
-  }
-}
+export const MapContainer = connect(
+  map.mapStateToProps,
+  map.mapDispatchToProps
+)(Map);
 
 export class LayerCounter {
   iter: IterableIterator<string>;

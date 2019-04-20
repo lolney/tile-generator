@@ -1,10 +1,11 @@
-import { combineReducers } from "redux";
+import { combineReducers, Reducer, AnyAction } from "redux";
 import { settings } from "./modules/settings";
 import { map } from "./modules/map";
 import { leaflet } from "./modules/leaflet";
+import { State } from "./types";
 
-export default combineReducers({
+export default combineReducers<State>({
   settings,
   leaflet,
-  map
+  mapData: map
 });

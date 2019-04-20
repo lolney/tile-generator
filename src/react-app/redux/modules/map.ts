@@ -19,14 +19,27 @@ type ThunkAction =
   | typeof clearError;
 type Dispatch = (f: ThunkAction | Action) => void;
 
+const initialState: MapData = {
+  grid: [],
+  layers: {},
+  loadingLayer: {
+    index: 0
+  },
+  submissionStatus: SubmissionStatus.none
+};
+
 const SUBMITTING = "SUBMITTING";
 const RECEIVE_LAYER = "RECEIVE_LAYERS";
 const RECEIVE_GRID = "RECEIVE_GRID";
 const FINISHED_MAP = "FINISHED_MAP";
 const CLEAR_ERROR = "CLEAR_ERROR";
 
-const submit = (options: MapOptions) => (dispatch: Dispatch) => {
+const selectMapId = (state: State) => state.mapData.mapId;
+const selectOptions = (state: State) => state.settings;
+
+export const submit = () => (dispatch: Dispatch, getState: () => State) => {
   dispatch(submitting());
+  const options = selectOptions(getState());
 
   return fetch("/api/map", {
     method: "POST",
@@ -40,14 +53,19 @@ const submit = (options: MapOptions) => (dispatch: Dispatch) => {
   );
 };
 
+const createEventSource = (event: string, callback: (e: Event) => any) => {
+  let eventSource = new EventSource(event);
+  eventSource.addEventListener("layer", callback);
+
+  return () => eventSource.removeEventListener("layer", callback);
+};
+
 const receiveLayers = (resp: Response) => async (dispatch: Dispatch) => {
   const res = await resp.json();
 
-  let eventSource = new EventSource(`updates/${res.id}`);
-  const callback = (e: Event) => dispatch(receiveLayer(e));
-  eventSource.addEventListener("layer", callback);
-  const removeSSEListener = () =>
-    eventSource.removeEventListener("layer", callback);
+  const removeSSEListener = createEventSource(`updates/${res.id}`, (e: Event) =>
+    dispatch(receiveLayer(e))
+  );
 
   dispatch(
     receiveGrid({
@@ -62,8 +80,6 @@ const receiveLayers = (resp: Response) => async (dispatch: Dispatch) => {
 const isLastLayer = (state: State) =>
   state.mapData.totalLayers === state.mapData.loadingLayer.index;
 
-const getMapId = (state: State) => state.mapData.mapId;
-
 const receiveLayer = (e: Event) => (
   dispatch: Dispatch,
   getState: () => State
@@ -76,27 +92,27 @@ const receiveLayer = (e: Event) => (
   });
 
   if (isLastLayer(getState())) {
-    const mapId = getMapId(getState());
-    dispatch(downloadMap(mapId));
+    const mapId = selectMapId(getState());
+    dispatch(downloadMap(<string>mapId));
   }
 };
 
-const downloadMap = (mapId: string) => (dispatch: Dispatch): any =>
-  fetch(`/api/map/${mapId}`)
-    .then(async resp => {
-      if (resp.status == 404)
-        throw new Error(`Map file '${mapId}' does not exist`);
-      return {
-        // @ts-ignore (enforced on server)
-        filename: resp.headers.get("Content-Disposition").split("filename=")[1],
-        blob: await resp.blob()
-      };
-    })
-    .then(function({ filename, blob }) {
-      download(blob, filename);
-      dispatch(finishedMap());
-    })
-    .catch((error: Error) => dispatch(submitError(error.message)));
+const downloadMap = (mapId: string) => async (dispatch: Dispatch) => {
+  const resp = await fetch(`/api/map/${mapId}`);
+
+  if (resp.status == 404)
+    dispatch(submitError(`Map file '${mapId}' does not exist`));
+  else {
+    // @ts-ignore
+    const filename = resp.headers
+      .get("Content-Disposition")
+      .split("filename=")[1];
+    const blob = await resp.blob();
+
+    download(blob, filename);
+    dispatch(finishedMap());
+  }
+};
 
 const finishedMap = () => ({
   type: FINISHED_MAP,
@@ -134,10 +150,12 @@ const receiveGrid = (payload: any) => ({
 const submitting = () => ({ type: SUBMITTING, payload: {} });
 
 export const map = (
-  state: MapData | undefined,
+  state = initialState,
   { type, payload }: Action
 ): MapData => {
   switch (type) {
+    case FINISHED_MAP:
+      if (state.removeSSEListener) state.removeSSEListener();
     default:
       return { ...state, ...payload };
   }
