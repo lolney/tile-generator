@@ -308,50 +308,41 @@ export async function findClosestNode(
   coords: Coords
 ): Promise<number> {
   const pointFromText = ([lng, lat]: Coords) =>
-    `ST_GeomFromText(
-        'Point(${lng} ${lat})', 4326
+    `ST_GeomFromText( 
+        'Point(${lng} ${lat})', 4326 
       )::geometry`;
 
+  const pointFromCoords = (coords: Coords, i: number) => ({
+    type: "Point",
+    properties: {
+      id: i
+    },
+    coordinates: coords
+  });
+
   const polyPoints = poly.coordinates[0]
-    .map(coords => pointFromText(<Coords>coords))
+    .map((coords, i) => pointFromCoords(<Coords>coords, i))
     .slice(0, -1);
 
-  const tableName = "points_" + randomstring.generate(10);
+  const geometryCollection = {
+    type: "GeometryCollection",
+    geometries: polyPoints,
+    crs: { type: "name", properties: { name: "EPSG:4326" } }
+  };
 
-  await db.doQuery(`
-   CREATE TABLE ${tableName}
-   (
-       id integer,
-       geom geometry(Point,4326)
-   );
-  `);
+  const subquery = `SELECT * FROM ST_Dump(ST_GeomFromGeoJSON('${JSON.stringify(
+    geometryCollection
+  )}'))`;
 
-  try {
-    await Promise.all(
-      polyPoints.map(async (point, i) =>
-        db.doQuery(`
-          INSERT INTO ${tableName} VALUES
-            (
-                ${i},
-                ${point}
-            );
-          `)
-      )
-    );
-
-    const query = `
-    SELECT ${tableName}.id
-    FROM ${tableName}
-    ORDER BY ST_Distance(${pointFromText(coords)}, ${tableName}.geom) ASC
+  const query = `
+    SELECT temp.path
+    FROM (${subquery}) as temp
+    ORDER BY ST_Distance(${pointFromText(coords)}, temp.geom) ASC
     LIMIT 1;
   `;
 
-    const result = await db.doQuery(query);
-
-    return result[0].id;
-  } finally {
-    db.doQuery(`DROP TABLE ${tableName}`);
-  }
+  const result = await db.doQuery(query);
+  return result[0].path[0] - 1;
 }
 
 // Add a cushion for floating point errors
