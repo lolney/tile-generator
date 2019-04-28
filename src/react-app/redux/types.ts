@@ -24,5 +24,6 @@ export type MapData = {
 export enum SubmissionStatus {
   submitting,
   errored,
+  done,
   none
 }

@@ -2,10 +2,11 @@ import Map from "./Map";
 import { Options, MapLayers } from "../../common/types";
 import { LatLngBounds } from "leaflet";
 import { connect } from "react-redux";
-import { State } from "../redux/types";
+import { State, SubmissionStatus } from "../redux/types";
 import { changeBounds, changeOptions } from "../redux/modules/settings";
-import { submit } from "../redux/modules/map";
+import { submit, downloadMap } from "../redux/modules/map";
 import OptionsComponent from "./Options";
+import Download from "./Download";
 
 const map = {
   mapStateToProps: (state: State) => ({
@@ -34,6 +35,15 @@ const options = {
   })
 };
 
+const download = {
+  mapStateToProps: (state: State) => ({
+    active: state.mapData.submissionStatus == SubmissionStatus.done
+  }),
+  mapDispatchToProps: (dispatch: any) => ({
+    download: () => dispatch(downloadMap())
+  })
+};
+
 export const OptionsContainer = connect(
   options.mapStateToProps,
   options.mapDispatchToProps
@@ -44,18 +54,7 @@ export const MapContainer = connect(
   map.mapDispatchToProps
 )(Map);
 
-export class LayerCounter {
-  iter: IterableIterator<string>;
-
-  constructor() {
-    const layers = Object.values(MapLayers).filter(
-      layer => typeof layer === "string"
-    );
-    this.iter = layers[Symbol.iterator]();
-  }
-
-  next() {
-    const { value } = this.iter.next();
-    return value;
-  }
-}
+export const DownloadContainer = connect(
+  download.mapStateToProps,
+  download.mapDispatchToProps
+)(Download);

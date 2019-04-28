@@ -8,6 +8,7 @@ import {
 
 // @ts-ignore: noImplicitAny
 import ControlPanel, { Select, Range } from "react-control-panel";
+import { DownloadContainer as DownloadButton } from "./Container";
 
 interface OptionsProps {
   onSubmit: () => void;
@@ -53,6 +54,7 @@ const OptionsWrapper: React.SFC<OptionsProps> = props => {
         }}
       />
       <button onClick={props.onSubmit}> Submit </button>
+      <DownloadButton />
     </div>
   );
 };

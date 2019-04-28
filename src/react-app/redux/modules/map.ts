@@ -95,12 +95,15 @@ const receiveLayer = (e: Event) => (
 
   console.log(getState());
   if (isLastLayer(getState())) {
-    const mapId = selectMapId(getState());
-    dispatch(downloadMap(<string>mapId));
+    dispatch(finishedMap());
   }
 };
 
-const downloadMap = (mapId: string) => async (dispatch: Dispatch) => {
+export const downloadMap = () => async (
+  dispatch: Dispatch,
+  getState: () => State
+) => {
+  const { mapId } = getState().mapData;
   const resp = await fetch(`/api/map/${mapId}`);
 
   if (resp.status == 404)
@@ -113,7 +116,6 @@ const downloadMap = (mapId: string) => async (dispatch: Dispatch) => {
     const blob = await resp.blob();
 
     download(blob, filename);
-    dispatch(finishedMap());
   }
 };
 
@@ -124,7 +126,7 @@ const finishedMap = () => ({
       index: 0,
       name: undefined
     },
-    submissionStatus: SubmissionStatus.none
+    submissionStatus: SubmissionStatus.done
   }
 });
 
@@ -150,7 +152,13 @@ const receiveGrid = (payload: any) => ({
   payload
 });
 
-const submitting = () => ({ type: SUBMITTING, payload: {} });
+const submitting = () => ({
+  type: SUBMITTING,
+  payload: {
+    errorMessage: undefined,
+    submissionStatus: SubmissionStatus.errored
+  }
+});
 
 export const map = (
   state = initialState,
