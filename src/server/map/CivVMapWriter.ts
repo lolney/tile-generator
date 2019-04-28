@@ -1,5 +1,5 @@
 import MapWriter, { MapDataType, TILE_SIZE } from "./MapWriter";
-import { Tile, TerrainType, FeatureType } from "../../common/types";
+import { Tile, TerrainType, FeatureType, RiverType } from "../../common/types";
 import CivVMap, { terrainTypes, featureTypes, CivVMapHeader } from "./CivVMap";
 
 type HeaderFormat = [MapDataType, keyof CivVMapHeader];
@@ -9,7 +9,7 @@ const headerFormat: Array<HeaderFormat> = [
   ["int", "height"],
   ["int", "width"],
   ["byte", "nPlayers"],
-  ["int", "wrap"],
+  ["int", "settings"],
   ["length(int)", "terrainTypes"],
   ["length(int)", "featureTypes"],
   ["length(int)", "naturalWonderTypes"],
@@ -101,6 +101,19 @@ export default class CivVMapWriter extends MapWriter {
     }
   }
 
+  getRiverByte(river: RiverType | undefined) {
+    let bitmask = 0x0;
+    if (!river) return bitmask;
+
+    if (river.east) bitmask |= 0x1;
+    if (river.northEast) bitmask |= 0x2;
+    if (river.northWest) bitmask |= 0x4;
+    if (river.southEast) bitmask |= 0x8;
+    if (river.southWest) bitmask |= 0x10;
+    if (river.west) bitmask |= 0x20;
+    return bitmask;
+  }
+
   protected writeTile(tile: Tile) {
     // terrain
     this.writeByte(this.getTerrainId(tile.terrain));
@@ -109,7 +122,7 @@ export default class CivVMapWriter extends MapWriter {
     // feature
     this.writeByte(this.getFeatureId(tile.feature));
     // river
-    this.writeByte(0x0);
+    this.writeByte(this.getRiverByte(tile.river));
     // elevation
     this.writeByte(tile.elevation ? tile.elevation : 0x0);
     // continent

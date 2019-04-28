@@ -3,7 +3,7 @@ import Map from "./Map";
 
 type HeaderConstant = {
   version: number;
-  wrap: number;
+  settings: number;
   terrainTypes: Array<string>;
   featureTypes: Array<string>;
   naturalWonderTypes: Array<string>;
@@ -14,6 +14,12 @@ export type CivVMapHeader = HeaderConstant &
   MapConfigurable & {
     mapsize: string;
   };
+
+export type SettingsByteConfig = {
+  worldWrap: boolean;
+  randResources: boolean;
+  randGoodies: boolean;
+};
 
 export const terrainTypes = {
   TERRAIN_GRASS: 0,
@@ -36,9 +42,21 @@ export const featureTypes = {
   FEATURE_ATOLL: 7
 };
 
+const getSettingsByte = (config: SettingsByteConfig) => {
+  let bitmask = 0x0;
+  if (config.worldWrap) bitmask |= 0x1;
+  if (config.randResources) bitmask |= 0x2;
+  if (config.randGoodies) bitmask |= 0x4;
+  return bitmask;
+};
+
 const CIV_CONSTANT_HEADER: HeaderConstant = {
   version: 0x8c,
-  wrap: 0,
+  settings: getSettingsByte({
+    randGoodies: true,
+    randResources: true,
+    worldWrap: false
+  }),
   terrainTypes: Object.keys(terrainTypes),
   featureTypes: Object.keys(featureTypes),
   naturalWonderTypes: [],
