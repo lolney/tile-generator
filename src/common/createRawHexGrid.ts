@@ -20,8 +20,8 @@ export default function createRawHexGrid({
   lon_end,
   lat_start
 }: params): Polygon[] {
-  // lock aspect ratio to width
-  var unit = (lon_end - lon_start) / width;
+  var unit = calcUnit(lon_start, lon_end, width);
+  var topOffset = offsets[1][1] * unit;
 
   var polys = [];
   // for each row, starting at the top (highest latitude)
@@ -29,7 +29,10 @@ export default function createRawHexGrid({
     // Offset to the right if even row
     let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
 
-    let start: coords = [lon_offset + lon_start, lat_start - unit * 0.75 * row];
+    let start: coords = [
+      lon_offset + lon_start,
+      lat_start - topOffset - unit * 0.75 * row
+    ];
 
     // for each col
     for (let col = 0; col < width; col++) {
@@ -41,6 +44,15 @@ export default function createRawHexGrid({
   }
 
   return polys;
+}
+
+export function calcUnit(lon_start: number, lon_end: number, width: number) {
+  // lock aspect ratio to width
+  var unit = (lon_end - lon_start) / width;
+  // Add a buffer of .5 units
+  unit = (unit * width) / (width + 0.5);
+
+  return unit;
 }
 
 export function addOffsets(offsets: coords[], start: coords, unit: number) {

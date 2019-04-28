@@ -1,4 +1,8 @@
-import createRawHexGrid, { createHexagon, offsets } from "./createRawHexGrid";
+import createRawHexGrid, {
+  createHexagon,
+  offsets,
+  calcUnit
+} from "./createRawHexGrid";
 
 describe("createHexagon", () => {
   it("outputs a hexagon", () => {
@@ -29,7 +33,7 @@ describe("createHexGrid", () => {
   for (const config of fixtures) {
     const grid = createRawHexGrid(config);
     const { width: m, height: n, lon_end, lon_start, lat_start } = config;
-    const unit = (lon_end - lon_start) / m;
+    const unit = calcUnit(lon_start, lon_end, m);
 
     it("outputs a grid with nxm elements", () => {
       expect(grid.length).toEqual(m * n);
@@ -41,15 +45,15 @@ describe("createHexGrid", () => {
       }
     });
 
-    it("last elem of each row reaches lon_end (if odd row)", () => {
-      for (let i = 2 * m - 1; i < m * n; i += 2 * m) {
+    it("last elem of each row reaches lon_end (if even row)", () => {
+      for (let i = m - 1; i < m * n; i += 2 * m) {
         expect(grid[i].coordinates[0][3][0]).toBeCloseTo(lon_end, 3);
       }
     });
 
     it("elems on the top row are on lat_start", () => {
       for (let i = 0; i < m; i++) {
-        expect(grid[i].coordinates[0][0][1]).toEqual(lat_start);
+        expect(grid[i].coordinates[0][1][1]).toEqual(lat_start);
       }
     });
   }
