@@ -27,7 +27,7 @@ describe("CivVMapWriter", () => {
 
     const size = CivVMapWriter.calcMapLength(map);
 
-    expect(size).toBe(290);
+    expect(size).toBe(1204);
   });
 
   it("allocates space according to number of tiles", () => {
