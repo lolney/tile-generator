@@ -6,7 +6,7 @@ import createRawHexGrid, {
 
 describe("createHexagon", () => {
   it("outputs a hexagon", () => {
-    const hex = createHexagon([0, 0], 1);
+    const hex = createHexagon([0, 0], 1, 1);
 
     expect(hex.coordinates).toEqual([offsets]);
   });
@@ -18,15 +18,17 @@ describe("createHexGrid", () => {
       width: 7,
       height: 5,
       lon_start: 0,
-      lon_end: 100,
-      lat_start: 0
+      lon_end: 50,
+      lat_start: 0,
+      lat_end: -50
     },
     {
       width: 10,
       height: 10,
       lon_start: -71.0863494873047,
       lon_end: -71.03004455566408,
-      lat_start: 42.38086519582323
+      lat_start: 42.38086519582323,
+      lat_end: 42.3245602642
     }
   ];
 

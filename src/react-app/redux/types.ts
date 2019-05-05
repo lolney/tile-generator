@@ -4,7 +4,7 @@ import { LayersType, MapOptions } from "../../common/types";
 export type State = {
   settings: MapOptions;
   mapData: MapData;
-  leaflet: any;
+  leaflet: LeafletState;
 };
 
 export type MapData = {
@@ -19,6 +19,12 @@ export type MapData = {
   submissionStatus: SubmissionStatus;
   errorMessage?: string;
   totalLayers?: number;
+};
+
+export type LeafletState = {
+  selectedLayer: string;
+  layer: any;
+  previewLayer: any;
 };
 
 export enum SubmissionStatus {

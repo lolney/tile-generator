@@ -7,6 +7,7 @@ export type params = {
   lon_start: number;
   lon_end: number;
   lat_start: number;
+  lat_end: number;
 };
 
 /**
@@ -18,28 +19,32 @@ export default function createRawHexGrid({
   height,
   lon_start,
   lon_end,
-  lat_start
+  lat_start,
+  lat_end
 }: params): Polygon[] {
-  var unit = calcUnit(lon_start, lon_end, width);
-  var topOffset = offsets[1][1] * unit;
+  var x_unit = calcUnit(lon_start, lon_end, width);
+  const y_unit = calcUnit(lat_end, lat_start, height) / 0.75;
+
+  var topOffset = offsets[1][1] * y_unit;
+  const latStart = lat_start - topOffset;
 
   var polys = [];
   // for each row, starting at the top (highest latitude)
   for (let row = 0; row < height; row++) {
     // Offset to the right if even row
-    let lon_offset = row % 2 == 0 ? 0.5 * unit : 0;
+    let lon_offset = row % 2 == 0 ? 0.5 * x_unit : 0;
 
     let start: coords = [
       lon_offset + lon_start,
-      lat_start - topOffset - unit * 0.75 * row
+      latStart - y_unit * 0.75 * row
     ];
 
     // for each col
     for (let col = 0; col < width; col++) {
-      const hex = createHexagon(start, unit);
+      const hex = createHexagon(start, x_unit, y_unit);
 
       polys.push(hex);
-      start = [start[0] + unit, start[1]];
+      start = [start[0] + x_unit, start[1]];
     }
   }
 
@@ -55,11 +60,16 @@ export function calcUnit(lon_start: number, lon_end: number, width: number) {
   return unit;
 }
 
-export function addOffsets(offsets: coords[], start: coords, unit: number) {
+export function addOffsets(
+  offsets: coords[],
+  start: coords,
+  x_unit: number,
+  y_unit: number
+) {
   const [sa, sb] = start;
   return offsets.map(offset => {
     const [a, b] = offset;
-    return [sa + a * unit, sb + b * unit];
+    return [sa + a * x_unit, sb + b * y_unit];
   });
 }
 
@@ -74,9 +84,13 @@ export const offsets: coords[] = [
   [0, 0]
 ];
 
-export function createHexagon(start: coords, unit: number): Polygon {
+export function createHexagon(
+  start: coords,
+  x_unit: number,
+  y_unit: number
+): Polygon {
   return {
     type: "Polygon",
-    coordinates: [addOffsets(offsets, start, unit)]
+    coordinates: [addOffsets(offsets, start, x_unit, y_unit)]
   };
 }

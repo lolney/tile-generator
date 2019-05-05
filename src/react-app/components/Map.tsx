@@ -263,7 +263,8 @@ class Map extends React.Component<MapDisplayProps> {
         height: 10,
         lon_start: bounds.getWest(),
         lon_end: bounds.getEast(),
-        lat_start: bounds.getNorth()
+        lat_start: bounds.getNorth(),
+        lat_end: bounds.getSouth()
       });
     }
     return [];

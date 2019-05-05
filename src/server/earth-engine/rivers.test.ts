@@ -8,8 +8,7 @@ import {
   findClosestNode,
   _mapRiversToEdges
 } from "./rivers";
-import createRawHexGrid, { createHexagon } from "../../common/createRawHexGrid";
-import { polygon } from "leaflet";
+import { createHexagon } from "../../common/createRawHexGrid";
 
 const bounds: Polygon = {
   type: "Polygon",
@@ -57,12 +56,12 @@ it("getTiles doesn't find polys that don't intersect", async () => {
 it("getTiles works with hex grid", async () => {});
 
 describe("getEdges", () => {
-  const base = createHexagon([0, 0], 1);
+  const base = createHexagon([0, 0], 1, 1);
   let tiles = [
     { id: 0, geometry: base, rivers: [] },
     {
       id: 0,
-      geometry: createHexagon(<[number, number]>base.coordinates[0][4], 1),
+      geometry: createHexagon(<[number, number]>base.coordinates[0][4], 1, 1),
       rivers: []
     }
   ];

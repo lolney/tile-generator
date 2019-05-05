@@ -1,6 +1,14 @@
 import Map from "./Map";
 import { Tile, TerrainType, FeatureType, Elevation } from "../../common/types";
 
+const config = {
+  width: 2,
+  height: 4,
+  name: "",
+  description: "",
+  nPlayers: 1
+};
+
 describe("mergeTiles", () => {
   const tiles1: Array<Tile> = [
     { terrain: TerrainType.grass },
@@ -8,7 +16,7 @@ describe("mergeTiles", () => {
   ];
 
   it("creates an initial tile array", () => {
-    const map = new Map(2);
+    const map = new Map(2, config);
 
     map.addLayer(tiles1);
 
@@ -16,7 +24,7 @@ describe("mergeTiles", () => {
   });
 
   it("merges an additional tile array", () => {
-    const map = new Map(2);
+    const map = new Map(2, config);
 
     const tiles2: Array<Tile> = [{ feature: FeatureType.forest }, {}];
 
@@ -30,7 +38,7 @@ describe("mergeTiles", () => {
   });
 
   it("overwrites exisitng features with the second", () => {
-    const map = new Map(2);
+    const map = new Map(2, config);
 
     const tiles2: Array<Tile> = [{ terrain: TerrainType.coast }, {}];
 
@@ -44,7 +52,7 @@ describe("mergeTiles", () => {
   });
 
   it("doesn't allow hills or mountain on Ocean", () => {
-    const map = new Map(2);
+    const map = new Map(2, config);
 
     const tiles2: Array<Tile> = [
       { terrain: TerrainType.coast, elevation: Elevation.hills },

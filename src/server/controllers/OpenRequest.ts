@@ -55,7 +55,8 @@ export default class OpenRequest {
       height,
       lon_start: bounds.getWest(),
       lon_end: bounds.getEast(),
-      lat_start: bounds.getNorth()
+      lat_start: bounds.getNorth(),
+      lat_end: bounds.getSouth()
     });
 
     let MapType = OpenRequest.getMapType(req.format);

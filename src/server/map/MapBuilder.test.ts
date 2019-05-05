@@ -42,7 +42,8 @@ describe("MapBuilder", () => {
       height: 1,
       lon_start: -90.1,
       lon_end: -89.7,
-      lat_start: 29.7
+      lat_start: 29.7,
+      lat_end: 29.3
     });
 
     /* Western great plains */
@@ -51,7 +52,8 @@ describe("MapBuilder", () => {
       height: 10,
       lon_start: -110,
       lon_end: -100,
-      lat_start: 40
+      lat_start: 40,
+      lat_end: 30
     });
 
     it("correcly identifies marshed regions", async () => {
@@ -76,7 +78,8 @@ describe("MapBuilder", () => {
       height: 1,
       lon_start: -83.784476,
       lon_end: -83.3,
-      lat_start: 35.149286
+      lat_start: 35.149286,
+      lat_end: 34.7
     });
 
     /* Amazon */
@@ -85,7 +88,8 @@ describe("MapBuilder", () => {
       height: 1,
       lon_start: -66.206732,
       lon_end: -65,
-      lat_start: -5
+      lat_start: -5,
+      lat_end: -5.2
     });
 
     /* North Slope Alaska */
@@ -94,7 +98,8 @@ describe("MapBuilder", () => {
       height: 10,
       lon_start: -156.462222,
       lon_end: -156,
-      lat_start: 70.699283
+      lat_start: 70.699283,
+      lat_end: 70.2
     });
 
     it("correcly identifies forested regions", async () => {
