@@ -1,6 +1,8 @@
+import _ from "lodash";
 import CivVMapWriter from "./CivVMapWriter";
 import CivVMap from "./CivVMap";
 import { TILE_SIZE } from "./MapWriter";
+import { Tile } from "../../common/types";
 
 describe("CivVMapWriter", () => {
   const config = {
@@ -48,5 +50,22 @@ describe("CivVMapWriter", () => {
     const size2 = CivVMapWriter.calcMapLength(map2);
 
     expect(size2 - size1).toBe(2);
+  });
+
+  describe("remapTiles", () => {
+    const tiles: Tile[] = Array(100)
+      .fill(_.random(3))
+      .map(rand => ({ terrain: rand }));
+    const map = new CivVMap(tiles, config);
+    const writer = new CivVMapWriter(map);
+
+    it("correctly advances up the first column", () => {
+      // @ts-ignore
+      const iter = writer.remapTiles();
+      for (let i = 0; i < config.height; i++) {
+        const { value: tile } = iter.next();
+        expect(tile).toEqual(map.getTile(config.height - 1 - i, 0));
+      }
+    });
   });
 });

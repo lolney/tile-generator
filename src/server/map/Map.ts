@@ -47,6 +47,12 @@ export default class Map {
     }
   }
 
+  getTile(row: number, col: number) {
+    const index = this.getIndex(row, col);
+    if (index === undefined) return undefined;
+    return this.tiles[index];
+  }
+
   getIndex(row: number, col: number) {
     const { width, height } = this.configurable;
 

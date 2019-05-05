@@ -50,11 +50,21 @@ export default class CivVMapWriter extends MapWriter {
     super.write();
     this.writeHeader();
 
-    for (const tile of this.map.tiles) {
+    for (const tile of this.remapTiles()) {
       this.writeTile(tile);
     }
 
     return this.buffer;
+  }
+
+  private *remapTiles() {
+    const { width, height } = this.map.configurable;
+    for (let row = height - 1; row >= 0; row--) {
+      for (let col = 0; col < width; col++) {
+        const tile = this.map.getTile(row, col);
+        if (tile !== undefined) yield tile;
+      }
+    }
   }
 
   private getTerrainId(terrain: TerrainType | undefined) {
