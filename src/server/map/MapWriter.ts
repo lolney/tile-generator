@@ -27,11 +27,7 @@ export default class MapWriter {
     return fs.writeFile(filename, this.buffer);
   }
 
-  protected write() {
-    this.index = 0;
-  }
-
-  protected static dataLength(type: MapDataType, val: MapDataTypeType): number {
+  static dataLength(type: MapDataType, val: MapDataTypeType): number {
     switch (type) {
       case "byte":
         return 1;
@@ -52,7 +48,7 @@ export default class MapWriter {
     }
   }
 
-  protected writeVal(type: MapDataType, val: MapDataTypeType) {
+  writeVal(type: MapDataType, val: MapDataTypeType) {
     switch (type) {
       case "byte":
         this.writeByte(<number>val);
@@ -73,7 +69,7 @@ export default class MapWriter {
     }
   }
 
-  protected writeByte(value: number) {
+  writeByte(value: number) {
     this.buffer.writeUInt8(value, this.index);
     this.index++;
   }

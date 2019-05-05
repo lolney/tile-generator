@@ -1,6 +1,8 @@
+import path from "path";
 import MapWriter, { MapDataType, TILE_SIZE } from "./MapWriter";
 import { Tile, TerrainType, FeatureType, RiverType } from "../../common/types";
 import CivVMap, { terrainTypes, featureTypes, CivVMapHeader } from "./CivVMap";
+import FileOverwriter from "./FileOverwriter";
 
 type HeaderFormat = [MapDataType, keyof CivVMapHeader];
 
@@ -27,18 +29,23 @@ const headerFormat: Array<HeaderFormat> = [
   ["string", "mapsize"]
 ];
 
-export default class CivVMapWriter extends MapWriter {
+const TEMPLATE_FILE = path.join(__dirname, "../../../template.Civ5Map");
+
+export default class CivVMapWriter {
   private map: CivVMap;
 
   constructor(map: CivVMap) {
-    const size = CivVMapWriter.calcMapLength(map);
-    super(size);
-
     this.map = map;
   }
 
   static calcMapLength(map: CivVMap) {
     let length = TILE_SIZE * map.tiles.length;
+    length += CivVMapWriter.headerLength(map);
+    return length;
+  }
+
+  static headerLength(map: CivVMap) {
+    let length = 0;
     for (const [type, field] of headerFormat) {
       const val = map.header[field];
       length += MapWriter.dataLength(type, val);
@@ -47,14 +54,36 @@ export default class CivVMapWriter extends MapWriter {
   }
 
   write() {
-    super.write();
-    this.writeHeader();
+    return this.writeTemplate();
+  }
+
+  writeNew() {
+    const size = CivVMapWriter.calcMapLength(this.map);
+    const writer = new MapWriter(size);
+    this.writeHeader(writer);
 
     for (const tile of this.remapTiles()) {
-      this.writeTile(tile);
+      this.writeTile(writer, tile);
     }
 
-    return this.buffer;
+    return writer.buffer;
+  }
+
+  writeTemplate() {
+    const length = TILE_SIZE * this.map.tiles.length;
+    const mapWriter = new MapWriter(length);
+    const overwriter = new FileOverwriter(TEMPLATE_FILE, "test.Civ5Map");
+
+    for (const tile of this.remapTiles()) {
+      this.writeTile(mapWriter, tile);
+    }
+
+    overwriter.overwrite(1, Buffer.from([this.map.configurable.width]));
+    overwriter.overwrite(5, Buffer.from([this.map.configurable.height]));
+    overwriter.insert(1314, mapWriter.buffer);
+    overwriter.writeToFIle();
+
+    return overwriter.buffer;
   }
 
   private *remapTiles() {
@@ -124,26 +153,26 @@ export default class CivVMapWriter extends MapWriter {
     return bitmask;
   }
 
-  protected writeTile(tile: Tile) {
+  protected writeTile(writer: MapWriter, tile: Tile) {
     // terrain
-    this.writeByte(this.getTerrainId(tile.terrain));
+    writer.writeByte(this.getTerrainId(tile.terrain));
     // resource
-    this.writeByte(0xff);
+    writer.writeByte(0xff);
     // feature
-    this.writeByte(this.getFeatureId(tile.feature));
+    writer.writeByte(this.getFeatureId(tile.feature));
     // river
-    this.writeByte(this.getRiverByte(tile.river));
+    writer.writeByte(this.getRiverByte(tile.river));
     // elevation
-    this.writeByte(tile.elevation ? tile.elevation : 0x0);
+    writer.writeByte(tile.elevation ? tile.elevation : 0x0);
     // continent
-    this.writeByte(0x0);
+    writer.writeByte(0x0);
     // natural wonder
-    this.writeByte(0xff);
+    writer.writeByte(0xff);
     // unknown
-    this.writeByte(0x0);
+    writer.writeByte(0x0);
   }
 
-  private writeHeader() {
+  private writeHeader(writer: MapWriter) {
     for (const [type, field] of headerFormat) {
       const val = this.map.header[field];
 
@@ -153,12 +182,12 @@ export default class CivVMapWriter extends MapWriter {
         case "stringList":
         case "string":
         case "tile":
-          this.writeVal(type, val);
+          writer.writeVal(type, val);
           break;
         case "length(int)":
         case "int0":
           const length = MapWriter.dataLength(type, val);
-          this.writeVal(type, length);
+          writer.writeVal(type, length);
       }
     }
   }

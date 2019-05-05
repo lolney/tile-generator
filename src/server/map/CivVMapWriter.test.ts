@@ -1,7 +1,7 @@
 import _ from "lodash";
 import CivVMapWriter from "./CivVMapWriter";
 import CivVMap from "./CivVMap";
-import { TILE_SIZE } from "./MapWriter";
+import MapWriter, { TILE_SIZE } from "./MapWriter";
 import { Tile } from "../../common/types";
 
 describe("CivVMapWriter", () => {
@@ -16,12 +16,13 @@ describe("CivVMapWriter", () => {
   it("writes map header without errors", () => {
     const map = new CivVMap([], config);
     const writer = new CivVMapWriter(map);
+    const mapWriter = new MapWriter(CivVMapWriter.headerLength(map));
+
+    // @ts-ignore
+    writer.writeHeader(mapWriter);
 
     //@ts-ignore
-    writer.writeHeader();
-
-    //@ts-ignore
-    expect(writer.buffer).toBeInstanceOf(Buffer);
+    expect(mapWriter.buffer).toBeInstanceOf(Buffer);
   });
 
   it("calculates size correctly", () => {
