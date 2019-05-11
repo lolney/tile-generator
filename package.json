@@ -54,6 +54,7 @@
     "react-scripts": "2.1.5",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "resource-router-middleware": "^0.7.0",
     "sqlite3": "^4.0.6",
     "sse-express": "^1.0.2",

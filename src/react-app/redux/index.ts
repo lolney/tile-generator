@@ -1,4 +1,4 @@
-import { combineReducers, Reducer, AnyAction } from "redux";
+import { combineReducers } from "redux";
 import { settings } from "./modules/settings";
 import { map } from "./modules/map";
 import { leaflet } from "./modules/leaflet";

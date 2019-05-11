@@ -1,6 +1,12 @@
-import { State, SubmissionStatus, MapData } from "../types";
-import { MapOptions } from "../../../common/types";
+import { State, SubmissionStatus, MapData } from "../../types";
 import download from "downloadjs";
+import {
+  RECEIVE_LAYER,
+  FINISHED_MAP,
+  RECEIVE_GRID,
+  SUBMITTING,
+  CLEAR_ERROR
+} from "./actionTypes";
 
 type Action =
   | ReturnType<typeof receiveGrid>
@@ -27,12 +33,6 @@ const initialState: MapData = {
   },
   submissionStatus: SubmissionStatus.none
 };
-
-const SUBMITTING = "SUBMITTING";
-const RECEIVE_LAYER = "RECEIVE_LAYERS";
-const RECEIVE_GRID = "RECEIVE_GRID";
-const FINISHED_MAP = "FINISHED_MAP";
-const CLEAR_ERROR = "CLEAR_ERROR";
 
 const selectMapId = (state: State) => state.mapData.mapId;
 const selectOptions = (state: State) => state.settings;

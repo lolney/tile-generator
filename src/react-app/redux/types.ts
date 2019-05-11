@@ -22,9 +22,7 @@ export type MapData = {
 };
 
 export type LeafletState = {
-  selectedLayer: string;
-  layer: any;
-  previewLayer: any;
+  selectedLayer: string | undefined;
 };
 
 export enum SubmissionStatus {

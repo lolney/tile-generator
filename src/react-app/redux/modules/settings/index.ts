@@ -1,5 +1,5 @@
 import { LatLngBounds, LatLng } from "leaflet";
-import { MapOptions, Options } from "../../../common/types";
+import { MapOptions, Options } from "../../../../common/types";
 
 type Action = ReturnType<typeof changeOptions>;
 

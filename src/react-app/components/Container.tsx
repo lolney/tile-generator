@@ -1,5 +1,5 @@
 import Map from "./Map";
-import { Options, MapLayers } from "../../common/types";
+import { Options } from "../../common/types";
 import { LatLngBounds } from "leaflet";
 import { connect } from "react-redux";
 import { State, SubmissionStatus } from "../redux/types";
