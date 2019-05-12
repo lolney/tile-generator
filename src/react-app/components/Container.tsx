@@ -8,18 +8,6 @@ import { submit, downloadMap } from "../redux/modules/map";
 import OptionsComponent from "./Options";
 import Download from "./Download";
 
-const map = {
-  mapStateToProps: (state: State) => ({
-    layers: state.mapData.layers,
-    grid: state.mapData.grid,
-    loadingLayer: state.mapData.loadingLayer.name
-  }),
-
-  mapDispatchToProps: (dispatch: any) => ({
-    onBoundsChange: (bounds: LatLngBounds) => dispatch(changeBounds(bounds))
-  })
-};
-
 const options = {
   mapStateToProps: (state: State) => ({
     minDimensions: { width: 10, height: 10 },
@@ -48,11 +36,6 @@ export const OptionsContainer = connect(
   options.mapStateToProps,
   options.mapDispatchToProps
 )(OptionsComponent);
-
-export const MapContainer = connect(
-  map.mapStateToProps,
-  map.mapDispatchToProps
-)(Map);
 
 export const DownloadContainer = connect(
   download.mapStateToProps,

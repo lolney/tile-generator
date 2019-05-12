@@ -9,194 +9,39 @@ import "leaflet/dist/leaflet.css";
 import "./Map.css";
 import "./areaselect/areaselect.css";
 
-import { LeafletEvent, LatLngBounds } from "leaflet";
+import { LatLngBounds } from "leaflet";
 import { Polygon } from "geojson";
-import { Tile, TerrainType, LayersType, MapLayers } from "../../common/types";
-import { Elevation } from "../../common/types";
-import { FeatureType } from "../../common/types";
+import { LayersType, Tile } from "../../common/types";
 import createRawHexGrid from "../../common/createRawHexGrid";
+import {
+  mapFeatureToStyle,
+  selectedLayer
+} from "../redux/modules/leaflet/selectors";
+import { connect, MapStateToProps } from "react-redux";
+import { State } from "../redux/types";
+import { changeBounds } from "../redux/modules/settings";
 
-interface MapProps {
-  onBoundsChange: (bounds: LatLngBounds) => any;
-  grid: Array<Polygon>;
-  layers: LayersType;
-  loadingLayer?: string;
-}
+type MapProps = DispatchProps & StateProps;
 
-interface MapDisplayProps {
-  onBoundsChange: (bounds: LatLngBounds) => any;
-  grid: Array<Polygon>;
-  layer: Array<Tile>;
-  layerType: string | undefined;
-}
-
-interface MapOptionsProps {
-  onLayerSelect: (option: string) => void;
-  selectedLayer: string | undefined;
-  receivedLayers: Record<string, boolean>;
-  loadingLayer?: string;
-}
-
-type MapContainerState = {
-  selectedLayer?: string;
+type StateProps = {
+  grid: Polygon[];
+  layer: Tile[];
 };
 
-export default class MapContainer extends React.Component<MapProps> {
-  state: MapContainerState = {
-    selectedLayer: undefined
-  };
-
-  hasLayer = (layers: LayersType, layer: string) =>
-    layers[layer] ? true : false;
-
-  getReceivedLayers = memoize((layers: LayersType) => {
-    const receivedLayers: Record<string, boolean> = _.fromPairs(
-      Object.values(MapLayers)
-        .filter(key => typeof key == "string")
-        .map((key: string) => [key, this.hasLayer(layers, key)])
-    );
-
-    // If received layers have been reset, reset selection
-    if (
-      this.state.selectedLayer !== undefined &&
-      receivedLayers[this.state.selectedLayer] === false
-    )
-      this.setState({ selectedLayer: undefined });
-
-    // If receiving a layer for the first time, set this one to selected
-    if (this.state.selectedLayer === undefined) {
-      const res = Object.entries(receivedLayers).find(
-        ([_, received]) => received
-      );
-
-      if (res != undefined) {
-        const [receivedLayer] = res;
-        this.setState({ selectedLayer: receivedLayer });
-      }
-    }
-
-    return receivedLayers;
-  });
-
-  render() {
-    const receivedLayers = this.getReceivedLayers(this.props.layers);
-
-    const layer =
-      this.state.selectedLayer == undefined
-        ? undefined
-        : this.props.layers[this.state.selectedLayer];
-
-    const passedLayer = layer ? layer : [];
-
-    return (
-      <div>
-        <Map
-          onBoundsChange={this.props.onBoundsChange}
-          grid={this.props.grid}
-          layer={passedLayer}
-          layerType={this.state.selectedLayer}
-        />
-        <MapOptions
-          onLayerSelect={(selectedLayer: string) =>
-            this.setState({ selectedLayer })
-          }
-          selectedLayer={this.state.selectedLayer}
-          receivedLayers={receivedLayers}
-          loadingLayer={this.props.loadingLayer}
-        />
-      </div>
-    );
-  }
-}
-
-const MapOptions: React.SFC<MapOptionsProps> = (props: MapOptionsProps) => (
-  <div className="layers-container">
-    {Object.entries(props.receivedLayers).map(([layer, enabled]) => (
-      <span className="layer-display" key={layer}>
-        <span className="layer-text"> {layer} </span>
-        <input
-          className="layer-dial"
-          type="radio"
-          value={layer}
-          disabled={!enabled}
-          onChange={() => props.onLayerSelect(layer)}
-          checked={
-            props.selectedLayer !== undefined && props.selectedLayer == layer
-          }
-        />
-      </span>
-    ))}
-  </div>
-);
-
-const mapFeatureToStyle: L.StyleFunction = feature => {
-  if (feature === undefined || feature.properties === undefined) {
-    return {};
-  } else {
-    const color = (() => {
-      switch (feature.properties.terrain) {
-        case TerrainType.coast:
-          return { color: "cyan" };
-        case TerrainType.ocean:
-          return { color: "blue" };
-        case TerrainType.grass:
-          return { color: "green" };
-        case TerrainType.plains:
-          return { color: "gold" };
-        case TerrainType.desert:
-          return { color: "sandybrown" };
-        case TerrainType.tundra:
-          return { color: "grey" };
-        case TerrainType.ice:
-          return { color: "white" };
-        default:
-          return {};
-      }
-    })();
-
-    const elevation = (() => {
-      switch (feature.properties.elevation) {
-        case Elevation.flat:
-          if (feature.properties.terrain != TerrainType.coast)
-            return { fillColor: "green" };
-        case Elevation.hills:
-          return { fillColor: "brown" };
-        case Elevation.mountain:
-          return { fillColor: "black" };
-        default:
-      }
-      return {};
-    })();
-
-    const terrainFeature = (() => {
-      switch (feature.properties.feature) {
-        case FeatureType.forest:
-          return { fillColor: "DarkOliveGreen" };
-        case FeatureType.jungle:
-          return { fillColor: "black" };
-        case FeatureType.marsh:
-          return { fillColor: "lime" };
-        default:
-          return {};
-      }
-    })();
-
-    const rivers = (() => {
-      if (
-        !feature.properties.river ||
-        _.isEqual(feature.properties.river, {})
-      ) {
-        return {};
-      } else {
-        return { fillColor: "blue" };
-      }
-    })();
-
-    return { ...elevation, ...color, ...terrainFeature, ...rivers };
-  }
+type DispatchProps = {
+  onBoundsChange: (bounds: LatLngBounds) => any;
 };
 
-class Map extends React.Component<MapDisplayProps> {
+const mapStateToProps: MapStateToProps<StateProps, {}, State> = state => ({
+  grid: state.mapData.grid,
+  layer: selectedLayer(state)
+});
+
+const mapDispatchToProps = {
+  onBoundsChange: changeBounds
+};
+
+class Map extends React.Component<MapProps> {
   map?: L.Map;
   areaSelect?: L.AreaSelect;
   state: {
@@ -204,7 +49,7 @@ class Map extends React.Component<MapDisplayProps> {
     previewLayer?: L.GeoJSON<any>;
   };
 
-  constructor(props: MapDisplayProps) {
+  constructor(props: MapProps) {
     super(props);
 
     this.state = {};
@@ -296,7 +141,7 @@ class Map extends React.Component<MapDisplayProps> {
     return layer;
   }
 
-  componentDidUpdate(prevProps: MapDisplayProps) {
+  componentDidUpdate(prevProps: MapProps) {
     // Add hex grid
     if (
       prevProps.grid != this.props.grid ||
@@ -314,7 +159,7 @@ class Map extends React.Component<MapDisplayProps> {
   }
 }
 
-/**
- Leaflet map todo:
- - Aspect ratio locking
- */
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Map);

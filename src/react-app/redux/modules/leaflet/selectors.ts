@@ -8,12 +8,13 @@ import {
 } from "../../../../common/types";
 import { State } from "../../types";
 
-const layersSelector = (state: State) => state.mapData.layers;
+export const layersSelector = (state: State) => state.mapData.layers;
 
-const hasLayer = (layers: LayersType, layer: string) =>
+export const hasLayer = (layers: LayersType, layer: string) =>
   layers[layer] ? true : false;
 
-const receivedLayerSelector = (layers: LayersType, selectedLayer: string) => {
+export const receivedLayersSelector = (state: State) => {
+  const layers = state.mapData.layers;
   const receivedLayers: Record<string, boolean> = _.fromPairs(
     Object.values(MapLayers)
       .filter(key => typeof key == "string")
@@ -22,7 +23,12 @@ const receivedLayerSelector = (layers: LayersType, selectedLayer: string) => {
   return receivedLayers;
 };
 
-const mapFeatureToStyle: L.StyleFunction = feature => {
+export const selectedLayer = (state: State) => {
+  const layerName = state.leaflet.selectedLayer;
+  return layerName == undefined ? [] : state.mapData.layers[layerName];
+};
+
+export const mapFeatureToStyle: L.StyleFunction = feature => {
   if (feature === undefined || feature.properties === undefined) {
     return {};
   } else {

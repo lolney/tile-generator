@@ -1,49 +1,38 @@
 import { LeafletState } from "../../types";
 import { SELECT_LAYER } from "./actionTypes";
 import { SUBMITTING, RECEIVE_LAYER } from "../map/actionTypes";
+import { receiveLayerAction, submitting } from "../map";
+import { LayersType } from "../../../../common/types";
 
 const initialState: LeafletState = {
   selectedLayer: undefined
 };
 
-type Action = ReturnType<typeof selectLayer>;
+type Action =
+  | ReturnType<typeof selectLayer>
+  | ReturnType<typeof receiveLayerAction>
+  | ReturnType<typeof submitting>;
 
-// Selector for received layers
-
-// Actions:
-// - Select layer
-// - Change bounds
-
-// Selectors:
-// - calc available layers
-// - calc layer based on layer state
-// - calc preview layer based on bounds
-
-/*
-Could include these in state, but are derived, 
-so probably better implemented as selector
-Exception would be if preview layer is changed
-to be more integral to the area select.
-
-  layer: any;
-  previewLayer: any;
-*/
-
-const selectLayer = (layerName: string) => ({
-  type: SELECT_LAYER,
+export const selectLayer = (layerName: string) => ({
+  type: SELECT_LAYER as typeof SELECT_LAYER,
   payload: { layerName }
 });
 
-export const leaflet = (state = initialState, { payload, type }: Action) => {
-  switch (type) {
+export const leaflet = (state = initialState, action: Action) => {
+  switch (action.type) {
     case SUBMITTING:
       return { ...state, selectedLayer: undefined };
+    case SELECT_LAYER:
+      return { selectedLayer: action.payload.layerName };
     case RECEIVE_LAYER:
       // If receiving a layer for the first time, set this one to selected
       if (state.selectedLayer === undefined) {
-        return { ...state, selectedLayer: payload.layerName };
+        return {
+          ...state,
+          selectedLayer: Object.keys(action.payload.layer)[0]
+        };
       }
     default:
-      return { ...state, ...payload };
+      return { ...state, ...action.payload };
   }
 };

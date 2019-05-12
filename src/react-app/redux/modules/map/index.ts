@@ -7,6 +7,7 @@ import {
   SUBMITTING,
   CLEAR_ERROR
 } from "./actionTypes";
+import { LayersType } from "../../../../common/types";
 
 type Action =
   | ReturnType<typeof receiveGrid>
@@ -88,16 +89,18 @@ const receiveLayer = (e: Event) => (
 ) => {
   // @ts-ignore
   const data = JSON.parse(e.data);
-  dispatch({
-    payload: { layer: data.layer },
-    type: RECEIVE_LAYER
-  });
+  dispatch(receiveLayerAction(data));
 
   console.log(getState());
   if (isLastLayer(getState())) {
     dispatch(finishedMap());
   }
 };
+
+export const receiveLayerAction = (data: { layer: LayersType }) => ({
+  payload: { layer: data.layer },
+  type: RECEIVE_LAYER as typeof RECEIVE_LAYER
+});
 
 export const downloadMap = () => async (
   dispatch: Dispatch,
@@ -152,8 +155,8 @@ const receiveGrid = (payload: any) => ({
   payload
 });
 
-const submitting = () => ({
-  type: SUBMITTING,
+export const submitting = () => ({
+  type: SUBMITTING as typeof SUBMITTING,
   payload: {
     errorMessage: undefined,
     submissionStatus: SubmissionStatus.errored

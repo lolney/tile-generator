@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { OptionsContainer, MapContainer } from "./Container";
+import { OptionsContainer } from "./Container";
 import Header from "./Header";
 import "./App.css";
+import MapContainer from "./MapContainer";
 
 class App extends Component {
   render() {
