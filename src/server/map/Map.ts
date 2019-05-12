@@ -7,24 +7,19 @@ import {
 } from "../../common/types";
 
 export default class Map {
-  tiles: Array<Tile>;
+  tiles: Tile[];
   configurable: MapConfigurable;
 
   constructor(tiles: number | Array<Tile>, configurable: MapConfigurable) {
-    if (tiles instanceof Array) {
-      this.tiles = tiles;
-    } else {
-      this.tiles = new Array(tiles);
-      for (let i = 0; i < this.tiles.length; i++) {
-        this.tiles[i] = {};
-      }
-    }
+    this.tiles =
+      tiles instanceof Array
+        ? tiles
+        : new Array(tiles).fill(undefined).map(() => ({}));
 
     this.configurable = configurable;
   }
 
   getNeighboringIndex(index: number, direction: keyof RiverType) {
-    // TODO: move this logic into a separate grid class?
     const { width } = this.configurable;
     const col = index % width;
     const row = Math.floor(index / width);
@@ -44,6 +39,33 @@ export default class Map {
         return this.getIndex(row - 1, col - (even ? 0 : 1));
       case "southWest":
         return this.getIndex(row + 1, col - (even ? 0 : 1));
+    }
+  }
+
+  remapRivers() {
+    this.tiles.forEach((tile, i) => this.remapRiverType(tile, i));
+  }
+
+  remapRiverType(plot: Tile, index: number) {
+    const riverType = plot.river;
+    if (!riverType) return;
+
+    const fields: Array<[keyof RiverType, keyof RiverType]> = [
+      ["west", "east"],
+      ["northWest", "southEast"],
+      ["northEast", "southWest"]
+    ];
+
+    for (const [originalDirection, mappedDirection] of fields) {
+      if (riverType[originalDirection]) {
+        const newIndex = this.getNeighboringIndex(index, originalDirection);
+        if (newIndex !== undefined) {
+          this.tiles[newIndex].river = {
+            ...this.tiles[newIndex].river,
+            [mappedDirection]: true
+          };
+        }
+      }
     }
   }
 

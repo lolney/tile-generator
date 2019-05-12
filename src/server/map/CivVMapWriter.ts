@@ -54,6 +54,7 @@ export default class CivVMapWriter {
   }
 
   write() {
+    this.map.remapRivers();
     return this.writeTemplate();
   }
 
