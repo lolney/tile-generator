@@ -24,7 +24,10 @@ export const changeBounds = (bounds: LatLngBounds) => ({
 
 export const settings = (state = initialState, { type, payload }: Action) => {
   switch (type) {
-    default:
+    case CHANGE_OPTIONS:
+    case CHANGE_BOUNDS:
       return { ...state, ...payload };
+    default:
+      return state;
   }
 };
