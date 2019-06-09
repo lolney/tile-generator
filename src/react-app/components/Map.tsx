@@ -73,7 +73,7 @@ class Map extends React.Component<MapProps> {
 
   addAreaSelect() {
     // Set the dimensions of the box (todo: should depend on size of map)
-    // Aspect ration should depend on width, height
+    // Aspect ratio should depend on width, height
     this.areaSelect = L.areaSelect({
       width: 300,
       height: 300 * (10 / (10 + 0.5)),
