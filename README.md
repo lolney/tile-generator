@@ -75,3 +75,14 @@ shp2pgsql -I -s 4326 ~/Downloads/river_centerlines/ne_10m_rivers_lake_centerline
 ```
 raster2pgsql -I -t 200x200 -s 4326 ~/Downloads/waterMask_500.tif | psql -h localhost -d tilegenerator -U postgres
 ```
+
+To include multiple rasters in the import, use a wild card:
+
+```
+raster2pgsql -I -t 200x200 -s 4326 ~/Downloads/<tablename>* <tablename> | psql -h localhost -d tilegenerator -U postgres
+```
+
+### Running pgadmin
+
+For development purposes, pgadmin is helpful for writing and testing queries:
+https://askubuntu.com/questions/831262/how-to-install-pgadmin-4-in-desktop-mode-on-ubuntu

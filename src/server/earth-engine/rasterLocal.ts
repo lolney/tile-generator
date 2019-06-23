@@ -6,6 +6,7 @@ const WATERMASK_DB_NAME = "watermask_500";
 const SLOPE_DB_NAME = "slope_500";
 const FOREST_DB_NAME = "forest_500";
 const MARSH_DB_NAME = "marsh_500";
+const FLOW_DB_NAME = "flow_500";
 
 export async function isLandLocal(tiles: Polygon[]) {
   const dbResults = await sampleRasterTiles(tiles, WATERMASK_DB_NAME);
@@ -23,4 +24,8 @@ export async function isMarshLocal(tiles: Polygon[]) {
 
 export async function isForestLocal(tiles: Polygon[]) {
   return sampleRasterTiles(tiles, FOREST_DB_NAME);
+}
+
+export async function isRiverLocal(tiles: Polygon[]) {
+  return sampleRasterTiles(tiles, FLOW_DB_NAME);
 }
