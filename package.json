@@ -30,6 +30,7 @@
     "dotenv": "^7.0.0",
     "downloadjs": "^1.4.7",
     "express": "^4.16.4",
+    "graphlib": "^2.1.7",
     "http": "0.0.0",
     "io-ts": "^1.8.3",
     "leaflet": "^1.4.0",
