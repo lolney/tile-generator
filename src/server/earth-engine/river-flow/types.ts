@@ -11,20 +11,28 @@ export class RiversArray<T> {
 
   clone = () => new RiversArray(this.fields, this.width);
 
-  get(i: number, j: number) {
-    return this.fields[j * this.width + i];
+  get(row: number, col: number) {
+    return this.fields[row * this.width + col];
   }
 
-  set(i: number, j: number, value: T) {
-    this.fields[j * this.width + i] = value;
+  set(row: number, col: number, value: T) {
+    this.fields[row * this.width + col] = value;
   }
 
   get height() {
     return this.fields.length / this.width;
   }
 
+  *pairs(): IterableIterator<[number, number]> {
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        yield [i, j];
+      }
+    }
+  }
+
   *row(row: number): IterableIterator<T> {
-    for (let j = 0; j < this.height; j++) {
+    for (let j = 0; j < this.width; j++) {
       yield this.get(row, j);
     }
   }
