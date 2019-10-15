@@ -39,7 +39,7 @@
     "leaflet-css": "^0.1.0",
     "leaflet-headless": "^0.2.6",
     "leaflet-virtual-grid": "^1.0.7",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "memo": "^0.2.2",
     "memoizee": "^0.4.14",
     "morgan": "^1.9.1",
