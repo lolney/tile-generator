@@ -4,9 +4,6 @@ import { NodeId } from "./types";
 const findSource = (graph: Graph) => graph.nodes()[0];
 
 const findBranchesToPrune = (graph: Graph): Edge[] => {
-  const source: NodeId = findSource(graph);
-  const toPrune: Edge[] = [];
-
   const explore = (predecessor: NodeId | undefined, node: NodeId) => {
     const neighbors = graph.neighbors(node);
 
@@ -17,6 +14,9 @@ const findBranchesToPrune = (graph: Graph): Edge[] => {
 
     neighbors.filter(id => id !== predecessor).forEach(id => explore(node, id));
   };
+
+  const source: NodeId = findSource(graph);
+  const toPrune: Edge[] = [];
 
   explore(undefined, source);
 

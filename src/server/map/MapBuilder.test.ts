@@ -1,7 +1,7 @@
 import createRawHexGrid, { params } from "../../common/createRawHexGrid";
 import MapBuilder from "./MapBuilder";
 import { LatLngBounds } from "leaflet";
-import { FeatureType } from "../../common/types";
+import { FeatureType, Options } from "../../common/types";
 import EarthEngine from "../earth-engine/EarthEngine";
 
 function createFromGridConfig(params: params) {
@@ -11,10 +11,14 @@ function createFromGridConfig(params: params) {
     [params.lat_start - height, params.lon_start],
     [params.lat_start, params.lon_end]
   );
+  const options: Options = {
+    dimensions: { width: params.height, height },
+    format: "Civ V"
+  };
 
   const grid = createRawHexGrid(params);
 
-  return new MapBuilder(grid, bounds);
+  return new MapBuilder(grid, bounds, options);
 }
 
 describe("MapBuilder", () => {

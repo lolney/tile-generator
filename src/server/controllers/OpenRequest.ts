@@ -5,7 +5,8 @@ import {
   GameString,
   Tile,
   MapConfigurable,
-  MapLayers
+  MapLayers,
+  Options
 } from "../../common/types";
 import { failure } from "io-ts";
 import uuidv4 from "uuid/v4";
@@ -31,10 +32,15 @@ export default class OpenRequest {
   map: Map;
   id: string;
 
-  constructor(grid: Polygon[], map: Map, bounds: LatLngBounds) {
+  constructor(
+    grid: Polygon[],
+    map: Map,
+    bounds: LatLngBounds,
+    options: Options
+  ) {
     this.id = uuidv4();
     this.complete = false;
-    this.mapBuilder = new MapBuilder(grid, bounds);
+    this.mapBuilder = new MapBuilder(grid, bounds, options);
     this.map = map;
   }
 
@@ -69,7 +75,7 @@ export default class OpenRequest {
       description: ""
     });
 
-    return new OpenRequest(grid, map, bounds);
+    return new OpenRequest(grid, map, bounds, options);
   }
 
   async *completeJobs() {

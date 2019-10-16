@@ -1,4 +1,4 @@
-import { Graph, Node } from "graphlib";
+import { Graph } from "graphlib";
 import zip from "lodash/zip";
 
 export class RiversArray<T> {

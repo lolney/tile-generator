@@ -1,16 +1,13 @@
 import { RawRiverSystem, RiverEndpoints, RiverNodes } from "./types";
 import { Graph } from "graphlib";
 
+// todo: not sure what this is doing. should create a node for each corner of the hex tile.
+// or should at be at the mapToTiles stage?
+
 const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const [row, col] of riverSystem.pairs()) {
-    for (const i of [-1, 1]) {
-      for (const j of [-1, 1]) {
-        const otherRow = row + i;
-        const otherCol = col + j;
-
-        if (riverSystem.get(row + i, col + j))
-          graph.setEdge(`${row},${col}`, `${otherRow},${otherCol}`);
-      }
+    for (const [i, j] of riverSystem.neighbors(row, col)) {
+      if (riverSystem.get(i, j)) graph.setEdge(`${row},${col}`, `${i},${j}`);
     }
   }
 };

@@ -8,7 +8,8 @@ import {
   Elevation,
   LatLngBounds as LatLngBoundsT,
   MapLayers,
-  FeatureType
+  FeatureType,
+  Options
 } from "../../common/types";
 import isForest from "../earth-engine/isForest";
 import {
@@ -28,10 +29,12 @@ import { logperformance } from "../logging";
 export default class MapBuilder {
   grid: Polygon[];
   bounds: LatLngBounds;
+  options: Options;
 
-  constructor(grid: Polygon[], bounds: LatLngBounds) {
+  constructor(grid: Polygon[], bounds: LatLngBounds, options: Options) {
     this.grid = grid;
     this.bounds = bounds;
+    this.options = options;
   }
 
   static deserializeBounds(bounds: LatLngBoundsT): LatLngBounds {

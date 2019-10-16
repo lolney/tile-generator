@@ -2,13 +2,17 @@ import mapToNodes from "./mapToNodes";
 import findRiverNetwork from "./findRiverNetwork";
 import mapToRiversArray from "./mapToRiversArray";
 import mapToTiles from "./mapToTiles";
-import query from "./query";
-import { LatLngBounds, Tile } from "../../../common/types";
+import { Tile, Dimensions } from "../../../common/types";
 import findRiverSystems from "./findRiverSystems";
+import { isRiverLocal } from "../rasterLocal";
+import { Polygon } from "geojson";
 
-const generateRivers = (boundingBox: LatLngBounds): Tile[][] => {
-  const rawData = query(boundingBox);
-  const rawRivers = mapToRiversArray(rawData, boundingBox);
+const generateRivers = async (
+  tiles: Polygon[],
+  dimensions: Dimensions
+): Promise<Tile[][]> => {
+  const rawData = await isRiverLocal(tiles);
+  const rawRivers = mapToRiversArray(rawData, dimensions);
 
   const systems = findRiverSystems(rawRivers);
 
