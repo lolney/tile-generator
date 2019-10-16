@@ -105,7 +105,7 @@ describe("isRiverLocal", () => {
     expect(result).toBe(0);
   });
 
-  it("is > 1 for tiles with no rivers", async () => {
+  it("is > 3 for tiles with rivers", async () => {
     const results = await isRiverLocal([
       fixtures.sacDelta,
       fixtures.connecticutRiver

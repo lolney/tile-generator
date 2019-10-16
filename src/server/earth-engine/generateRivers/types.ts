@@ -1,4 +1,4 @@
-import { Graph } from "graphlib";
+import { Graph, Node } from "graphlib";
 import zip from "lodash/zip";
 
 export class RiversArray<T> {
@@ -71,7 +71,13 @@ export class RiversArray<T> {
   }
 }
 
+export type NodeId = string;
+
 export type RawRivers = RiversArray<boolean>;
 export type RawRiverSystem = RiversArray<boolean>;
 export type RiverEndpoints = RiversArray<boolean>;
 export type RiverNodes = Graph;
+export type RiverNodesWithSource = {
+  graph: Graph;
+  source: NodeId;
+};
