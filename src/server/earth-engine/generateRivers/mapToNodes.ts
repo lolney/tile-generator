@@ -2,7 +2,7 @@ import { RawRiverSystem, RiverEndpoints, RiverNodes } from "./types";
 import { Graph } from "graphlib";
 
 // todo: not sure what this is doing. should create a node for each corner of the hex tile.
-// or should at be at the mapToTiles stage?
+// or should this be at the mapToTiles stage?
 
 const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const [row, col] of riverSystem.pairs()) {

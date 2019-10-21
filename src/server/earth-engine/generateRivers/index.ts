@@ -17,11 +17,11 @@ const generateRivers = async (
   const systems = findRiverSystems(rawRivers);
 
   const tileGroups = systems.map(system => {
-    const graph = mapToNodes(rawRivers);
+    const graph = mapToNodes(system);
     // this is optional. will make sure the river actually flows into a body of water.
     // const withOutlets = findRiverOutlets(graph);
     const network = findRiverNetwork(graph);
-    const tiles = mapToTiles(network);
+    const tiles = mapToTiles(network, system);
 
     return tiles;
   });

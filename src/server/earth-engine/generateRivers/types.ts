@@ -73,6 +73,9 @@ export class RiversArray<T> {
 
 export type NodeId = string;
 
+export type RiverNode = string;
+export type RiverEdge = [RiverNode, RiverNode];
+
 export type RawRivers = RiversArray<boolean>;
 export type RawRiverSystem = RiversArray<boolean>;
 export type RiverEndpoints = RiversArray<boolean>;
