@@ -73,6 +73,7 @@ export class RiversArray<T> {
 
 export type NodeId = string;
 
+export type VertexType = 0 | 1 | 2 | 3 | 4 | 5;
 export type RiverNode = string;
 export type RiverEdge = [RiverNode, RiverNode];
 
