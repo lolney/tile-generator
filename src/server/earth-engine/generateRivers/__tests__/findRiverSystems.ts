@@ -1,5 +1,5 @@
 import findRiverSystems from "../findRiverSystems";
-import { RiversArray } from "../types";
+import { RiversArray } from "../RiversArray";
 
 describe("findRiverSystems", () => {
   const oneRiver = [

@@ -1,6 +1,6 @@
-import { RawRiverSystem, RiverEndpoints, RiverNodes } from "./types";
+import { RawRiverSystem, RiverNodes } from "./types";
 import { Graph } from "graphlib";
-import { fromCoords, getConnections } from "./riverNodeUtils";
+import { fromCoords, getConnections } from "./riverNode";
 
 // todo: not sure what this is doing. should create a node for each corner of the hex tile.
 // or should this be at the mapToTiles stage?

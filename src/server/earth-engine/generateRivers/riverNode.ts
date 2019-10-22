@@ -1,4 +1,5 @@
 import { RiverNode, RiverEdge, VertexType } from "./types";
+import { RiverType } from "../../../common/types";
 
 /* 
        2----0----4
@@ -91,7 +92,9 @@ export const getConnections = (node: RiverNode): string[] => {
   );
 };
 
-export const tileIndexFromEdge = (edge: RiverEdge) => {
+export const tileIndexFromEdge = (
+  edge: RiverEdge
+): [number, number, keyof (RiverType)] => {
   const [node0, node1] = edge;
   const [row, col, index0] = toCoords(node0);
   const [, index1] = toCoords(node1);

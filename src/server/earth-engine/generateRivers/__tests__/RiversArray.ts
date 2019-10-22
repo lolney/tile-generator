@@ -1,4 +1,4 @@
-import { RiversArray } from "../types";
+import { RiversArray } from "../RiversArray";
 
 describe("RiversArray", () => {
   describe("neighbors", () => {
