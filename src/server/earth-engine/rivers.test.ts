@@ -6,7 +6,8 @@ import {
   polyIntersection,
   determineEndNode,
   findClosestNode,
-  _mapRiversToEdges
+  _mapRiversToEdges,
+  River
 } from "./rivers";
 import { createHexagon } from "../../common/createRawHexGrid";
 
@@ -28,7 +29,6 @@ it("getRivers finds rivers within bounds", async () => {
 
   expect(rivers[0].name).toBeDefined();
   expect(rivers[0].geom).toBeDefined();
-  console.log(rivers[0].geom);
   expect(rivers[0].geom.coordinates).toBeDefined();
 });
 
@@ -58,11 +58,11 @@ it("getTiles works with hex grid", async () => {});
 describe("getEdges", () => {
   const base = createHexagon([0, 0], 1, 1);
   let tiles = [
-    { id: 0, geometry: base, rivers: [] },
+    { id: 0, geometry: base, rivers: [] as River[] },
     {
       id: 0,
       geometry: createHexagon(<[number, number]>base.coordinates[0][4], 1, 1),
-      rivers: []
+      rivers: [] as River[]
     }
   ];
 

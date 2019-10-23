@@ -1,5 +1,6 @@
 import generateRivers from "../index";
 import { Polygon } from "geojson";
+import eureka from "../../../../fixtures/eureka.json";
 
 describe("generateRivers", () => {
   it("returns an array of tiles", async () => {
@@ -19,6 +20,15 @@ describe("generateRivers", () => {
         ]
       }
     ];
+    const dimensions = { width: 10, height: 10 };
+    const rivers = await generateRivers(tiles, dimensions);
+
+    expect(rivers).toBeDefined();
+  });
+
+  it("returns an array of tiles", async () => {
+    const tiles: Polygon[] = eureka as Polygon[];
+
     const dimensions = { width: 10, height: 10 };
     const rivers = await generateRivers(tiles, dimensions);
 

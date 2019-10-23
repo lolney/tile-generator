@@ -8,14 +8,15 @@ import { fromCoords, getConnections } from "./riverNode";
 const createEdges = (graph: Graph) => {
   for (const node of graph.nodes()) {
     const connections = getConnections(node);
-    connections.forEach(connection => graph.edge(node, connection));
+    connections.forEach(connection => graph.setEdge(node, connection));
   }
 };
 
 const createNodes = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const [row, col] of riverSystem.pairs()) {
     const isRiver = riverSystem.get(row, col);
-    if (isRiver) fromCoords(row, col).map((node: string) => graph.node(node));
+    if (isRiver)
+      fromCoords(row, col).map((node: string) => graph.setNode(node));
   }
 };
 

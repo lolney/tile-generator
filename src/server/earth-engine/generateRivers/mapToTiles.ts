@@ -1,5 +1,5 @@
 import { RiverNodes, RawRiverSystem } from "./types";
-import { Tile } from "../../../common/types";
+import { Tile, RiverType } from "../../../common/types";
 import { RiversArray } from "./RiversArray";
 import { tileIndexFromEdge } from "./riverNode";
 
@@ -17,8 +17,8 @@ const mapToTiles = (
     const [row, col, string] = tileIndexFromEdge([v, w]);
     const { river } = tiles.get(row, col);
 
-    const newRiver = { ...river, [string]: true };
-    tiles.set(row, col, newRiver);
+    const newRiver: RiverType = { ...river, [string]: true };
+    tiles.set(row, col, { river: newRiver });
   }
 
   return tiles.fields;

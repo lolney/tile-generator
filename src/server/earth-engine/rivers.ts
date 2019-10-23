@@ -20,7 +20,7 @@ import { serializeGeoJSON } from "../db/postgis";
  * - Translate these to river positions on the hex
  */
 
-type River = {
+export type River = {
   name: string;
   geom: LineString;
 };
@@ -182,9 +182,7 @@ export async function getTiles(
             if (intersection.length === 2) selectedTiles.push(polygon);
             else
               console.log(
-                `Found 2 polygons that aren't adjacent: (${last.id}, ${
-                  polygon.id
-                }), ${intersection.length}`
+                `Found 2 polygons that aren't adjacent: (${last.id}, ${polygon.id}), ${intersection.length}`
               );
           }
         }
@@ -228,9 +226,7 @@ export async function getEdges(
 
     if (intersection.length != 2)
       throw new Error(
-        `Polygons don't intersect twice, but ${intersection.length}x: ${
-          a.id
-        }, ${b.id}`
+        `Polygons don't intersect twice, but ${intersection.length}x: ${a.id}, ${b.id}`
       );
 
     const { tile, nextNode } = chooseEdges(node, intersection, a, b.geometry);

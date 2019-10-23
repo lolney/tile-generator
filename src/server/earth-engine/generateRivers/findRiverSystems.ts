@@ -1,4 +1,5 @@
-import { RawRivers, RawRiverSystem, RiversArray } from "./types";
+import { RawRivers, RawRiverSystem } from "./types";
+import { RiversArray } from "./RiversArray";
 
 const markRiverSystem = (
   rivers: RawRivers,
