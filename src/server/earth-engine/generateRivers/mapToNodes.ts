@@ -5,9 +5,13 @@ import { fromCoords, getConnections } from "./riverNode";
 // todo: not sure what this is doing. should create a node for each corner of the hex tile.
 // or should this be at the mapToTiles stage?
 
-const createEdges = (graph: Graph) => {
+const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const node of graph.nodes()) {
-    const connections = getConnections(node);
+    const connections = getConnections(
+      node,
+      riverSystem.width,
+      riverSystem.height
+    );
     connections.forEach(connection => graph.setEdge(node, connection));
   }
 };
@@ -25,7 +29,7 @@ const mapToNodes = (riverSystem: RawRiverSystem): RiverNodes => {
   const graph = new Graph({ directed: false });
 
   createNodes(riverSystem, graph);
-  createEdges(graph);
+  createEdges(riverSystem, graph);
 
   return graph;
 };
