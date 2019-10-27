@@ -1,5 +1,6 @@
-import { RiverNode, RiverEdge, VertexType } from "./types";
+import { RiverNode, RiverEdge, VertexType, RawRiverSystem } from "./types";
 import { RiverType } from "../../../common/types";
+import { Graph } from "graphlib";
 
 /* 
        2----0----4
@@ -24,7 +25,8 @@ type Neighbors = [number, number, number][];
 
 const evenRow = [0, 1, 2, 3];
 const evenRowFirst = [0, 1, 2, 3, 4, 5];
-const oddRowFirst = [1, 2];
+const oddRowFirst = [4, 5];
+const oddRowLastRow = [2, 3];
 
 const mod = (n: number, divisor: number) => {
   const mod = n % divisor;
@@ -42,8 +44,16 @@ const mapVertexToNeighbors = (
     [P in number]: Neighbors;
   } = {
     0: [],
-    1: [[row - 1, col + colOffset + 1, 2], [row, col + 1, 0]],
-    2: [[row, col + 1, 3], [row + 1, col + colOffset + 1, 1]],
+    1: [
+      [row - 1, col + colOffset + 1, 2],
+      [row, col + 1, 0],
+      [row + 1, col + colOffset + 1, 0] // needed for odd rows. might not actually be on the hex described?
+    ],
+    2: [
+      [row, col + 1, 3],
+      [row + 1, col + colOffset + 1, 5],
+      [row + 1, col + colOffset, 1]
+    ],
     3: [[row + 1, col + colOffset + 1, 4], [row + 1, col + colOffset, 2]],
     4: [],
     5: []
@@ -62,38 +72,82 @@ const mapVertexToNeighbors = (
 const riverNodes = (key: string) => {
   switch (key) {
     case "0,1":
-    case "0,2":
       return "northEast";
     case "0,5":
-    case "1,5":
       return "northWest";
     case "1,2":
-    case "1,3":
       return "east";
     case "4,5":
-    case "3,5":
       return "west";
     case "2,3":
-    case "1,3":
       return "southEast";
     case "3,4":
-    case "2,4":
       return "southWest";
     default:
       throw new Error(`unexpected riverNode key: ${key}`);
   }
 };
 
-// even rows: do 0 - 3. 0--5 on first col
-// odd rows: do 1-2 on first col
-export const fromCoords = (row: number, col: number): RiverNode[] => {
-  let nodeIndices;
-  if (row % 2 === 0) {
-    nodeIndices = col === 0 ? evenRowFirst : evenRow;
-  } else {
-    nodeIndices = col === 0 ? oddRowFirst : [];
+const riverNodesOther = (key: string) => {
+  switch (key) {
+    case "0,1": //has conflicts
+    case "0,2":
+    case "2,3":
+      return "northEast";
+    case "1,5":
+    case "2,5":
+      return "northWest";
+    case "1,3":
+    case "3,4":
+      return "east";
+    case "3,5":
+      return "west";
+    case "1,3":
+      return "southEast";
+    case "1,2":
+    case "2,4":
+    case "2,3":
+      return "southWest";
+    default:
+      throw new Error(`unexpected riverNode key: ${key}`);
   }
+};
+
+export const fromCoords = (
+  row: number,
+  col: number,
+  nRows: number
+): RiverNode[] => {
+  const nodeIndices = Array(6)
+    .fill(0)
+    .map((_, i) => i);
   return nodeIndices.map(node => `${row},${col},${node}`);
+};
+
+const removeNodes = (
+  graph: Graph,
+  row: number,
+  col: number,
+  vertices: number[]
+) => {
+  vertices.map(vertex => graph.removeNode(`${row},${col},${vertex}`));
+};
+
+export const pruneNodes = (graph: Graph, riverSystem: RawRiverSystem) => {
+  for (const [row, col] of riverSystem.pairs()) {
+    if (riverSystem.leftValue(row, col)) removeNodes(graph, row, col, [4, 5]);
+
+    if (row % 2 == 1) {
+      if (riverSystem.topRightValue(row, col))
+        removeNodes(graph, row, col, [0, 1]);
+      if (riverSystem.topLeftValue(row, col))
+        removeNodes(graph, row, col, [5, 0]);
+      if (riverSystem.bottomRightValue(row, col))
+        removeNodes(graph, row, col, [2, 3]);
+      if (riverSystem.bottomLeftValue(row, col))
+        removeNodes(graph, row, col, [3, 4]);
+    }
+  }
 };
 
 export const toCoords = (node: RiverNode) => {
@@ -129,7 +183,7 @@ export const tileIndexFromEdge = (
   const key = [index0, index1].sort().join(",");
 
   if (otherRow !== row || otherCol !== col)
-    return [otherRow, otherCol, riverNodes(key)];
+    return [otherRow, otherCol, riverNodesOther(key)];
 
   return [row, col, riverNodes(key)];
 };

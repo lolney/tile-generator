@@ -6,7 +6,14 @@ describe("RiversArray", () => {
 
     it("should return the neighbors of the given pair", () => {
       const neighbors = Array.from(array.neighbors(1, 1));
-      expect(neighbors).toEqual([[1, 0], [0, 1], [1, 2], [2, 1]]);
+      expect(neighbors).toEqual([
+        [1, 0],
+        [0, 0],
+        [0, 1],
+        [1, 2],
+        [2, 1],
+        [2, 0]
+      ]);
     });
   });
 });

@@ -37,6 +37,7 @@ const findRiverSystems = (rivers: RawRivers): RawRiverSystem[] => {
     }
   }
 
+  console.log(riverSystems.map(river => river.to2D()));
   return riverSystems;
 };
 

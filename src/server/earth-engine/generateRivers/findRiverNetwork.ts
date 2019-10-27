@@ -1,5 +1,6 @@
-import { alg, Edge, Graph } from "graphlib";
+import { alg, json, Edge, Graph } from "graphlib";
 import { NodeId } from "./types";
+import fs from "fs";
 
 const findSource = (graph: Graph) => graph.nodes()[0];
 
@@ -32,6 +33,16 @@ const pruneBranches = (graph: Graph, branches: Edge[]) => {
 
 // Find minimum spanning tree, then prune 1-edge branches
 const findRiverNetwork = (graph: Graph): Graph => {
+  // console.log(alg.floydWarshall(graph));
+
+  fs.writeFile(
+    "/home/luke/Downloads/graph.json",
+    JSON.stringify(json.write(graph)),
+    {
+      flag: "w"
+    },
+    () => {}
+  );
   const mst = alg.prim(graph, e => 1);
 
   const branches = findBranchesToPrune(mst);

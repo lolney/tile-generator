@@ -1,9 +1,6 @@
 import { RawRiverSystem, RiverNodes } from "./types";
 import { Graph } from "graphlib";
-import { fromCoords, getConnections } from "./riverNode";
-
-// todo: not sure what this is doing. should create a node for each corner of the hex tile.
-// or should this be at the mapToTiles stage?
+import { fromCoords, getConnections, pruneNodes } from "./riverNode";
 
 const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const node of graph.nodes()) {
@@ -19,9 +16,17 @@ const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
 const createNodes = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const [row, col] of riverSystem.pairs()) {
     const isRiver = riverSystem.get(row, col);
-    if (isRiver)
-      fromCoords(row, col).map((node: string) => graph.setNode(node));
+    if (isRiver) {
+      if (row == 8 && col == 6)
+        Array.from(riverSystem.neighbors(row, col)).map(neighbor =>
+          console.log(neighbor, riverSystem.get(...neighbor))
+        );
+      fromCoords(row, col, riverSystem.height).map((node: string) =>
+        graph.setNode(node)
+      );
+    }
   }
+  pruneNodes(graph, riverSystem);
 };
 
 // Map tiles -> nodes at the edges of those tiles
