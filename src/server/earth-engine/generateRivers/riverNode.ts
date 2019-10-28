@@ -33,6 +33,7 @@ const mod = (n: number, divisor: number) => {
   return mod < 0 ? mod + divisor : mod;
 };
 
+// probably need to fill in all the possible connections here, then prune
 const mapVertexToNeighbors = (
   row: number,
   col: number,

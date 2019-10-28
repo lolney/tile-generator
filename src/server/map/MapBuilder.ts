@@ -17,7 +17,7 @@ import {
   getClimateType,
   getTerrainType
 } from "../earth-engine/koppen";
-import createRiverTiles from "../earth-engine/rivers";
+import generateRivers from "../earth-engine/generateRivers";
 import {
   isLandLocal,
   findSlopeLocal,
@@ -25,6 +25,7 @@ import {
   isForestLocal
 } from "../earth-engine/rasterLocal";
 import { logperformance } from "../logging";
+import zip from "lodash/zip";
 
 export default class MapBuilder {
   grid: Polygon[];
@@ -170,14 +171,14 @@ export default class MapBuilder {
   }
 
   async createRiverTiles(): Promise<Tile[]> {
-    const indexedTiles = await createRiverTiles(this.getEnvelope(), this.grid);
+    const dimensions = this.options.dimensions;
+    const groups = await generateRivers(this.grid, dimensions);
+    const initialValue = Array(this.grid.length).fill({});
 
-    const tiles = this.grid.map((_, i) => ({}));
-
-    for (const tile of indexedTiles) {
-      tiles[tile.id] = tile.tile;
-    }
-
-    return tiles;
+    return groups.reduce(
+      (tiles, group) =>
+        zip(tiles, group).map(([tile, newTile]) => ({ ...tile, ...newTile })),
+      initialValue
+    );
   }
 }

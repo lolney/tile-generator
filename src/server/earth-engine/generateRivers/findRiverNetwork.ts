@@ -33,10 +33,8 @@ const pruneBranches = (graph: Graph, branches: Edge[]) => {
 
 // Find minimum spanning tree, then prune 1-edge branches
 const findRiverNetwork = (graph: Graph): Graph => {
-  // console.log(alg.floydWarshall(graph));
-
   fs.writeFile(
-    "/home/luke/Downloads/graph.json",
+    "~/Downloads/graph.json",
     JSON.stringify(json.write(graph)),
     {
       flag: "w"

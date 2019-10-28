@@ -17,10 +17,6 @@ const createNodes = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const [row, col] of riverSystem.pairs()) {
     const isRiver = riverSystem.get(row, col);
     if (isRiver) {
-      if (row == 8 && col == 6)
-        Array.from(riverSystem.neighbors(row, col)).map(neighbor =>
-          console.log(neighbor, riverSystem.get(...neighbor))
-        );
       fromCoords(row, col, riverSystem.height).map((node: string) =>
         graph.setNode(node)
       );
