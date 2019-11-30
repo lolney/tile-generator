@@ -61,19 +61,25 @@ class Map extends React.Component<MapProps> {
   }
 
   componentDidMount() {
-    this.map = L.map("map").setView([38, -122], 4);
+    const map = (this.map = L.map("map").setView([38, -122], 4));
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
 
+    // The map will load initially at a smaller size, then fail
+    // to update properly for a larger size
+    // This doesn't appear to be linked to load/resize events
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+
     this.addAreaSelect();
   }
 
   addAreaSelect() {
-    // Set the dimensions of the box (todo: should depend on size of map)
-    // Aspect ratio should depend on width, height
+    // TODO: Aspect ratio should depend on width, height
     this.areaSelect = L.areaSelect({
       width: 300,
       height: 300 * (10 / (10 + 0.5)),
@@ -92,7 +98,6 @@ class Map extends React.Component<MapProps> {
   }
 
   drawPreviewLayer() {
-    console.log("drawing preview layer", this.map, this.state.previewLayer);
     if (this.map && this.state.previewLayer)
       this.map.removeLayer(this.state.previewLayer);
 
@@ -142,7 +147,6 @@ class Map extends React.Component<MapProps> {
   }
 
   componentDidUpdate(prevProps: MapProps) {
-    // Add hex grid
     if (
       prevProps.grid != this.props.grid ||
       prevProps.layer != this.props.layer
@@ -159,7 +163,4 @@ class Map extends React.Component<MapProps> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Map);
+export default connect(mapStateToProps, mapDispatchToProps)(Map);

@@ -62,7 +62,7 @@ export class RiversArray<T> {
     let j = col;
 
     for (const [di, dj] of zip(dis, djs)) {
-      const pair: [number, number] = [(i += di), (j += dj)];
+      const pair: [number, number] = [(i += <number>di), (j += <number>dj)];
       if (this.inBounds(...pair)) yield pair;
     }
   }
