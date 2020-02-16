@@ -10,6 +10,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -24,7 +25,6 @@ yarn-error.log*
 
 tile-generator-private-key\.json
 
-dist/
 
 \.env
 

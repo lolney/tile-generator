@@ -1,12 +1,13 @@
 import { RiversArray } from "./RiversArray";
 import { Dimensions } from "../../../common/types";
 
-const threshold = 10;
+const threshold = 150;
 
 const mapToRiversArray = (rawdata: Number[], dimensions: Dimensions) => {
-  // todo: need to filter according to the size (larger size -> higher threshold)
+  const meanDimension = (dimensions.width + dimensions.height) / 2;
+  const adjustedThreshold = threshold * meanDimension;
   return new RiversArray(
-    rawdata.map(number => number > threshold),
+    rawdata.map(number => number > adjustedThreshold),
     dimensions.width
   );
 };

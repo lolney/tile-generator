@@ -1,4 +1,4 @@
-import { sampleRasterTiles } from "../db/postgis";
+import { sampleRasterTiles, findTileMax } from "../db/postgis";
 import { Polygon } from "geojson";
 import { IS_WATER_IF_GREATER_THAN } from "./isLand";
 
@@ -27,5 +27,5 @@ export async function isForestLocal(tiles: Polygon[]) {
 }
 
 export async function isRiverLocal(tiles: Polygon[]) {
-  return sampleRasterTiles(tiles, FLOW_DB_NAME);
+  return findTileMax(tiles, FLOW_DB_NAME);
 }

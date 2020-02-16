@@ -12,7 +12,7 @@ nvm use 8.10
 npm install
 ```
 
-then
+Create the file `tile-generator-private-key.json` in src/server
 
 ```
 npm run watch-all
@@ -20,16 +20,12 @@ npm run watch-all
 
 or, separately:
 
-```
+```sh
+# Start the server
 npm run watch-server
-```
-
-```
-npm run dev
-```
-
-```
 npm start
+# Start the client
+npm run dev
 ```
 
 ### Database setup

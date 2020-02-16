@@ -22,7 +22,12 @@ export class DB {
       // - Most CPU time is spent in native code (~67%) or garbage collection
       // - Roughly 12 connections are opened at once
       const res = await client.query(query);
-      return res.rows;
+      if (res.rows) {
+        return res.rows;
+      }
+      if (res instanceof Array) {
+        return res.pop().rows;
+      }
     } finally {
       client.release();
     }
