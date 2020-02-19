@@ -80,7 +80,7 @@ export async function getRivers(bounds: Polygon | string): Promise<River[]> {
 
   const rows = await db.doQuery(query);
 
-  return rows.map(river => {
+  return rows.map((river: any) => {
     const geom = JSON.parse(river.geom);
     geom.coordinates = geom.coordinates
       .map((coords: number[] | number[][]) => {

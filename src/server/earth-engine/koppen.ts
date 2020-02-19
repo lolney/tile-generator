@@ -85,7 +85,7 @@ export async function getClimateTypeSampled(geom: Polygon, n: number) {
   `;
 
   const rows = await db.doQuery(query);
-  const climates = rows.map(row => row["climates_f"]);
+  const climates = rows.map((row: any) => row["climates_f"]);
 
   return Object.entries(_.countBy(climates)).map(([key, count]) => [
     dbStringToClimateType(key),
