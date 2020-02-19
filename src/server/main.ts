@@ -7,6 +7,7 @@ import path from "path";
 // @ts-ignore
 import sseExpress from "sse-express";
 
+import './config/polyfills';
 import config from "./config.json";
 import EarthEngine from "./earth-engine/EarthEngine";
 import { AddressInfo } from "net";

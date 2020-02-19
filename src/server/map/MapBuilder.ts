@@ -1,7 +1,6 @@
 import { Polygon } from "geojson";
 import createHexGrid from "../earth-engine/createHexGrid";
-// @ts-ignore
-import { LatLngBounds } from "leaflet-headless";
+import { LatLngBounds } from "leaflet";
 import {
   Tile,
   TerrainType,
