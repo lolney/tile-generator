@@ -53,7 +53,7 @@
     "react-leaflet": "^2.2.1",
     "react-leaflet-vectorgrid": "^2.2.1",
     "react-redux": "^7.0.2",
-    "react-scripts": "2.1.5",
+    "react-scripts": "^3.4.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
@@ -61,7 +61,7 @@
     "sqlite3": "^4.1.1",
     "sse-express": "^1.0.2",
     "supertest": "^4.0.2",
-    "typescript": "3.3.3333",
+    "typescript": "^3.8.2",
     "uuid": "^3.3.2",
     "weighted-random": "^0.1.0"
   },

@@ -184,11 +184,7 @@ const riverNodesOther = (args: {
   );
 };
 
-export const fromCoords = (
-  row: number,
-  col: number,
-  nRows: number
-): RiverNode[] => {
+export const fromCoords = (row: number, col: number): RiverNode[] => {
   const nodeIndices = Array(6)
     .fill(0)
     .map((_, i) => i);
