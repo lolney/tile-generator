@@ -28,6 +28,7 @@ const generateRivers = async (
 
     try {
       const network = TraceRivers.perform(graph, source, endpoints);
+      console.log("edges", network?.edges());
       if (!network) throw new Error("Empty network");
       const tiles = mapToTiles(network, system);
       return tiles;

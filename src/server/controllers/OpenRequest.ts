@@ -19,8 +19,7 @@ import Civ6MapWriter from "../map/Civ6MapWriter";
 import { LatLngBounds } from "leaflet";
 import MapBuilder from "../map/MapBuilder";
 
-export const N_LAYERS = Object.values(MapLayers).filter(elem => isNaN(elem))
-  .length;
+export const N_LAYERS = Object.values(MapLayers).length;
 
 interface MapInterface {
   new (tiles: number | Tile[], params: MapConfigurable): Map;
@@ -79,13 +78,20 @@ export default class OpenRequest {
   }
 
   async *completeJobs() {
-    for (const layer of Object.values(MapLayers)) {
-      if (!isNaN(layer)) {
-        console.log("Starting layer", layer);
-        let tiles = await this.mapBuilder.createLayer(layer);
-        this.map.addLayer(tiles);
-        yield { [MapLayers[layer]]: tiles };
-      }
+    const layers = [
+      MapLayers.climate,
+      MapLayers.land,
+      MapLayers.elevation,
+      MapLayers.forest,
+      MapLayers.rivers,
+      MapLayers.marsh
+    ];
+
+    for (const layer of layers) {
+      console.log("Starting layer", layer);
+      let tiles = await this.mapBuilder.createLayer(layer);
+      this.map.addLayer(tiles);
+      yield { [MapLayers[layer]]: tiles };
     }
     this.complete = true;
   }

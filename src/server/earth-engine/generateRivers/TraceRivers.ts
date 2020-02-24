@@ -31,7 +31,7 @@ export default class TraceRivers {
     this.nodes = nodes;
     this.weightsGraph = cloneDeep(nodes);
     for (const edge of this.weightsGraph.edges()) {
-      this.weightsGraph.setEdge(edge.v, edge.w, 1);
+      this.weightsGraph.setEdge(edge, 1);
     }
   }
 
@@ -56,9 +56,17 @@ export default class TraceRivers {
   };
 
   updateWeights = (path: Path, end: string, source: string) => {
+    const reportError = () =>
+      console.error(`Path does not lead to source: ${end}, ${source}`);
+
     while (end != source) {
-      this.weightsGraph.setEdge(end, source, 0);
-      end = path[end].predecessor;
+      if (!path[end] || !path[end].predecessor) {
+        reportError();
+        break;
+      }
+      const predecessor = path[end].predecessor;
+      this.weightsGraph.setEdge(end, predecessor, 0);
+      end = predecessor;
     }
   };
 
@@ -76,7 +84,7 @@ export default class TraceRivers {
     const endpoints = compact(this.endpoints.map(this.findNode));
 
     for (const endpoint of endpoints) {
-      const path = alg.dijkstra(this.nodes, sourceNode);
+      const path = alg.dijkstra(this.weightsGraph, sourceNode);
       this.updateWeights(path, endpoint, sourceNode);
     }
     return this.prunedNodes();

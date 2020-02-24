@@ -1,6 +1,7 @@
 import { RawRiverSystem, RiverNodes } from "./types";
-import { Graph } from "graphlib";
+import { Graph, json } from "graphlib";
 import { fromCoords, getConnections, pruneNodes } from "./riverNode";
+import fs from "fs";
 
 const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const node of graph.nodes()) {
@@ -29,6 +30,14 @@ const mapToNodes = (riverSystem: RawRiverSystem): RiverNodes => {
 
   createNodes(riverSystem, graph);
   createEdges(riverSystem, graph);
+
+  fs.writeFileSync(
+    `/Users/lolney/Downloads/graph-${Math.random()}.json`,
+    JSON.stringify(json.write(graph)),
+    {
+      flag: "w"
+    }
+  );
 
   return graph;
 };

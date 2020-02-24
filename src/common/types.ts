@@ -1,4 +1,4 @@
-import { LatLngBounds } from "react-leaflet";
+import { LatLngBounds as LeafletLatLngBounds } from "react-leaflet";
 import * as t from "io-ts";
 
 export interface Dimensions {
@@ -21,7 +21,7 @@ export type LatLngBounds = {
 };
 
 export type MapOptions = Options & {
-  bounds: LatLngBounds;
+  bounds: LeafletLatLngBounds;
 };
 
 export enum MapLayers {

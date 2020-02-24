@@ -1,6 +1,10 @@
 import generateRivers from "../index";
 import { Polygon } from "geojson";
 import eureka from "../../../../fixtures/eureka.json";
+import { TerrainType } from "../../../../common/types";
+
+const createWaterTiles = (tiles: Polygon[]) =>
+  tiles.map(() => ({ terrain: TerrainType.grass }));
 
 describe("generateRivers", () => {
   it("returns an array of tiles", async () => {
@@ -21,7 +25,11 @@ describe("generateRivers", () => {
       }
     ];
     const dimensions = { width: 10, height: 10 };
-    const rivers = await generateRivers(tiles, dimensions);
+    const rivers = await generateRivers(
+      tiles,
+      dimensions,
+      createWaterTiles(tiles)
+    );
 
     expect(rivers).toBeDefined();
   });
@@ -30,7 +38,11 @@ describe("generateRivers", () => {
     const tiles: Polygon[] = eureka as Polygon[];
 
     const dimensions = { width: 10, height: 10 };
-    const rivers = await generateRivers(tiles, dimensions);
+    const rivers = await generateRivers(
+      tiles,
+      dimensions,
+      createWaterTiles(tiles)
+    );
 
     expect(rivers).toBeDefined();
   });

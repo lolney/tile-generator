@@ -47,7 +47,7 @@ const findRiverEndpoints = (
   const neighborCounts = Array.from(findRiverNeighbors(river));
   // todo: also count adjacent neighbors
   const endpoints = neighborCounts
-    .filter(({ count }) => count <= 1)
+    .filter(({ count }) => count <= 2)
     .map(({ index }) => index);
   return endpoints;
 };

@@ -127,7 +127,7 @@ export async function getClimateTypeSingle(lng: number, lat: number) {
 const koppenLookup: Map<string, Koppen> = new Map();
 
 for (const [str, enu] of Object.entries(Koppen)) {
-  koppenLookup.set(str.toUpperCase(), enu);
+  koppenLookup.set(str.toUpperCase(), enu as Koppen);
 }
 
 function dbStringToClimateType(string: string): Koppen | undefined {

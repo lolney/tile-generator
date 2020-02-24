@@ -30,6 +30,7 @@ export default class MapBuilder {
   grid: Polygon[];
   bounds: LatLngBounds;
   options: Options;
+  waterLayer: Tile[] | undefined;
 
   constructor(grid: Polygon[], bounds: LatLngBounds, options: Options) {
     this.grid = grid;
@@ -64,9 +65,14 @@ export default class MapBuilder {
         case MapLayers.forest:
           return this.createForestTiles();
         case MapLayers.land:
-          return this.createLandTiles();
+          this.waterLayer = await this.createLandTiles();
+          return this.waterLayer;
         case MapLayers.rivers:
-          return this.createRiverTiles();
+          if (!this.waterLayer)
+            throw new Error(
+              "Water layer must be generated before the river layer"
+            );
+          return this.createRiverTiles(this.waterLayer);
         case MapLayers.marsh:
           return this.createMarshTiles();
       }
@@ -169,9 +175,9 @@ export default class MapBuilder {
     );
   }
 
-  async createRiverTiles(): Promise<Tile[]> {
+  async createRiverTiles(waterTiles: Tile[]): Promise<Tile[]> {
     const dimensions = this.options.dimensions;
-    const groups = await generateRivers(this.grid, dimensions);
+    const groups = await generateRivers(this.grid, dimensions, waterTiles);
     const initialValue = Array(this.grid.length).fill({});
 
     return groups.reduce(
