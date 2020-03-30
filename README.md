@@ -2,12 +2,6 @@ Web app for generating Civilization maps from Google Earth Engine climate/terrai
 
 ### Development
 
-Later versions of node currently don't work with node-postgres:
-
-```
-nvm use 8.10
-```
-
 ```
 npm install
 ```
@@ -28,6 +22,8 @@ npm start
 npm run dev
 ```
 
+Later versions of node currently don't work with node-postgres, so the configued Node version is 8.10.
+
 ### Database setup
 
 tile-generator uses PostGIS for certain geospatial queries (version >= 2.3).
@@ -42,14 +38,16 @@ PGPASSWORD=<password>
 PGPORT=5432
 ```
 
-With postgres installed, access the command line with `sudo -u postgres psql postgres` and enter the following:
+Run the following scripts to setup and seed the database:
 
 ```
-CREATE DATABASE tilegenerator;
-CREATE EXTENSION postgis;
+npm run db:create
+npm run db:seed
 ```
 
-### Downloading and adding data sources
+### More information on the data sources
+
+#### Downloading and adding data sources
 
 Download the Koppen data from https://geoafrikana.com/resources/, then:
 

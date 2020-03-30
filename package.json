@@ -72,6 +72,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "db:create": "sh ./scripts/create_db.sh",
+    "db:seed": "sh ./scripts/load_all.sh",
     "watch-all": "npm run watch-server & npm run build & npm start",
     "watch-server": "tsc -p server-tsconfig.json --watch",
     "watch-client": "node scripts/watch.js"
