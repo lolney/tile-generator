@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./react-app/components/App";
+import { MapPage } from "./react-app/pages/MapPage";
 import * as serviceWorker from "./serviceWorker";
 
 import { createStore, applyMiddleware } from "redux";
@@ -12,7 +12,7 @@ import reducers from "./react-app/redux";
 const store = createStore(reducers, applyMiddleware(thunk));
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <MapPage />
   </Provider>,
   document.getElementById("root")
 );
