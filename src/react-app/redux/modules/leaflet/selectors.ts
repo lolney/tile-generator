@@ -16,8 +16,8 @@ export const hasLayer = (layers: LayersType, layer: string) =>
 export const receivedLayersSelector = (state: State) => {
   const layers = state.mapData.layers;
   const receivedLayers: Record<string, boolean> = _.fromPairs(
-    Object.values(MapLayers)
-      .filter(key => typeof key == "string")
+    (Object.values(MapLayers) as string[])
+      .filter((key: string) => typeof key == "string")
       .map((key: string) => [key, hasLayer(layers, key)])
   );
   return receivedLayers;
