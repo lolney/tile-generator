@@ -1,8 +1,7 @@
 import { LeafletState } from "../../types";
 import { SELECT_LAYER } from "./actionTypes";
-import { SUBMITTING, RECEIVE_LAYER } from "../map/actionTypes";
+import { SUBMITTING, RECEIVE_LAYER } from "../map/actions";
 import { receiveLayerAction, submitting } from "../map";
-import { LayersType } from "../../../../common/types";
 
 const initialState: LeafletState = {
   selectedLayer: undefined

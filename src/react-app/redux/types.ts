@@ -1,5 +1,5 @@
-import { Polygon } from "geojson";
-import { LayersType, MapOptions } from "../../common/types";
+import { Polygon, Geometry, Feature } from "geojson";
+import { LayersType, MapOptions, Tile } from "../../common/types";
 
 export type State = {
   settings: MapOptions;
@@ -31,3 +31,5 @@ export enum SubmissionStatus {
   done,
   none
 }
+
+export type TileFeature = Feature<Geometry, Tile>;

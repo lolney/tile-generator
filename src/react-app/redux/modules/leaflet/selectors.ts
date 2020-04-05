@@ -6,7 +6,7 @@ import {
   TerrainType,
   FeatureType
 } from "../../../../common/types";
-import { State } from "../../types";
+import { State, TileFeature } from "../../types";
 
 export const layersSelector = (state: State) => state.mapData.layers;
 
@@ -28,7 +28,9 @@ export const selectedLayer = (state: State) => {
   return layerName == undefined ? [] : state.mapData.layers[layerName];
 };
 
-export const mapFeatureToStyle: L.StyleFunction = feature => {
+export const mapFeatureToStyle: L.StyleFunction = (
+  feature: TileFeature | undefined
+) => {
   if (feature === undefined || feature.properties === undefined) {
     return {};
   } else {
