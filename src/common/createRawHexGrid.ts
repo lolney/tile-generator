@@ -1,4 +1,5 @@
-import { Polygon } from "geojson";
+import { Polygon, LineString } from "geojson";
+import { RiverType } from "./types";
 
 type coords = [number, number];
 export type params = {
@@ -76,13 +77,32 @@ export function addOffsets(
 export const offsets: coords[] = [
   // lng, lat
   [0, 0],
-  [0.5, 0.25],
-  [1, 0],
-  [1, -0.5],
-  [0.5, -0.75],
-  [0, -0.5],
-  [0, 0]
+  [0.5, 0.25], // north
+  [1, 0], // northeast
+  [1, -0.5], // southeast
+  [0.5, -0.75], // south
+  [0, -0.5], // southwest
+  [0, 0] // northwest
 ];
+
+export const mapRiverToLine = (
+  poly: Polygon,
+  river: keyof RiverType
+): LineString => {
+  const index = {
+    northWest: 0,
+    northEast: 1,
+    east: 2,
+    southEast: 3,
+    southWest: 4,
+    west: 5
+  }[river];
+  const coordinates = poly.coordinates[0].slice(index, index + 2);
+  return {
+    type: "LineString",
+    coordinates
+  };
+};
 
 export function createHexagon(
   start: coords,

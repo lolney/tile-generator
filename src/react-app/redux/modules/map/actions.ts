@@ -1,11 +1,13 @@
-import { State, SubmissionStatus, MapData } from "../../types";
+import { SubmissionStatus } from "../../types";
 import { LayersType } from "../../../../common/types";
+import { LineString } from "geojson";
 
 export const SUBMITTING = "SUBMITTING";
 export const RECEIVE_LAYER = "RECEIVE_LAYER";
 export const RECEIVE_GRID = "RECEIVE_GRID";
 export const FINISHED_MAP = "FINISHED_MAP";
 export const CLEAR_ERROR = "CLEAR_ERROR";
+export const RECEIVE_LINES = "RECEIVE_LINES";
 
 export const finishedMap = () => ({
   type: FINISHED_MAP,
@@ -44,11 +46,16 @@ export const submitting = () => ({
   type: SUBMITTING as typeof SUBMITTING,
   payload: {
     errorMessage: undefined,
-    submissionStatus: SubmissionStatus.errored
+    submissionStatus: SubmissionStatus.submitting
   }
 });
 
 export const receiveLayerAction = (data: { layer: LayersType }) => ({
   payload: { layer: data.layer },
   type: RECEIVE_LAYER as typeof RECEIVE_LAYER
+});
+
+export const receiveRiverLines = (lines: LineString[]) => ({
+  payload: lines,
+  type: RECEIVE_LINES
 });

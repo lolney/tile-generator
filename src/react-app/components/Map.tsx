@@ -10,8 +10,8 @@ import "./Map.css";
 import "./areaselect/areaselect.css";
 
 import { LatLngBounds } from "leaflet";
-import { Polygon } from "geojson";
-import { LayersType, Tile } from "../../common/types";
+import { Polygon, LineString } from "geojson";
+import { Tile, MapLayerValue } from "../../common/types";
 import createRawHexGrid from "../../common/createRawHexGrid";
 import {
   mapFeatureToStyle,
@@ -26,6 +26,8 @@ type MapProps = DispatchProps & StateProps;
 type StateProps = {
   grid: Polygon[];
   layer: Tile[];
+  riverLines: LineString[];
+  selectedLayer: MapLayerValue | undefined;
 };
 
 type DispatchProps = {
@@ -34,7 +36,9 @@ type DispatchProps = {
 
 const mapStateToProps: MapStateToProps<StateProps, {}, State> = state => ({
   grid: state.mapData.grid,
-  layer: selectedLayer(state)
+  layer: selectedLayer(state),
+  riverLines: state.mapData.riverLines,
+  selectedLayer: state.leaflet.selectedLayer
 });
 
 const mapDispatchToProps = {
@@ -45,7 +49,7 @@ class Map extends React.Component<MapProps> {
   map?: L.Map;
   areaSelect?: L.AreaSelect;
   state: {
-    layer?: L.GeoJSON<any>;
+    layers?: L.GeoJSON<any>[];
     previewLayer?: L.GeoJSON<any>;
   };
 
@@ -53,11 +57,6 @@ class Map extends React.Component<MapProps> {
     super(props);
 
     this.state = {};
-
-    this.addAreaSelect = this.addAreaSelect.bind(this);
-    this.drawPreviewLayer = this.drawPreviewLayer.bind(this);
-    this.drawGrid = this.drawGrid.bind(this);
-    this.createPreviewGrid = this.createPreviewGrid.bind(this);
   }
 
   componentDidMount() {
@@ -78,7 +77,7 @@ class Map extends React.Component<MapProps> {
     this.addAreaSelect();
   }
 
-  addAreaSelect() {
+  addAreaSelect = () => {
     // TODO: Aspect ratio should depend on width, height
     this.areaSelect = L.areaSelect({
       width: 300,
@@ -95,17 +94,17 @@ class Map extends React.Component<MapProps> {
     });
 
     this.drawPreviewLayer();
-  }
+  };
 
-  drawPreviewLayer() {
+  drawPreviewLayer = () => {
     if (this.map && this.state.previewLayer)
       this.map.removeLayer(this.state.previewLayer);
 
-    const previewLayer = this.drawGrid({ preview: true });
+    const [previewLayer] = this.drawGrid({ preview: true });
     this.setState({ previewLayer });
-  }
+  };
 
-  createPreviewGrid() {
+  createPreviewGrid = () => {
     if (this.areaSelect) {
       const bounds = this.areaSelect.getBounds();
       return createRawHexGrid({
@@ -118,9 +117,9 @@ class Map extends React.Component<MapProps> {
       });
     }
     return [];
-  }
+  };
 
-  drawGrid(options: { preview?: boolean }) {
+  drawGrid = (options: { preview?: boolean }) => {
     const style = options.preview
       ? () => ({
           opacity: 0.2,
@@ -129,6 +128,7 @@ class Map extends React.Component<MapProps> {
       : mapFeatureToStyle;
 
     const grid = options.preview ? this.createPreviewGrid() : this.props.grid;
+    const layers: L.GeoJSON<any>[] = [];
 
     const layer = L.geoJSON(
       {
@@ -142,19 +142,39 @@ class Map extends React.Component<MapProps> {
       },
       { style }
     ).addTo(this.map);
+    layers.push(layer);
 
-    return layer;
-  }
+    if (this.props.selectedLayer === "rivers")
+      layers.push(
+        L.geoJSON(
+          {
+            type: "GeometryCollection",
+            // @ts-ignore
+            features: this.props.riverLines
+          },
+          {
+            style: () => ({
+              color: "blue",
+              opacity: 0.5
+            })
+          }
+        ).addTo(this.map)
+      );
+
+    return layers;
+  };
 
   componentDidUpdate(prevProps: MapProps) {
     if (
-      prevProps.grid != this.props.grid ||
-      prevProps.layer != this.props.layer
+      prevProps.grid !== this.props.grid ||
+      prevProps.layer !== this.props.layer ||
+      prevProps.riverLines !== this.props.riverLines
     ) {
-      if (this.map && this.state.layer) this.map.removeLayer(this.state.layer);
+      if (this.map && this.state.layers)
+        this.state.layers.forEach(layer => this.map?.removeLayer(layer));
 
-      const layer = this.drawGrid({});
-      this.setState({ layer });
+      const layers = this.drawGrid({});
+      this.setState({ layers });
     }
   }
 

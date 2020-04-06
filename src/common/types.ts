@@ -33,8 +33,15 @@ export enum MapLayers {
   marsh
 }
 
-//export type LayersType = { [P in MapLayers]?: Array<Tile> };
-export type LayersType = Record<string, Array<Tile>>;
+export type MapLayerValue =
+  | "climate"
+  | "land"
+  | "forest"
+  | "elevation"
+  | "rivers"
+  | "marsh";
+
+export type LayersType = { [P in MapLayerValue]?: Array<Tile> };
 
 // --- Server ----- //
 

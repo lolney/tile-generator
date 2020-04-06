@@ -1,22 +1,16 @@
 import { State } from "../../types";
 import download from "downloadjs";
-import {
-  receiveGrid,
-  submitError,
-  submitting,
-  receiveLayerAction,
-  finishedMap,
-  clearError
-} from "./actions";
-import { selectOptions, isLastLayer } from "./selectors";
+import { submitError, submitting } from "./actions";
+import { selectOptions } from "./selectors";
 import { MapDispatch } from "./types";
 import { receiveLayers } from "./thunkActions";
+import { BACKEND_URL } from "../../../../constants/values";
 
 export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
   dispatch(submitting());
   const options = selectOptions(getState());
 
-  return fetch("/api/map", {
+  return fetch(`${BACKEND_URL}/api/map`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -33,9 +27,9 @@ export const downloadMap = () => async (
   getState: () => State
 ) => {
   const { mapId } = getState().mapData;
-  const resp = await fetch(`/api/map/${mapId}`);
+  const resp = await fetch(`${BACKEND_URL}/api/map/${mapId}`);
 
-  if (resp.status == 404)
+  if (resp.status === 404)
     dispatch(submitError(`Map file '${mapId}' does not exist`));
   else {
     // @ts-ignore

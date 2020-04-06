@@ -1,4 +1,9 @@
-import { RECEIVE_LAYER, FINISHED_MAP } from "./actions";
+import {
+  RECEIVE_LAYER,
+  FINISHED_MAP,
+  RECEIVE_LINES,
+  SUBMITTING
+} from "./actions";
 import { MapData, SubmissionStatus } from "../../types";
 import { Action } from "./types";
 
@@ -13,6 +18,13 @@ export const map = (
         layers: { ...state.layers, ...payload.layer },
         loadingLayer: { index: state.loadingLayer.index + 1 }
       };
+    case RECEIVE_LINES:
+      return {
+        ...state,
+        riverLines: payload
+      };
+    case SUBMITTING:
+      return initialState;
     case FINISHED_MAP:
       if (state.removeSSEListener) state.removeSSEListener();
     default:
@@ -26,5 +38,6 @@ const initialState: MapData = {
   loadingLayer: {
     index: 0
   },
+  riverLines: [],
   submissionStatus: SubmissionStatus.none
 };
