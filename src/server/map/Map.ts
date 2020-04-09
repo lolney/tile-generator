@@ -90,11 +90,11 @@ export default class Map {
       const result = { ...tile, ...addition };
 
       const isWater = (tile: Tile) =>
-        (result.terrain != undefined && tile.terrain === TerrainType.coast) ||
-        tile.terrain == TerrainType.ocean;
+        (result.terrain !== undefined && tile.terrain === TerrainType.coast) ||
+        tile.terrain === TerrainType.ocean;
 
       const isHilly = (tile: Tile) =>
-        tile.elevation != undefined && tile.elevation != Elevation.flat;
+        tile.elevation !== undefined && tile.elevation !== Elevation.flat;
 
       // Remove elevation if it's a water tile
       if (isWater(result)) {

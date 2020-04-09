@@ -4,8 +4,7 @@ import {
   TerrainType,
   Elevation,
   FeatureType,
-  MapConfigurable,
-  RiverType
+  MapConfigurable
 } from "../../common/types";
 import { Map as DBMap, Players, PlotRivers } from "./Civ6Map.types";
 import uuid from "uuid/v4";
@@ -122,6 +121,9 @@ export default class Civ6Map extends TileMap {
       return `FEATURE_${featureS.toUpperCase()}`;
     }
   }
+
+  getFeatures = () =>
+    this.orderedTiles.map(tile => Civ6Map.getFeatureType(tile));
 
   get orderedTiles() {
     if (this._orderedTiles) return this._orderedTiles;

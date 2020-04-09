@@ -1,4 +1,5 @@
 import sqlite3 from "sqlite3";
+import { compact } from "lodash";
 import { Plots } from "./Civ6Map.types";
 import Civ6Map from "./Civ6Map";
 import { Tile } from "../../common/types";
@@ -62,7 +63,7 @@ export default class Civ6MapWriter {
     const tables = schema.split(";");
 
     for (const table of tables) {
-      if (table != "") await this.run(table + ";");
+      if (table !== "") await this.run(table + ";");
     }
 
     for (const header of headers) {
@@ -130,7 +131,7 @@ export default class Civ6MapWriter {
   }
 
   getQueryFromEntries(table: string, objs: any[]) {
-    if (objs.length == 0) return "";
+    if (objs.length === 0) return "";
 
     const format = (obj: any) => {
       if (typeof obj === "string") return `'${obj}'`;
@@ -156,9 +157,16 @@ export default class Civ6MapWriter {
         ["ID", "TerrainType", "ContinentType", "IsImpassable"],
         (tile, i) => `(${i}, '${Civ6Map.getTerrainType(tile)}', '', 0)`
       ),
-
+      this.getTileInsertQuery(
+        "PlotFeatures",
+        ["ID", "FeatureType"],
+        (tile, index) => {
+          const feature = Civ6Map.getFeatureType(tile);
+          return feature ? `(${index}, '${feature}')` : feature;
+        }
+      ),
       this.getQueryFromEntries("PlotRivers", this.map.getRivers())
-    ].filter(query => query != "");
+    ].filter(query => query !== "");
 
     return queries;
   }
@@ -173,11 +181,11 @@ export default class Civ6MapWriter {
   getTileInsertQuery(
     table: string,
     fields: string[],
-    format: (tile: Tile, i: number) => string
+    format: (tile: Tile, i: number) => string | null
   ) {
-    const rows = this.map.orderedTiles.map(format);
+    const rows = compact(this.map.orderedTiles.map(format));
 
-    return this.getQuery(table, fields, rows);
+    return rows.length === 0 ? "" : this.getQuery(table, fields, rows);
   }
 
   getQuery(table: string, fields: string[], rows: string[]) {
