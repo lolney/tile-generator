@@ -2,9 +2,6 @@ import Civ6MapWriter from "./Civ6MapWriter";
 import Civ6Map from "./Civ6Map";
 import { TerrainType, Elevation } from "../../common/types";
 
-const testDb =
-  "/home/luke/Projects/tile-generator/tile-generator/EarthStandard.Civ6Map";
-
 const testMap = new Civ6Map(
   [
     { terrain: TerrainType.ocean },

@@ -24,7 +24,7 @@ export default class Map {
     const col = index % width;
     const row = Math.floor(index / width);
 
-    const even = row % 2 == 0;
+    const even = row % 2 === 0;
 
     switch (direction) {
       case "east":

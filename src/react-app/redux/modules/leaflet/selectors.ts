@@ -18,7 +18,7 @@ export const receivedLayersSelector = (state: State) => {
   const layers = state.mapData.layers;
   const receivedLayers: Record<string, boolean> = _.fromPairs(
     (Object.values(MapLayers) as MapLayerValue[])
-      .filter((key: MapLayerValue) => typeof key == "string")
+      .filter((key: MapLayerValue) => typeof key === "string")
       .map((key: MapLayerValue) => [key, hasLayer(layers, key)])
   );
   return receivedLayers;
@@ -59,7 +59,7 @@ export const mapFeatureToStyle: L.StyleFunction = (
     const elevation = (() => {
       switch (feature.properties.elevation) {
         case Elevation.flat:
-          if (feature.properties.terrain != TerrainType.coast)
+          if (feature.properties.terrain !== TerrainType.coast)
             return { fillColor: "green" };
         case Elevation.hills:
           return { fillColor: "brown" };

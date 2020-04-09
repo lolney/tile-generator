@@ -1,7 +1,7 @@
 const { performance } = require("perf_hooks");
 
-export function logperformance<T extends Function>(f: T): T {
-  return <any>async function(...args: any[]) {
+export function logperformance<T extends Array<any>, U>(f: (...args: T) => U) {
+  return async function(...args: T) {
     performance.mark("A");
 
     const result = await f(...args);

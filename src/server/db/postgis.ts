@@ -28,7 +28,7 @@ export function sampleSingleGeom(geom: Polygon, n: number) {
 
 export function createTempTable() {
   return `
-  CREATE TEMPORARY TABLE temp_geoms
+  CREATE TEMPORARY TABLE IF NOT EXISTS temp_geoms 
   (
     id integer,
     geom geometry(Polygon,4326)

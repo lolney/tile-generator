@@ -39,7 +39,7 @@ const splitRivers = (layer: LayersType) => (
       .map(([direction, bool]) =>
         bool ? mapRiverToLine(poly, direction) : null
       )
-      .filter(elem => elem != null) as LineString[];
+      .filter(elem => elem !== null) as LineString[];
     return lines;
   });
   dispatch(receiveRiverLines(lines));

@@ -117,7 +117,7 @@ const riverNodesOther = (args: {
 
   switch (key) {
     case "0,1":
-      if (rowA == rowB) {
+      if (rowA === rowB) {
         return [rowA, Math.max(colA, colB), "northWest"];
       } else {
         return rowA < rowB ? [rowA, colA, "east"] : [rowB, colB, "east"];
@@ -131,7 +131,7 @@ const riverNodesOther = (args: {
         ? [rowA, colA, "southEast"]
         : [rowB, colB, "southEast"];
     case "1,2":
-      if (vertexA != 2) {
+      if (vertexA !== 2) {
         const tempRow = rowA;
         const tempCol = colA;
 
@@ -141,21 +141,21 @@ const riverNodesOther = (args: {
         colB = tempCol;
       }
 
-      if (rowA % 2 == 0 && colA == colB) return [rowA, colA, "southEast"];
-      if (rowA % 2 == 0 && colA < colB) return [rowB, colB, "northEast"];
-      if (rowA % 2 == 1 && colA > colB) return [rowB, colB, "southEast"];
-      if (rowA % 2 == 1 && colA == colB) return [rowB, colB, "northEast"];
+      if (rowA % 2 === 0 && colA === colB) return [rowA, colA, "southEast"];
+      if (rowA % 2 === 0 && colA < colB) return [rowB, colB, "northEast"];
+      if (rowA % 2 === 1 && colA > colB) return [rowB, colB, "southEast"];
+      if (rowA % 2 === 1 && colA === colB) return [rowB, colB, "northEast"];
 
       break;
 
     case "2,3":
-      if (rowA == rowB) {
+      if (rowA === rowB) {
         return [rowA, Math.max(colA, colB), "southWest"];
       } else {
         return rowA > rowB ? [rowA, colA, "east"] : [rowB, colB, "east"];
       }
     case "0,3":
-      if (vertexA != 3) {
+      if (vertexA !== 3) {
         const tempRow = rowA;
         const tempCol = colA;
 
@@ -165,14 +165,14 @@ const riverNodesOther = (args: {
         colB = tempCol;
       }
 
-      if (rowA % 2 == 0 && colA == colB) return [rowA, colA, "southWest"];
-      if (rowA % 2 == 0 && colA < colB) return [rowA, colA, "southEast"];
-      if (rowA % 2 == 1 && colA > colB) return [rowA, colA, "southWest"];
-      if (rowA % 2 == 1 && colA == colB) return [rowA, colA, "southEast"];
+      if (rowA % 2 === 0 && colA === colB) return [rowA, colA, "southWest"];
+      if (rowA % 2 === 0 && colA < colB) return [rowA, colA, "southEast"];
+      if (rowA % 2 === 1 && colA > colB) return [rowA, colA, "southWest"];
+      if (rowA % 2 === 1 && colA === colB) return [rowA, colA, "southEast"];
 
       break;
     case "3,4":
-      if (rowA == rowB) {
+      if (rowA === rowB) {
         return [rowA, Math.min(colA, colB), "southEast"];
       } else {
         return [Math.max(rowA, rowB), Math.max(colA, colB), "west"];
@@ -208,7 +208,7 @@ export const pruneNodes = (graph: Graph, riverSystem: RawRiverSystem) => {
   for (const [row, col] of riverSystem.pairs()) {
     if (riverSystem.leftValue(row, col)) removeNodes(graph, row, col, [4, 5]);
 
-    if (row % 2 == 1) {
+    if (row % 2 === 1) {
       if (riverSystem.topRightValue(row, col))
         removeNodes(graph, row, col, [0, 1]);
       if (riverSystem.topLeftValue(row, col))

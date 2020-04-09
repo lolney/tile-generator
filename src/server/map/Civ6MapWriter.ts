@@ -189,7 +189,7 @@ export default class Civ6MapWriter {
   }
 
   getQuery(table: string, fields: string[], rows: string[]) {
-    const formattedRows = rows.filter(row => row != "").join(",");
+    const formattedRows = rows.filter(row => row !== "").join(",");
     const formattedFields = fields.map(field => `"${field}"`).join(",");
 
     const query = `INSERT INTO "${table}" (${formattedFields}) VALUES ${formattedRows};`;

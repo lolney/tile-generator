@@ -36,7 +36,7 @@ export const findSourceTile = (
 ): [number, number] | undefined => {
   const neighborCounts = Array.from(findCoastNeighbors(river, water));
   const maxPair = maxBy(neighborCounts, ({ count, index }) => count);
-  return maxPair?.count || 0 > 0 ? maxPair?.index : undefined;
+  return maxPair?.count ? maxPair?.index : undefined;
 };
 
 // these need not be the actual endpoints

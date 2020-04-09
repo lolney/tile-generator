@@ -68,7 +68,7 @@ export default async function createRiverTiles(
  * @param bounds
  */
 export async function getRivers(bounds: Polygon | string): Promise<River[]> {
-  if (typeof bounds == "object") {
+  if (typeof bounds === "object") {
     bounds = serializeGeoJSON(bounds);
   }
 
@@ -167,7 +167,7 @@ export async function getTiles(
 
         // console.log(`found river ${river.name} for polygon ${polygon.id}`);
 
-        if (selectedTiles.length == 0) selectedTiles.push(polygon);
+        if (selectedTiles.length === 0) selectedTiles.push(polygon);
         else {
           const last = selectedTiles[selectedTiles.length - 1];
           if (polygon.id !== last.id) {
@@ -224,7 +224,7 @@ export async function getEdges(
 
     const intersection = <Coords>polyIntersection(b.geometry, a.geometry);
 
-    if (intersection.length != 2)
+    if (intersection.length !== 2)
       throw new Error(
         `Polygons don't intersect twice, but ${intersection.length}x: ${a.id}, ${b.id}`
       );
@@ -420,7 +420,7 @@ function createRiver(prevNode: number, myNextNode: number): RiverType {
       ? -1
       : 1;
 
-  while (i != myNextNode) {
+  while (i !== myNextNode) {
     let i_next = (i + delta) % N_NODES;
     if (i_next < 0) i_next += N_NODES;
 

@@ -33,7 +33,7 @@ export default function createRawHexGrid({
   // for each row, starting at the top (highest latitude)
   for (let row = 0; row < height; row++) {
     // Offset to the right if even row
-    let lon_offset = row % 2 == 0 ? 0.5 * x_unit : 0;
+    let lon_offset = row % 2 === 0 ? 0.5 * x_unit : 0;
 
     let start: coords = [
       lon_offset + lon_start,

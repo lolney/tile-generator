@@ -40,7 +40,7 @@ const MapOptions: React.SFC<MapOptionsProps> = (props: MapOptionsProps) => (
             disabled={!enabled}
             onChange={() => props.onLayerSelect(layer)}
             checked={
-              props.selectedLayer !== undefined && props.selectedLayer == layer
+              props.selectedLayer !== undefined && props.selectedLayer === layer
             }
           />
         </span>

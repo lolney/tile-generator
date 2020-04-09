@@ -1,5 +1,4 @@
 import mapToNodes from "./mapToNodes";
-import findRiverNetwork from "./findRiverNetwork";
 import mapToRiversArray from "./mapToRiversArray";
 import mapToTiles from "./mapToTiles";
 import { Tile, Dimensions } from "../../../common/types";

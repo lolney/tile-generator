@@ -1,6 +1,6 @@
 import { RiverIndex, RiverNodes } from "./types";
 import { alg } from "graphlib";
-import { compact, cloneDeep, Dictionary, fromPairs } from "lodash";
+import { compact, cloneDeep } from "lodash";
 import { fromCoords } from "./riverNode";
 /*
 Alt river algo:
@@ -59,7 +59,7 @@ export default class TraceRivers {
     const reportError = () =>
       console.error(`Path does not lead to source: ${end}, ${source}`);
 
-    while (end != source) {
+    while (end !== source) {
       if (!path[end] || !path[end].predecessor) {
         reportError();
         break;
