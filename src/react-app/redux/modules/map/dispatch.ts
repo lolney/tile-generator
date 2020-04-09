@@ -32,10 +32,9 @@ export const downloadMap = () => async (
   if (resp.status === 404)
     dispatch(submitError(`Map file '${mapId}' does not exist`));
   else {
-    // @ts-ignore
-    const filename = resp.headers
-      .get("Content-Disposition")
-      .split("filename=")[1];
+    const filename =
+      resp.headers?.get("Content-Disposition")?.split("filename=")[1] ||
+      "generated-map.civ6map";
     const blob = await resp.blob();
 
     download(blob, filename);

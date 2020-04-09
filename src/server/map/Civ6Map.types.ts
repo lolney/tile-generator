@@ -1,6 +1,5 @@
 /* tslint:disable */
 
-
 /**
  * AUTO-GENERATED FILE @ 2019-03-26 13:53:08 - DO NOT EDIT!
  *
@@ -9,491 +8,426 @@
  *
  */
 
-
 export namespace GameConfigFields {
-    export type ID = string;
-    export type Value = string | null;
-
+  export type ID = string;
+  export type Value = string | null;
 }
 
 export interface GameConfig {
-    ID: GameConfigFields.ID;
-    Value: GameConfigFields.Value;
-
+  ID: GameConfigFields.ID;
+  Value: GameConfigFields.Value;
 }
 
 export namespace CitiesFields {
-    export type Owner = number;
-    export type Plot = number;
-    export type Name = string | null;
-
+  export type Owner = number;
+  export type Plot = number;
+  export type Name = string | null;
 }
 
 export interface Cities {
-    Owner: CitiesFields.Owner;
-    Plot: CitiesFields.Plot;
-    Name: CitiesFields.Name;
-
+  Owner: CitiesFields.Owner;
+  Plot: CitiesFields.Plot;
+  Name: CitiesFields.Name;
 }
 
 export namespace PlotRoutesFields {
-    export type ID = number;
-    export type RouteType = string | null;
-    export type RouteEra = string | null;
-    export type IsRoutePillaged = boolean | null;
-
+  export type ID = number;
+  export type RouteType = string | null;
+  export type RouteEra = string | null;
+  export type IsRoutePillaged = boolean | null;
 }
 
 export interface PlotRoutes {
-    ID: PlotRoutesFields.ID;
-    RouteType: PlotRoutesFields.RouteType;
-    RouteEra: PlotRoutesFields.RouteEra;
-    IsRoutePillaged: PlotRoutesFields.IsRoutePillaged;
-
+  ID: PlotRoutesFields.ID;
+  RouteType: PlotRoutesFields.RouteType;
+  RouteEra: PlotRoutesFields.RouteEra;
+  IsRoutePillaged: PlotRoutesFields.IsRoutePillaged;
 }
 
 export namespace ModTextFields {
-    export type Language = string;
-    export type ID = string;
-    export type Value = string | null;
-
+  export type Language = string;
+  export type ID = string;
+  export type Value = string | null;
 }
 
 export interface ModText {
-    Language: ModTextFields.Language;
-    ID: ModTextFields.ID;
-    Value: ModTextFields.Value;
-
+  Language: ModTextFields.Language;
+  ID: ModTextFields.ID;
+  Value: ModTextFields.Value;
 }
 
 export namespace MapAttributesFields {
-    export type Name = string;
-    export type Value = string | null;
-
+  export type Name = string;
+  export type Value = string | null;
 }
 
 export interface MapAttributes {
-    Name: MapAttributesFields.Name;
-    Value: MapAttributesFields.Value;
-
+  Name: MapAttributesFields.Name;
+  Value: MapAttributesFields.Value;
 }
 
 export namespace DistrictAttributesFields {
-    export type ID = number;
-    export type Type = string;
-    export type Name = string;
-    export type Value = string | null;
-
+  export type ID = number;
+  export type Type = string;
+  export type Name = string;
+  export type Value = string | null;
 }
 
 export interface DistrictAttributes {
-    ID: DistrictAttributesFields.ID;
-    Type: DistrictAttributesFields.Type;
-    Name: DistrictAttributesFields.Name;
-    Value: DistrictAttributesFields.Value;
-
+  ID: DistrictAttributesFields.ID;
+  Type: DistrictAttributesFields.Type;
+  Name: DistrictAttributesFields.Name;
+  Value: DistrictAttributesFields.Value;
 }
 
 export namespace MetaDataFields {
-    export type Name = string;
-    export type Value = string | null;
-
+  export type Name = string;
+  export type Value = string | null;
 }
 
 export interface MetaData {
-    Name: MetaDataFields.Name;
-    Value: MetaDataFields.Value;
-
+  Name: MetaDataFields.Name;
+  Value: MetaDataFields.Value;
 }
 
 export namespace ModSettings_ItemsFields {
-    export type Type = string;
-    export type ID = string;
-    export type Name = string;
-    export type Value = string;
-
+  export type Type = string;
+  export type ID = string;
+  export type Name = string;
+  export type Value = string;
 }
 
 export interface ModSettings_Items {
-    Type: ModSettings_ItemsFields.Type;
-    ID: ModSettings_ItemsFields.ID;
-    Name: ModSettings_ItemsFields.Name;
-    Value: ModSettings_ItemsFields.Value;
-
+  Type: ModSettings_ItemsFields.Type;
+  ID: ModSettings_ItemsFields.ID;
+  Name: ModSettings_ItemsFields.Name;
+  Value: ModSettings_ItemsFields.Value;
 }
 
 export namespace PlotRiversFields {
-    export type ID = number;
-    export type IsNEOfRiver = boolean | null;
-    export type IsWOfRiver = boolean | null;
-    export type IsNWOfRiver = boolean | null;
-    export type EFlowDirection = number | null;
-    export type SEFlowDirection = number | null;
-    export type SWFlowDirection = number | null;
-
+  export type ID = number;
+  export type IsNEOfRiver = boolean | null;
+  export type IsWOfRiver = boolean | null;
+  export type IsNWOfRiver = boolean | null;
+  export type EFlowDirection = number | null;
+  export type SEFlowDirection = number | null;
+  export type SWFlowDirection = number | null;
 }
 
 export interface PlotRivers {
-    ID: PlotRiversFields.ID;
-    IsNEOfRiver: PlotRiversFields.IsNEOfRiver;
-    IsWOfRiver: PlotRiversFields.IsWOfRiver;
-    IsNWOfRiver: PlotRiversFields.IsNWOfRiver;
-    EFlowDirection: PlotRiversFields.EFlowDirection;
-    SEFlowDirection: PlotRiversFields.SEFlowDirection;
-    SWFlowDirection: PlotRiversFields.SWFlowDirection;
-
+  ID: PlotRiversFields.ID;
+  IsNEOfRiver: PlotRiversFields.IsNEOfRiver;
+  IsWOfRiver: PlotRiversFields.IsWOfRiver;
+  IsNWOfRiver: PlotRiversFields.IsNWOfRiver;
+  EFlowDirection: PlotRiversFields.EFlowDirection;
+  SEFlowDirection: PlotRiversFields.SEFlowDirection;
+  SWFlowDirection: PlotRiversFields.SWFlowDirection;
 }
 
 export namespace UnitsFields {
-    export type ID = number;
-    export type UnitType = string;
-    export type Owner = number;
-    export type Plot = number;
-    export type Name = string | null;
-
+  export type ID = number;
+  export type UnitType = string;
+  export type Owner = number;
+  export type Plot = number;
+  export type Name = string | null;
 }
 
 export interface Units {
-    ID: UnitsFields.ID;
-    UnitType: UnitsFields.UnitType;
-    Owner: UnitsFields.Owner;
-    Plot: UnitsFields.Plot;
-    Name: UnitsFields.Name;
-
+  ID: UnitsFields.ID;
+  UnitType: UnitsFields.UnitType;
+  Owner: UnitsFields.Owner;
+  Plot: UnitsFields.Plot;
+  Name: UnitsFields.Name;
 }
 
 export namespace MapFields {
-    export type ID = string;
-    export type Width = number | null;
-    export type Height = number | null;
-    export type TopLatitude = number | null;
-    export type BottomLatitude = number | null;
-    export type WrapX = boolean | null;
-    export type WrapY = boolean | null;
-    export type MapSizeType = string | null;
-
+  export type ID = string;
+  export type Width = number;
+  export type Height = number;
+  export type TopLatitude = number | null;
+  export type BottomLatitude = number | null;
+  export type WrapX = boolean | null;
+  export type WrapY = boolean | null;
+  export type MapSizeType = string | null;
 }
 
 export interface Map {
-    ID: MapFields.ID;
-    Width: MapFields.Width;
-    Height: MapFields.Height;
-    TopLatitude: MapFields.TopLatitude;
-    BottomLatitude: MapFields.BottomLatitude;
-    WrapX: MapFields.WrapX;
-    WrapY: MapFields.WrapY;
-    MapSizeType: MapFields.MapSizeType;
-
+  ID: MapFields.ID;
+  Width: MapFields.Width;
+  Height: MapFields.Height;
+  TopLatitude: MapFields.TopLatitude;
+  BottomLatitude: MapFields.BottomLatitude;
+  WrapX: MapFields.WrapX;
+  WrapY: MapFields.WrapY;
+  MapSizeType: MapFields.MapSizeType;
 }
 
 export namespace ModSettings_PropertiesFields {
-    export type Type = string;
-    export type ID = string;
-    export type Name = string;
-    export type Value = string;
-
+  export type Type = string;
+  export type ID = string;
+  export type Name = string;
+  export type Value = string;
 }
 
 export interface ModSettings_Properties {
-    Type: ModSettings_PropertiesFields.Type;
-    ID: ModSettings_PropertiesFields.ID;
-    Name: ModSettings_PropertiesFields.Name;
-    Value: ModSettings_PropertiesFields.Value;
-
+  Type: ModSettings_PropertiesFields.Type;
+  ID: ModSettings_PropertiesFields.ID;
+  Name: ModSettings_PropertiesFields.Name;
+  Value: ModSettings_PropertiesFields.Value;
 }
 
 export namespace ModSettingsFields {
-    export type Type = string;
-    export type ID = string;
-
+  export type Type = string;
+  export type ID = string;
 }
 
 export interface ModSettings {
-    Type: ModSettingsFields.Type;
-    ID: ModSettingsFields.ID;
-
+  Type: ModSettingsFields.Type;
+  ID: ModSettingsFields.ID;
 }
 
 export namespace ModDependenciesFields {
-    export type ID = string;
-    export type Title = string;
-
+  export type ID = string;
+  export type Title = string;
 }
 
 export interface ModDependencies {
-    ID: ModDependenciesFields.ID;
-    Title: ModDependenciesFields.Title;
-
+  ID: ModDependenciesFields.ID;
+  Title: ModDependenciesFields.Title;
 }
 
 export namespace PlotAttributesFields {
-    export type ID = number;
-    export type Name = string;
-    export type Value = string | null;
-
+  export type ID = number;
+  export type Name = string;
+  export type Value = string | null;
 }
 
 export interface PlotAttributes {
-    ID: PlotAttributesFields.ID;
-    Name: PlotAttributesFields.Name;
-    Value: PlotAttributesFields.Value;
-
+  ID: PlotAttributesFields.ID;
+  Name: PlotAttributesFields.Name;
+  Value: PlotAttributesFields.Value;
 }
 
 export namespace CityAttributesFields {
-    export type ID = number;
-    export type Type = string;
-    export type Name = string;
-    export type Value = string | null;
-
+  export type ID = number;
+  export type Type = string;
+  export type Name = string;
+  export type Value = string | null;
 }
 
 export interface CityAttributes {
-    ID: CityAttributesFields.ID;
-    Type: CityAttributesFields.Type;
-    Name: CityAttributesFields.Name;
-    Value: CityAttributesFields.Value;
-
+  ID: CityAttributesFields.ID;
+  Type: CityAttributesFields.Type;
+  Name: CityAttributesFields.Name;
+  Value: CityAttributesFields.Value;
 }
 
 export namespace ModComponent_ItemsFields {
-    export type Type = string;
-    export type ID = string;
-    export type Name = string;
-    export type Value = string;
-
+  export type Type = string;
+  export type ID = string;
+  export type Name = string;
+  export type Value = string;
 }
 
 export interface ModComponent_Items {
-    Type: ModComponent_ItemsFields.Type;
-    ID: ModComponent_ItemsFields.ID;
-    Name: ModComponent_ItemsFields.Name;
-    Value: ModComponent_ItemsFields.Value;
-
+  Type: ModComponent_ItemsFields.Type;
+  ID: ModComponent_ItemsFields.ID;
+  Name: ModComponent_ItemsFields.Name;
+  Value: ModComponent_ItemsFields.Value;
 }
 
 export namespace PlayersFields {
-    export type ID = number;
-    export type CivilizationType = string | null;
-    export type LeaderType = string | null;
-    export type CivilizationLevelType = string | null;
-    export type AgendaType = string | null;
-    export type Status = string | null;
-    export type Handicap = string | null;
-    export type StartingPosition = string | null;
-    export type Color = string | null;
-    export type Initialized = boolean | null;
-
+  export type ID = number;
+  export type CivilizationType = string | null;
+  export type LeaderType = string | null;
+  export type CivilizationLevelType = string | null;
+  export type AgendaType = string | null;
+  export type Status = string | null;
+  export type Handicap = string | null;
+  export type StartingPosition = string | null;
+  export type Color = string | null;
+  export type Initialized = boolean | null;
 }
 
 export interface Players {
-    ID: PlayersFields.ID;
-    CivilizationType: PlayersFields.CivilizationType;
-    LeaderType: PlayersFields.LeaderType;
-    CivilizationLevelType: PlayersFields.CivilizationLevelType;
-    AgendaType: PlayersFields.AgendaType;
-    Status: PlayersFields.Status;
-    Handicap: PlayersFields.Handicap;
-    StartingPosition: PlayersFields.StartingPosition;
-    Color: PlayersFields.Color;
-    Initialized: PlayersFields.Initialized;
-
+  ID: PlayersFields.ID;
+  CivilizationType: PlayersFields.CivilizationType;
+  LeaderType: PlayersFields.LeaderType;
+  CivilizationLevelType: PlayersFields.CivilizationLevelType;
+  AgendaType: PlayersFields.AgendaType;
+  Status: PlayersFields.Status;
+  Handicap: PlayersFields.Handicap;
+  StartingPosition: PlayersFields.StartingPosition;
+  Color: PlayersFields.Color;
+  Initialized: PlayersFields.Initialized;
 }
 
 export namespace PlotCliffsFields {
-    export type ID = number;
-    export type IsNEOfCliff = boolean | null;
-    export type IsWOfCliff = boolean | null;
-    export type IsNWOfCliff = boolean | null;
-
+  export type ID = number;
+  export type IsNEOfCliff = boolean | null;
+  export type IsWOfCliff = boolean | null;
+  export type IsNWOfCliff = boolean | null;
 }
 
 export interface PlotCliffs {
-    ID: PlotCliffsFields.ID;
-    IsNEOfCliff: PlotCliffsFields.IsNEOfCliff;
-    IsWOfCliff: PlotCliffsFields.IsWOfCliff;
-    IsNWOfCliff: PlotCliffsFields.IsNWOfCliff;
-
+  ID: PlotCliffsFields.ID;
+  IsNEOfCliff: PlotCliffsFields.IsNEOfCliff;
+  IsWOfCliff: PlotCliffsFields.IsWOfCliff;
+  IsNWOfCliff: PlotCliffsFields.IsNWOfCliff;
 }
 
 export namespace DistrictsFields {
-    export type DistrictType = string;
-    export type CityID = number;
-    export type Plot = number;
-
+  export type DistrictType = string;
+  export type CityID = number;
+  export type Plot = number;
 }
 
 export interface Districts {
-    DistrictType: DistrictsFields.DistrictType;
-    CityID: DistrictsFields.CityID;
-    Plot: DistrictsFields.Plot;
-
+  DistrictType: DistrictsFields.DistrictType;
+  CityID: DistrictsFields.CityID;
+  Plot: DistrictsFields.Plot;
 }
 
 export namespace ModPropertiesFields {
-    export type Name = string;
-    export type Value = string;
-
+  export type Name = string;
+  export type Value = string;
 }
 
 export interface ModProperties {
-    Name: ModPropertiesFields.Name;
-    Value: ModPropertiesFields.Value;
-
+  Name: ModPropertiesFields.Name;
+  Value: ModPropertiesFields.Value;
 }
 
 export namespace ModComponentsFields {
-    export type Type = string;
-    export type ID = string;
-
+  export type Type = string;
+  export type ID = string;
 }
 
 export interface ModComponents {
-    Type: ModComponentsFields.Type;
-    ID: ModComponentsFields.ID;
-
+  Type: ModComponentsFields.Type;
+  ID: ModComponentsFields.ID;
 }
 
 export namespace RevealedPlotsFields {
-    export type ID = number;
-    export type Player = number;
-
+  export type ID = number;
+  export type Player = number;
 }
 
 export interface RevealedPlots {
-    ID: RevealedPlotsFields.ID;
-    Player: RevealedPlotsFields.Player;
-
+  ID: RevealedPlotsFields.ID;
+  Player: RevealedPlotsFields.Player;
 }
 
 export namespace PlayerAttributesFields {
-    export type ID = number;
-    export type Type = string;
-    export type Name = string;
-    export type Value = string | null;
-
+  export type ID = number;
+  export type Type = string;
+  export type Name = string;
+  export type Value = string | null;
 }
 
 export interface PlayerAttributes {
-    ID: PlayerAttributesFields.ID;
-    Type: PlayerAttributesFields.Type;
-    Name: PlayerAttributesFields.Name;
-    Value: PlayerAttributesFields.Value;
-
+  ID: PlayerAttributesFields.ID;
+  Type: PlayerAttributesFields.Type;
+  Name: PlayerAttributesFields.Name;
+  Value: PlayerAttributesFields.Value;
 }
 
 export namespace PlotImprovementsFields {
-    export type ID = number;
-    export type ImprovementType = string | null;
-    export type ImprovementOwner = number | null;
-
+  export type ID = number;
+  export type ImprovementType = string | null;
+  export type ImprovementOwner = number | null;
 }
 
 export interface PlotImprovements {
-    ID: PlotImprovementsFields.ID;
-    ImprovementType: PlotImprovementsFields.ImprovementType;
-    ImprovementOwner: PlotImprovementsFields.ImprovementOwner;
-
+  ID: PlotImprovementsFields.ID;
+  ImprovementType: PlotImprovementsFields.ImprovementType;
+  ImprovementOwner: PlotImprovementsFields.ImprovementOwner;
 }
 
 export namespace ModComponent_PropertiesFields {
-    export type Type = string;
-    export type ID = string;
-    export type Name = string;
-    export type Value = string;
-
+  export type Type = string;
+  export type ID = string;
+  export type Name = string;
+  export type Value = string;
 }
 
 export interface ModComponent_Properties {
-    Type: ModComponent_PropertiesFields.Type;
-    ID: ModComponent_PropertiesFields.ID;
-    Name: ModComponent_PropertiesFields.Name;
-    Value: ModComponent_PropertiesFields.Value;
-
+  Type: ModComponent_PropertiesFields.Type;
+  ID: ModComponent_PropertiesFields.ID;
+  Name: ModComponent_PropertiesFields.Name;
+  Value: ModComponent_PropertiesFields.Value;
 }
 
 export namespace PlotFeaturesFields {
-    export type ID = number;
-    export type FeatureType = string | null;
-
+  export type ID = number;
+  export type FeatureType = string | null;
 }
 
 export interface PlotFeatures {
-    ID: PlotFeaturesFields.ID;
-    FeatureType: PlotFeaturesFields.FeatureType;
-
+  ID: PlotFeaturesFields.ID;
+  FeatureType: PlotFeaturesFields.FeatureType;
 }
 
 export namespace UnitAttributesFields {
-    export type ID = number;
-    export type Type = string;
-    export type Name = string;
-    export type Value = string | null;
-
+  export type ID = number;
+  export type Type = string;
+  export type Name = string;
+  export type Value = string | null;
 }
 
 export interface UnitAttributes {
-    ID: UnitAttributesFields.ID;
-    Type: UnitAttributesFields.Type;
-    Name: UnitAttributesFields.Name;
-    Value: UnitAttributesFields.Value;
-
+  ID: UnitAttributesFields.ID;
+  Type: UnitAttributesFields.Type;
+  Name: UnitAttributesFields.Name;
+  Value: UnitAttributesFields.Value;
 }
 
 export namespace PlotsFields {
-    export type ID = number;
-    export type TerrainType = string;
-    export type ContinentType = string | null;
-    export type IsImpassable = boolean | null;
-
+  export type ID = number;
+  export type TerrainType = string;
+  export type ContinentType = string | null;
+  export type IsImpassable = boolean | null;
 }
 
 export interface Plots {
-    ID: PlotsFields.ID;
-    TerrainType: PlotsFields.TerrainType;
-    ContinentType: PlotsFields.ContinentType;
-    IsImpassable: PlotsFields.IsImpassable;
-
+  ID: PlotsFields.ID;
+  TerrainType: PlotsFields.TerrainType;
+  ContinentType: PlotsFields.ContinentType;
+  IsImpassable: PlotsFields.IsImpassable;
 }
 
 export namespace BuildingsFields {
-    export type BuildingType = string;
-    export type Plot = number;
-
+  export type BuildingType = string;
+  export type Plot = number;
 }
 
 export interface Buildings {
-    BuildingType: BuildingsFields.BuildingType;
-    Plot: BuildingsFields.Plot;
-
+  BuildingType: BuildingsFields.BuildingType;
+  Plot: BuildingsFields.Plot;
 }
 
 export namespace PlotResourcesFields {
-    export type ID = number;
-    export type ResourceType = string | null;
-    export type ResourceCount = number | null;
-
+  export type ID = number;
+  export type ResourceType = string | null;
+  export type ResourceCount = number | null;
 }
 
 export interface PlotResources {
-    ID: PlotResourcesFields.ID;
-    ResourceType: PlotResourcesFields.ResourceType;
-    ResourceCount: PlotResourcesFields.ResourceCount;
-
+  ID: PlotResourcesFields.ID;
+  ResourceType: PlotResourcesFields.ResourceType;
+  ResourceCount: PlotResourcesFields.ResourceCount;
 }
 
 export namespace PlotOwnersFields {
-    export type ID = number;
-    export type Owner = number | null;
-    export type CityOwner = number | null;
-    export type CityWorking = number | null;
-
+  export type ID = number;
+  export type Owner = number | null;
+  export type CityOwner = number | null;
+  export type CityWorking = number | null;
 }
 
 export interface PlotOwners {
-    ID: PlotOwnersFields.ID;
-    Owner: PlotOwnersFields.Owner;
-    CityOwner: PlotOwnersFields.CityOwner;
-    CityWorking: PlotOwnersFields.CityWorking;
-
+  ID: PlotOwnersFields.ID;
+  Owner: PlotOwnersFields.Owner;
+  CityOwner: PlotOwnersFields.CityOwner;
+  CityWorking: PlotOwnersFields.CityWorking;
 }

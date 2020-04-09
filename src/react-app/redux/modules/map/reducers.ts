@@ -24,9 +24,10 @@ export const map = (
         riverLines: payload
       };
     case SUBMITTING:
-      return initialState;
+      return { ...initialState, ...payload };
     case FINISHED_MAP:
       if (state.removeSSEListener) state.removeSSEListener();
+      return { ...state, ...payload };
     default:
       return { ...state, ...payload };
   }

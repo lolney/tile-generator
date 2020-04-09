@@ -175,7 +175,7 @@ export default class Civ6MapWriter {
     fields: string[],
     format: (tile: Tile, i: number) => string
   ) {
-    const rows = this.map.tiles.map(format);
+    const rows = this.map.orderedTiles.map(format);
 
     return this.getQuery(table, fields, rows);
   }

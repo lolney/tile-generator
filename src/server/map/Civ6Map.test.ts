@@ -1,4 +1,4 @@
-import { MapConfigurable } from "../../common/types";
+import { MapConfigurable, TerrainType } from "../../common/types";
 import Civ6Map from "./Civ6Map";
 
 describe("getRiverType", () => {
@@ -18,29 +18,28 @@ describe("getRiverType", () => {
     expect(plotRivers.IsWOfRiver).toEqual(true);
   });
 
-  /* This functionality has been moved to TilesMap
-  it("affects west, northWest, southWest neighbors", () => {
-    const map = new Civ6Map([{}, { river: { west: true } }, {}, {}], base);
-
-    const plotRivers = map.getRiverType(map.tiles[1], 1);
-
-    expect(plotRivers).toHaveLength(1);
-    expect(plotRivers.IsWOfRiver).toEqual(true);
-    expect(plotRivers.ID).toEqual(0);
-  });
-
-  it("can rewrite tiles that are affected by rivers on multiple tiles", () => {
+  it("returns flipped tiles with orderedTiles", () => {
     const map = new Civ6Map(
-      [{ river: { east: true } }, {}, {}, { river: { northWest: true } }],
-      base
+      [
+        { terrain: TerrainType.coast },
+        { terrain: TerrainType.tundra },
+        { terrain: TerrainType.desert },
+        { terrain: TerrainType.ice },
+        { terrain: TerrainType.ocean },
+        { terrain: TerrainType.plains }
+      ],
+      { ...base, height: 3 }
     );
 
-    const plotRivers = map.getRiverType(map.tiles[0], 0,);
-    const plotRivers = map.getRiverType(map.tiles[3], 3);
+    const expectedTiles = [
+      { terrain: TerrainType.ocean },
+      { terrain: TerrainType.plains },
+      { terrain: TerrainType.desert },
+      { terrain: TerrainType.ice },
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.tundra }
+    ];
 
-    expect(result).toHaveLength(1);
-    expect(result[0].IsWOfRiver).toEqual(true);
-    expect(result[0].IsNWOfRiver).toEqual(true);
+    expect(map.orderedTiles).toEqual(expectedTiles);
   });
-  */
 });

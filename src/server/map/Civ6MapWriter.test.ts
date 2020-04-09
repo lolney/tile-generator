@@ -30,7 +30,7 @@ describe("Civ6", () => {
     const plots = await writer.getPlots();
 
     expect(plots).toHaveLength(4);
-    expect(plots[0].TerrainType).toBe("TERRAIN_OCEAN");
+    expect(plots[0].TerrainType).toBe("TERRAIN_GRASS");
     expect(plots[0].ID).toBe(0);
   });
 

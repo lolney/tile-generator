@@ -28,6 +28,7 @@ export default class Civ6Map extends TileMap {
   metadata: MetaData;
   map: DBMap;
   players: Players[];
+  private _orderedTiles?: Tile[];
 
   constructor(tiles: number | Array<Tile>, configurable: MapConfigurable) {
     super(tiles, configurable);
@@ -122,6 +123,28 @@ export default class Civ6Map extends TileMap {
     }
   }
 
+  get orderedTiles() {
+    if (this._orderedTiles) return this._orderedTiles;
+
+    const tiles = [...this.tiles];
+    let bottomRow = this.map.Height - 1;
+    let topRow = 0;
+
+    for (; topRow < bottomRow; ) {
+      for (let col = 0; col < this.map.Width; col++) {
+        const topIndex = this.getIndex(topRow, col)!;
+        const bottomIndex = this.getIndex(bottomRow, col)!;
+        const top = tiles[topIndex];
+        tiles[topIndex] = tiles[bottomIndex];
+        tiles[bottomIndex] = top;
+      }
+      topRow++;
+      bottomRow--;
+    }
+
+    return (this._orderedTiles = tiles);
+  }
+
   getRiverType(plot: Tile, index: number) {
     const riverType = plot.river;
 
@@ -154,7 +177,9 @@ export default class Civ6Map extends TileMap {
 
   getRivers(): PlotRivers[] {
     this.remapRivers();
-    const plotRivers = this.tiles.map((tile, i) => this.getRiverType(tile, i));
+    const plotRivers = this.orderedTiles.map((tile, i) =>
+      this.getRiverType(tile, i)
+    );
 
     return plotRivers;
   }
