@@ -2,6 +2,7 @@ import { RiverIndex } from "./types";
 import { alg } from "graphlib";
 import { compact, cloneDeep } from "lodash";
 import GraphDebuger from "./debug/GraphDebuger";
+import HexDebugger from "./debug/HexDebugger";
 import RiverNodes from "./RiverNodes";
 import RiverNode from "./RiverNode_";
 /*
@@ -47,9 +48,10 @@ export default class TraceRivers {
 
   findNode = (index: RiverIndex) => {
     const [row, col] = index;
-    const candidates = RiverNode.fromCoords(row, col).filter(node =>
-      this.nodes.graph.hasNode(node)
-    );
+    const candidates = RiverNode.fromCoords(row, col).filter(node => {
+      const neighbors = this.nodes.graph.neighbors(node);
+      return neighbors && neighbors.length > 0;
+    });
     return candidates.length > 0 ? candidates[0] : undefined;
   };
 
@@ -59,18 +61,29 @@ export default class TraceRivers {
 
   updateWeights = (path: Path, end: string, source: string) => {
     const reportError = () => {
-      console.error(`Path does not lead to source: ${end}, ${source}`);
+      console.error(`Path does not lead to source: ${end},${source}`);
+      const graphdebug = new GraphDebuger(this.weightsGraph);
+      graphdebug.print(new RiverNode(source), new RiverNode(end));
+      graphdebug.writeGraphVizToFile(`${end},${source}`);
+      new HexDebugger(this.weightsGraph).print();
     };
 
     while (end !== source) {
+      console.log("end", end);
       if (!path[end] || !path[end].predecessor) {
         reportError();
-        break;
+        return;
       }
       const predecessor = path[end].predecessor;
       this.weightsGraph.graph.setEdge(end, predecessor, 0);
       end = predecessor;
     }
+
+    console.log("path does lead to source");
+    new GraphDebuger(this.weightsGraph).print(
+      new RiverNode(source),
+      new RiverNode(end)
+    );
   };
 
   prunedNodes = () => {
@@ -90,10 +103,7 @@ export default class TraceRivers {
       const path = alg.dijkstra(this.weightsGraph.graph, sourceNode);
       this.updateWeights(path, endpoint, sourceNode);
     }
-    console.log("traced river");
-    new GraphDebuger(this.weightsGraph).print();
     this.prunedNodes();
-    new GraphDebuger(this.weightsGraph).print();
     return this.weightsGraph;
   }
 }

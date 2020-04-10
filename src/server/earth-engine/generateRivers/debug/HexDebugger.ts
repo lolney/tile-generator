@@ -3,7 +3,7 @@ import RiverNodes from "../RiverNodes";
 import { RiversArray } from "../RiversArray";
 import { printSquare } from "./printSquare";
 
-const hex = (
+const hex = (row: number, col: number) => (
   a: string,
   b: string,
   c: string,
@@ -19,7 +19,7 @@ const hex = (
  ${f}              ${b}
  |              |
  |              |
- |              |
+ |    ${row},${col}     |
  |              |
  |              ${c}
 ${e}\\-          -/
@@ -28,7 +28,7 @@ ${e}\\-          -/
        ${d}      
 `;
 
-export default class GraphPrinter {
+export default class HexDebugger {
   graph: RiverNodes;
   array: RiversArray<number[]>;
 
@@ -62,7 +62,12 @@ export default class GraphPrinter {
   print = (msg?: string) =>
     printSquare(
       this.array,
-      (row, col) => hex(...this.hexFromCoords(row, col)),
+      (row, col) => {
+        const coords = this.hexFromCoords(row, col);
+        return coords.every(num => num === ".")
+          ? ""
+          : hex(row, col)(...this.hexFromCoords(row, col));
+      },
       msg
     );
 
@@ -71,7 +76,7 @@ export default class GraphPrinter {
       const val = this.array.get(row, col);
       if (val.length > 0) {
         console.log(`Hex at: ${row}, ${col}`);
-        console.log(hex(...this.hexFromCoords(row, col)));
+        console.log(hex(row, col)(...this.hexFromCoords(row, col)));
       }
     }
   }
@@ -82,7 +87,10 @@ export default class GraphPrinter {
   ): [string, string, string, string, string, string] => {
     return ([0, 1, 2, 3, 4, 5].map(i => {
       const neighbors = this.graph.graph.neighbors(`${row},${col},${i}`);
-      return `${neighbors ? neighbors.length : 0}`;
+      if (!neighbors) return ".";
+      return `${
+        neighbors.filter(bor => !bor.startsWith(`${row},${col}`)).length
+      }`;
     }) as unknown) as [string, string, string, string, string, string];
   };
 }

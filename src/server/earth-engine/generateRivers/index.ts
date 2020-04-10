@@ -9,7 +9,6 @@ import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
 import { RiversArray } from "./RiversArray";
 import TraceRivers from "./TraceRivers";
 import ArrayDebugger from "./debug/ArrayDebugger";
-import GraphPrinter from "./debug/HexDebugger";
 
 const generateRivers = async (
   tiles: Polygon[],
@@ -29,8 +28,6 @@ const generateRivers = async (
     const waterArray = new RiversArray(waterLayer, system.width);
     const endpoints = findRiverEndpoints(system, waterArray);
     const source = findSourceTile(system, waterArray);
-
-    new GraphPrinter(graph).print();
 
     try {
       const network = TraceRivers.perform(graph, source, endpoints);

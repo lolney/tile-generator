@@ -7,7 +7,9 @@ import RiverNode from "./RiverNode_";
 const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const node of graph.nodes()) {
     const connections = RiverNode.getConnections(node, riverSystem);
-    connections.forEach(connection => graph.setEdge(node, connection));
+    connections.forEach(connection =>
+      graph.setEdge(node, connection).setEdge(connection, node)
+    );
   }
 };
 
@@ -23,7 +25,7 @@ const createNodes = (riverSystem: RawRiverSystem, graph: Graph) => {
 
 // Map tiles -> nodes at the edges of those tiles
 const mapToNodes = (riverSystem: RawRiverSystem): RiverNodes => {
-  const graph = new Graph({ directed: false });
+  const graph = new Graph({ directed: true });
 
   createNodes(riverSystem, graph);
   createEdges(riverSystem, graph);

@@ -1,21 +1,28 @@
 import RiverNodes from "../RiverNodes";
 import RiverNode from "../RiverNode_";
 import { printSquare } from "./printSquare";
+import { RiverNode as RiverNodeType } from "../types";
 
 export default class GraphPrinter {
   graph: RiverNodes;
-  end: number[];
+  ends: Set<RiverNodeType>;
   source: number[];
 
-  constructor(graph: RiverNodes, source?: RiverNode, end?: RiverNode) {
+  constructor(graph: RiverNodes, source?: RiverNode, ...ends: RiverNode[]) {
     this.graph = graph;
-    this.end = end?.toCoords() ?? [];
+    this.ends = new Set(
+      ends.map(end =>
+        end
+          .toCoords()
+          .slice(0, 2)
+          .join(",")
+      )
+    );
     this.source = source?.toCoords() ?? [];
   }
 
   endChar(row: number, col: number) {
-    const [endRow, endCol] = this.end;
-    return row === endRow && col === endCol;
+    return this.ends.has([row, col].join(","));
   }
 
   startChar(row: number, col: number) {
