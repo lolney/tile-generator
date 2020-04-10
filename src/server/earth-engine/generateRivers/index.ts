@@ -8,6 +8,8 @@ import { Polygon } from "geojson";
 import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
 import { RiversArray } from "./RiversArray";
 import TraceRivers from "./TraceRivers";
+import ArrayDebugger from "./debug/ArrayDebugger";
+import GraphPrinter from "./debug/HexDebugger";
 
 const generateRivers = async (
   tiles: Polygon[],
@@ -17,19 +19,24 @@ const generateRivers = async (
   const rawData = await isRiverLocal(tiles);
   const rawRivers = mapToRiversArray(rawData, dimensions);
 
+  new ArrayDebugger(rawRivers).print("All rivers");
   const systems = findRiverSystems(rawRivers);
 
   const tileGroups = systems.map(system => {
+    new ArrayDebugger(system).print("River system");
+
     const graph = mapToNodes(system);
     const waterArray = new RiversArray(waterLayer, system.width);
     const endpoints = findRiverEndpoints(system, waterArray);
     const source = findSourceTile(system, waterArray);
 
+    new GraphPrinter(graph).print();
+
     try {
       const network = TraceRivers.perform(graph, source, endpoints);
-      console.log("edges", network?.edges());
+      console.log("edges", network?.graph.edges());
       if (!network) throw new Error("Empty network");
-      const tiles = mapToTiles(network, system);
+      const tiles = mapToTiles(network);
       return tiles;
     } catch (error) {
       console.log(error);

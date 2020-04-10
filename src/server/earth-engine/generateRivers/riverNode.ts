@@ -1,6 +1,7 @@
 import { RiverNode, RiverEdge, VertexType, RawRiverSystem } from "./types";
 import { RiverType } from "../../../common/types";
 import { Graph } from "graphlib";
+import RiverNodeClass from "./RiverNode_";
 
 /* 
 The corresponding vertex number on each neighbor
@@ -37,7 +38,7 @@ const mod = (n: number, divisor: number) => {
 
 // Map a vertex on one hex to neighboring vertices both on itself and its neighbors
 // Only need to map 1-3, because 0,4,5 have their connections set by the neighbor
-const mapVertexToNeighbors = (
+export const mapVertexToNeighbors = (
   row: number,
   col: number,
   vertex: VertexType
@@ -184,13 +185,6 @@ const riverNodesOther = (args: {
   );
 };
 
-export const fromCoords = (row: number, col: number): RiverNode[] => {
-  const nodeIndices = Array(6)
-    .fill(0)
-    .map((_, i) => i);
-  return nodeIndices.map(node => `${row},${col},${node}`);
-};
-
 const removeNodes = (
   graph: Graph,
   row: number,
@@ -221,35 +215,12 @@ export const pruneNodes = (graph: Graph, riverSystem: RawRiverSystem) => {
   }
 };
 
-export const toCoords = (node: RiverNode) => {
-  const [row, col, vertex] = node.split(",");
-  return [parseInt(row), parseInt(col), parseInt(vertex)];
-};
-
-export const getConnections = (
-  node: RiverNode,
-  width: number,
-  height: number
-): string[] => {
-  const [row, col, vertex] = toCoords(node);
-  const neighbors = mapVertexToNeighbors(row, col, vertex as VertexType);
-
-  const inBounds = (row: number, col: number) =>
-    row >= 0 && row < height && col >= 0 && col < height;
-
-  return neighbors
-    .map(([nextRow, nextCol, nextVertex]) =>
-      inBounds(nextRow, nextCol) ? `${nextRow},${nextCol},${nextVertex}` : ""
-    )
-    .filter(x => x);
-};
-
 export const tileIndexFromEdge = (
   edge: RiverEdge
 ): [number, number, keyof RiverType] => {
   const [node0, node1] = edge;
-  const [rowA, colA, vertexA] = toCoords(node0);
-  const [rowB, colB, vertexB] = toCoords(node1);
+  const [rowA, colA, vertexA] = RiverNodeClass.toCoords(node0);
+  const [rowB, colB, vertexB] = RiverNodeClass.toCoords(node1);
 
   const key = [vertexA, vertexB].sort().join(",");
 
