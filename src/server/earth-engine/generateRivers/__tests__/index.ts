@@ -24,7 +24,7 @@ describe("generateRivers", () => {
         ]
       }
     ];
-    const dimensions = { width: 10, height: 10 };
+    const dimensions = { width: 1, height: 1 };
     const rivers = await generateRivers(
       tiles,
       dimensions,
@@ -34,7 +34,7 @@ describe("generateRivers", () => {
     expect(rivers).toBeDefined();
   });
 
-  it("returns an array of tiles", async () => {
+  it("returns an array of tiles with a realistic fixture", async () => {
     const tiles: Polygon[] = eureka as Polygon[];
 
     const dimensions = { width: 10, height: 10 };
@@ -44,6 +44,7 @@ describe("generateRivers", () => {
       createWaterTiles(tiles)
     );
 
+    expect(10 * 10).toEqual(eureka.length);
     expect(rivers).toBeDefined();
   });
 });

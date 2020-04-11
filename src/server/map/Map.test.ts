@@ -51,6 +51,31 @@ describe("mergeTiles", () => {
     ]);
   });
 
+  it("doesn't overwrite water with another feature", () => {
+    const map = new Map(2, config);
+
+    const tilesWater: Array<Tile> = [
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.grass }
+    ];
+
+    const tiles2: Array<Tile> = [
+      { terrain: TerrainType.ocean },
+      { terrain: TerrainType.grass },
+      { terrain: TerrainType.ocean }
+    ];
+
+    map.addLayer(tilesWater);
+    map.addLayer(tiles2);
+
+    expect(map.tiles).toEqual([
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.ocean }
+    ]);
+  });
+
   it("doesn't allow hills or mountain on Ocean", () => {
     const map = new Map(2, config);
 

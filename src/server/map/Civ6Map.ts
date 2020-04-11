@@ -162,16 +162,14 @@ export default class Civ6Map extends TileMap {
 
     if (!riverType) return plotRivers;
 
-    if (riverType.east || riverType.southWest || riverType.southEast) {
-      if (riverType.east) {
-        plotRivers.IsWOfRiver = true;
-      }
-      if (riverType.southWest) {
-        plotRivers.IsNEOfRiver = true;
-      }
-      if (riverType.southEast) {
-        plotRivers.IsNWOfRiver = true;
-      }
+    if (riverType.east) {
+      plotRivers.IsWOfRiver = true;
+    }
+    if (riverType.southWest) {
+      plotRivers.IsNEOfRiver = true;
+    }
+    if (riverType.southEast) {
+      plotRivers.IsNWOfRiver = true;
     }
 
     return plotRivers;
