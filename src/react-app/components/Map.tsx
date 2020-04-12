@@ -11,7 +11,7 @@ import "./areaselect/areaselect.css";
 
 import { LatLngBounds } from "leaflet";
 import { Polygon, LineString } from "geojson";
-import { Tile, MapLayerValue } from "../../common/types";
+import { Tile, MapLayerValue, MapOptions } from "../../common/types";
 import createRawHexGrid from "../../common/createRawHexGrid";
 import {
   mapFeatureToStyle,
@@ -28,6 +28,7 @@ type StateProps = {
   layer: Tile[];
   riverLines: LineString[];
   selectedLayer: MapLayerValue | undefined;
+  settings: MapOptions;
 };
 
 type DispatchProps = {
@@ -38,7 +39,8 @@ const mapStateToProps: MapStateToProps<StateProps, {}, State> = state => ({
   grid: state.mapData.grid,
   layer: selectedLayer(state),
   riverLines: state.mapData.riverLines,
-  selectedLayer: state.leaflet.selectedLayer
+  selectedLayer: state.leaflet.selectedLayer,
+  settings: state.settings
 });
 
 const mapDispatchToProps = {
@@ -106,10 +108,11 @@ class Map extends React.Component<MapProps> {
 
   createPreviewGrid = () => {
     if (this.areaSelect) {
+      const { width, height } = this.props.settings.dimensions;
       const bounds = this.areaSelect.getBounds();
       return createRawHexGrid({
-        width: 10, // TODO: connect to actual width, height
-        height: 10,
+        width,
+        height,
         lon_start: bounds.getWest(),
         lon_end: bounds.getEast(),
         lat_start: bounds.getNorth(),
@@ -130,6 +133,7 @@ class Map extends React.Component<MapProps> {
     const grid = options.preview ? this.createPreviewGrid() : this.props.grid;
     const layers: L.GeoJSON<any>[] = [];
 
+    console.log("drawing grid");
     const layer = L.geoJSON(
       {
         type: "FeatureCollection",
@@ -168,12 +172,14 @@ class Map extends React.Component<MapProps> {
     if (
       prevProps.grid !== this.props.grid ||
       prevProps.layer !== this.props.layer ||
-      prevProps.riverLines !== this.props.riverLines
+      prevProps.riverLines !== this.props.riverLines ||
+      prevProps.settings.dimensions !== this.props.settings.dimensions
     ) {
       if (this.map && this.state.layers)
         this.state.layers.forEach(layer => this.map?.removeLayer(layer));
 
       const layers = this.drawGrid({});
+      this.drawPreviewLayer();
       this.setState({ layers });
     }
   }

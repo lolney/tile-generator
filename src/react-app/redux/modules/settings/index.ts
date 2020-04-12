@@ -1,4 +1,4 @@
-import { LatLngBounds, LatLng } from "leaflet";
+import { LatLngBounds } from "leaflet";
 import { MapOptions, Options } from "../../../../common/types";
 
 type Action = ReturnType<typeof changeOptions>;
@@ -6,7 +6,10 @@ type Action = ReturnType<typeof changeOptions>;
 const initialState: MapOptions = {
   dimensions: { width: 10, height: 10 },
   format: "Civ V",
-  bounds: new LatLngBounds(new LatLng(37, -121), new LatLng(38, -120))
+  bounds: {
+    _southWest: { lat: 37, lng: -121 },
+    _northEast: { lat: 38, lng: -120 }
+  }
 };
 
 const CHANGE_OPTIONS = "CHANGE_OPTIONS";
