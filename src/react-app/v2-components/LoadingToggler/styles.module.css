@@ -1,0 +1,98 @@
+.container {
+  position: absolute;
+  width: 535px;
+  height: 132px;
+  background-color: #232323;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 45.5px;
+  left: 0;
+  right: 0;
+}
+
+.header {
+  font-size: 14px;
+  font-weight: 900;
+  font-family: Avenir;
+  text-align: center;
+  color: #ebebeb;
+  margin-top: 10px;
+}
+
+.component_array {
+  width: 475px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.loading_bar {
+  width: 475px;
+  height: 10.5px;
+  background-color: #363636;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn_container {
+  position: fixed;
+  bottom: 0px;
+  width: 200px;
+  height: 35.5px;
+  background-color: #232323;
+  display: flex;
+  margin: auto;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  padding-top: 0px;
+  display: flex;
+}
+
+.component_btn {
+  width: 69.5px;
+  height: 21px;
+  background-color: #909090;
+  text-align: center;
+  border: none;
+  font-family: Avenir;
+  font-size: 12px;
+  font-weight: 900;
+  color: #232323;
+}
+
+.btm_buttons,
+.primary_btm_button {
+  width: 69.5px;
+  height: 21px;
+  border-radius: 10.5px;
+  background-color: #909090;
+  flex: 50%;
+  margin: 10px;
+  text-align: center;
+  border: none;
+  font-family: Avenir;
+  font-size: 12px;
+  font-weight: 900;
+  color: #232323;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.primary_btm_button {
+  background-color: #4d90e6;
+}
+
+.left_headers {
+  color: #a1a1a1;
+  font-family: Avenir;
+  font-size: 12px;
+  font-weight: 900;
+  margin-left: 20px;
+  margin-top: 15px;
+}
