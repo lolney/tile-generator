@@ -1,10 +1,14 @@
+@import "../../constants/colors.css";
+
 .top_bar {
   position: absolute;
   width: 100vw;
-  background-color: #232323;
+  background-color: var(--backgroundGrey);
   top: 0;
+  left: 0;
   display: flex;
   padding: 10px 10px;
+  box-sizing: border-box;
 }
 
 .header {
@@ -23,7 +27,8 @@
   position: absolute;
   width: 100vw;
   height: 45.5px;
-  background-color: #232323;
+  background-color: var(--backgroundGrey);
   bottom: 0;
+  left: 0;
   display: flex;
 }

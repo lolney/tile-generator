@@ -1,8 +1,10 @@
+@import "../../constants/colors.css";
+
 .container {
   position: absolute;
   width: 535px;
   height: 132px;
-  background-color: #232323;
+  background-color: var(--backgroundGrey);
   margin-left: auto;
   margin-right: auto;
   bottom: 45.5px;

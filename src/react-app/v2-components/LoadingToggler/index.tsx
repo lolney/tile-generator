@@ -1,12 +1,7 @@
 import React from "react";
 import { ProgressBar } from "baseui/progress-bar";
 import styles from "./styles.module.css";
-import { Client as Styletron } from "styletron-engine-atomic";
-import { Provider as StyletronProvider } from "styletron-react";
-import { LightTheme, BaseProvider, styled } from "baseui";
-import { StatefulInput } from "baseui/input";
-
-const engine = new Styletron();
+import ControlButtons from "../ControlButtons";
 
 export const LoadingToggler: React.FC = () => (
   <>
@@ -24,36 +19,25 @@ export const LoadingToggler: React.FC = () => (
       successValue={100}
       overrides={{
         BarProgress: {
-          style: ({ $theme, $value }) => {
+          style: () => {
             return {
               position: "relative",
-              backgroundcolor: "#4d90e6",
+              backgroundcolor: "#4d90e6"
             };
-          },
+          }
         },
         Bar: {
           style: ({ $theme }) => ({
             height: $theme.sizing.scale300,
             marginLeft: "30px",
             marginRight: "30px",
-            backgroundColor: "#363636",
-          }),
-        },
+            backgroundColor: "#363636"
+          })
+        }
       }}
     />
-    <div className={styles.btn_container}>
-      <button className={styles.primary_btm_button}>Cancel</button>
-      <button className={styles.btm_buttons}>Reset</button>
-    </div>
+    <ControlButtons textPrimary={"Download"} textSecondary={"Reset"} />
   </>
 );
 
-export default function () {
-  return (
-    <StyletronProvider value={engine}>
-      <BaseProvider theme={LightTheme}>
-        <LoadingToggler></LoadingToggler>
-      </BaseProvider>
-    </StyletronProvider>
-  );
-}
+export default LoadingToggler;

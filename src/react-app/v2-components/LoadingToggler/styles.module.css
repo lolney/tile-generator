@@ -1,8 +1,10 @@
+@import "../../constants/colors.css";
+
 .container {
   position: absolute;
   width: 535px;
   height: 132px;
-  background-color: backgroundGrey;
+  background-color: var(--backgroundGrey);
   margin-left: auto;
   margin-right: auto;
   bottom: 45.5px;
@@ -15,7 +17,7 @@
   font-weight: 900;
   font-family: Avenir;
   text-align: center;
-  color: #ebebeb;
+  color: var(--textColorWhite);
   margin-top: 10px;
 }
 
@@ -32,25 +34,10 @@
 .loading_bar {
   width: 475px;
   height: 10.5px;
-  background-color: textFieldGrey;
+  background-color: var(--textFieldGrey);
   margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.btn_container {
-  position: fixed;
-  bottom: 0px;
-  width: 200px;
-  height: 35.5px;
-  background-color: backgroundGrey;
-  display: flex;
-  margin: auto;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  padding-top: 0px;
-  display: flex;
 }
 
 .component_btn {
@@ -62,34 +49,11 @@
   font-family: Avenir;
   font-size: 12px;
   font-weight: 900;
-  color: backgroundGrey;
-}
-
-.btm_buttons,
-.primary_btm_button {
-  width: 69.5px;
-  height: 21px;
-  border-radius: 10.5px;
-  background-color: #909090;
-  flex: 50%;
-  margin: 10px;
-  text-align: center;
-  border: none;
-  font-family: Avenir;
-  font-size: 12px;
-  font-weight: 900;
-  color: backgroundGrey;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.primary_btm_button {
-  background-color: #4d90e6;
+  color: var(--backgroundGrey);
 }
 
 .left_headers {
-  color: textColorWhite;
+  color: var(--textColorWhite);
   font-family: Avenir;
   font-size: 12px;
   font-weight: 900;

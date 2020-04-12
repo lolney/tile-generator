@@ -3,6 +3,8 @@ import { Slider } from "baseui/slider";
 import { Input, SIZE } from "baseui/input";
 import { Select } from "baseui/select";
 import styles from "./styles.module.css";
+import * as colors from "../../constants/colors";
+import ControlButtons from "../ControlButtons";
 
 const TileSlider: React.FC = () => (
   <Slider
@@ -13,8 +15,8 @@ const TileSlider: React.FC = () => (
       Root: {
         style: () => ({
           width: "75%",
-          height: "16px",
-        }),
+          height: "16px"
+        })
       },
       Track: {
         style: () => ({
@@ -22,17 +24,17 @@ const TileSlider: React.FC = () => (
           paddingLeft: "1px",
           paddingRight: "1px",
           paddingBottom: "5px",
-          marginRight: "0px",
-        }),
+          marginRight: "0px"
+        })
       },
       TickBar: () => null,
       InnerThumb: () => null,
       ThumbValue: () => null,
       InnerTrack: {
-        style: ({ $theme }) => ({
-          background: $theme.textFieldGrey,
-          height: "24px",
-        }),
+        style: () => ({
+          background: colors.textFieldGrey,
+          height: "24px"
+        })
       },
       Thumb: {
         style: () => ({
@@ -44,9 +46,9 @@ const TileSlider: React.FC = () => (
           borderStyle: "solid",
           borderWidth: "3px",
           borderColor: "#ccc",
-          backgroundColor: "#fff",
-        }),
-      },
+          backgroundColor: "#fff"
+        })
+      }
     }}
   />
 );
@@ -57,36 +59,36 @@ const TileInput: React.FC = () => (
     size={SIZE.mini}
     overrides={{
       Root: {
-        style: ({ $theme }) => ({
+        style: () => ({
           width: "15%",
           height: "24px",
           marginRight: "20px",
           marginLeft: "20px",
           marginTop: "8px",
-          background: $theme.textFieldGrey,
-        }),
+          background: colors.textFieldGrey
+        })
       },
       EndEnhancer: {
-        style: ({ $theme }) => ({
+        style: () => ({
           fontFamily: "Avenir",
           fontSize: "12px",
-          backgroundColor: $theme.textFieldGrey,
-          color: $theme.textColorWhite,
-        }),
+          backgroundColor: colors.textFieldGrey,
+          color: colors.textColorWhite
+        })
       },
       Input: {
-        style: ({ $theme }) => ({
+        style: () => ({
           fontFamily: "Avenir",
           fontSize: "12px",
-          backgroundColor: $theme.textFieldGrey,
-          color: $theme.textColorWhite,
-        }),
+          backgroundColor: colors.textFieldGrey,
+          color: colors.textColorWhite
+        })
       },
       InputContainer: {
-        style: ({ $theme }) => ({
-          borderColor: $theme.textFieldGrey,
-        }),
-      },
+        style: () => ({
+          borderColor: colors.textFieldGrey
+        })
+      }
     }}
   />
 );
@@ -94,69 +96,71 @@ const TileInput: React.FC = () => (
 const SelectMenu: React.FC = () => (
   <Select
     size={SIZE.mini}
+    value={[{ id: "Civilization VI" }]}
     options={[{ id: "Civilization VI" }, { id: "Civilization V" }]}
     labelKey="id"
     overrides={{
       Root: {
-        style: ({ $theme }) => ({
+        style: () => ({
           width: "100%",
           height: "10px",
           marginTop: "10px",
           marginLeft: "7.19px",
           marginRight: "112.25px",
           padding: "0px",
-          background: $theme.textFieldGrey,
-        }),
+          background: colors.textFieldGrey
+        })
       },
       ValueContainer: {
-        style: ({ $theme }) => ({
+        style: () => ({
           padding: "0px",
-          background: $theme.textFieldGrey,
-        }),
+          background: colors.textFieldGrey,
+          color: colors.textColorWhite
+        })
       },
       ControlContainer: {
-        style: ({ $theme }) => ({
-          borderColor: $theme.textFieldGrey,
-        }),
+        style: () => ({
+          borderColor: colors.textFieldGrey
+        })
       },
       IconsContainer: {
-        style: ({ $theme }) => ({
-          background: $theme.textFieldGrey,
-          borderColor: $theme.textFieldGrey,
-          border: "0px",
-        }),
+        style: () => ({
+          background: colors.textFieldGrey,
+          borderColor: colors.textFieldGrey,
+          border: "0px"
+        })
       },
       SelectArrow: {
-        style: ({ $theme }) => ({
-          color: $theme.textColorWhite,
-        }),
+        style: () => ({
+          color: colors.textColorWhite
+        })
       },
       DropdownContainer: {
-        style: ({ $theme }) => ({
-          backgroundColor: $theme.textFieldGrey,
-        }),
+        style: () => ({
+          backgroundColor: colors.textFieldGrey
+        })
       },
       Dropdown: {
-        style: ({ $theme }) => ({
-          backgroundColor: $theme.textFieldGrey,
+        style: () => ({
+          backgroundColor: colors.textFieldGrey,
           paddingBottom: "0px",
-          paddingTop: "0px",
-        }),
+          paddingTop: "0px"
+        })
       },
       DropdownListItem: {
-        style: ({ $theme }) => ({
-          backgroundColor: $theme.textFieldGrey,
+        style: () => ({
+          backgroundColor: colors.textFieldGrey,
           paddingBottom: "4px",
-          paddingTop: "4px",
-        }),
+          paddingTop: "4px"
+        })
       },
       OptionContent: {
-        style: ({ $theme }) => ({
-          color: $theme.textColorWhite,
+        style: () => ({
+          color: colors.textColorWhite,
           fontFamily: "Avenir",
-          fontSize: "12px",
-        }),
-      },
+          fontSize: "12px"
+        })
+      }
     }}
   />
 );
@@ -178,10 +182,7 @@ export const Options: React.FC = () => (
       <div className={styles.left_headers}>Format</div>
       <SelectMenu />
     </div>
-    <div className={styles.btn_container}>
-      <button className={styles.primary_btm_button}>Generate</button>
-      <button className={styles.btm_buttons}>Reset</button>
-    </div>
+    <ControlButtons textPrimary={"Generate"} textSecondary={"Reset"} />
   </>
 );
 
