@@ -2,7 +2,7 @@
   position: absolute;
   width: 535px;
   height: 132px;
-  background-color: #232323;
+  background-color: backgroundGrey;
   margin-left: auto;
   margin-right: auto;
   bottom: 45.5px;
@@ -32,7 +32,7 @@
 .loading_bar {
   width: 475px;
   height: 10.5px;
-  background-color: #363636;
+  background-color: textFieldGrey;
   margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
@@ -43,7 +43,7 @@
   bottom: 0px;
   width: 200px;
   height: 35.5px;
-  background-color: #232323;
+  background-color: backgroundGrey;
   display: flex;
   margin: auto;
   left: 0;
@@ -62,7 +62,7 @@
   font-family: Avenir;
   font-size: 12px;
   font-weight: 900;
-  color: #232323;
+  color: backgroundGrey;
 }
 
 .btm_buttons,
@@ -78,7 +78,7 @@
   font-family: Avenir;
   font-size: 12px;
   font-weight: 900;
-  color: #232323;
+  color: backgroundGrey;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -89,7 +89,7 @@
 }
 
 .left_headers {
-  color: #a1a1a1;
+  color: textColorWhite;
   font-family: Avenir;
   font-size: 12px;
   font-weight: 900;

@@ -6,7 +6,7 @@ import LoadingToggler from "../../v2-components/LoadingToggler";
 export const Dock: React.FC = () => (
   <>
     <div className={styles.container}>
-      <LoadingToggler />
+      <Options />
     </div>
   </>
 );

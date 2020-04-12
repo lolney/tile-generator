@@ -28,7 +28,12 @@ const TileSlider: React.FC = () => (
       TickBar: () => null,
       InnerThumb: () => null,
       ThumbValue: () => null,
-      InnerTrack: { style: () => ({ background: "#363636", height: "24px" }) },
+      InnerTrack: {
+        style: ({ $theme }) => ({
+          background: $theme.textFieldGrey,
+          height: "24px",
+        }),
+      },
       Thumb: {
         style: () => ({
           height: "18px",
@@ -52,34 +57,34 @@ const TileInput: React.FC = () => (
     size={SIZE.mini}
     overrides={{
       Root: {
-        style: () => ({
+        style: ({ $theme }) => ({
           width: "15%",
           height: "24px",
           marginRight: "20px",
           marginLeft: "20px",
           marginTop: "8px",
-          background: "#363636",
+          background: $theme.textFieldGrey,
         }),
       },
       EndEnhancer: {
-        style: () => ({
+        style: ({ $theme }) => ({
           fontFamily: "Avenir",
           fontSize: "12px",
-          backgroundColor: "#363636",
-          color: "#ebebeb",
+          backgroundColor: $theme.textFieldGrey,
+          color: $theme.textColorWhite,
         }),
       },
       Input: {
-        style: () => ({
+        style: ({ $theme }) => ({
           fontFamily: "Avenir",
           fontSize: "12px",
-          backgroundColor: "#363636",
-          color: "#ebebeb",
+          backgroundColor: $theme.textFieldGrey,
+          color: $theme.textColorWhite,
         }),
       },
       InputContainer: {
-        style: () => ({
-          borderColor: "#363636",
+        style: ({ $theme }) => ({
+          borderColor: $theme.textFieldGrey,
         }),
       },
     }}
@@ -93,61 +98,61 @@ const SelectMenu: React.FC = () => (
     labelKey="id"
     overrides={{
       Root: {
-        style: () => ({
+        style: ({ $theme }) => ({
           width: "100%",
           height: "10px",
           marginTop: "10px",
           marginLeft: "7.19px",
           marginRight: "112.25px",
           padding: "0px",
-          background: "#363636",
+          background: $theme.textFieldGrey,
         }),
       },
       ValueContainer: {
-        style: () => ({
+        style: ({ $theme }) => ({
           padding: "0px",
-          background: "#363636",
+          background: $theme.textFieldGrey,
         }),
       },
       ControlContainer: {
-        style: () => ({
-          borderColor: "#363636",
+        style: ({ $theme }) => ({
+          borderColor: $theme.textFieldGrey,
         }),
       },
       IconsContainer: {
-        style: () => ({
-          background: "#363636",
-          borderColor: "#363636",
+        style: ({ $theme }) => ({
+          background: $theme.textFieldGrey,
+          borderColor: $theme.textFieldGrey,
           border: "0px",
         }),
       },
       SelectArrow: {
-        style: () => ({
-          color: "#ebebeb",
+        style: ({ $theme }) => ({
+          color: $theme.textColorWhite,
         }),
       },
       DropdownContainer: {
-        style: () => ({
-          backgroundColor: "#363636",
+        style: ({ $theme }) => ({
+          backgroundColor: $theme.textFieldGrey,
         }),
       },
       Dropdown: {
-        style: () => ({
-          backgroundColor: "#363636",
+        style: ({ $theme }) => ({
+          backgroundColor: $theme.textFieldGrey,
           paddingBottom: "0px",
           paddingTop: "0px",
         }),
       },
       DropdownListItem: {
-        style: () => ({
-          backgroundColor: "#363636",
+        style: ({ $theme }) => ({
+          backgroundColor: $theme.textFieldGrey,
           paddingBottom: "4px",
           paddingTop: "4px",
         }),
       },
       OptionContent: {
-        style: () => ({
-          color: "#ebebeb",
+        style: ({ $theme }) => ({
+          color: $theme.textColorWhite,
           fontFamily: "Avenir",
           fontSize: "12px",
         }),

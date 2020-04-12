@@ -61,7 +61,6 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "resource-router-middleware": "^0.7.0",
-    "semantic-ui-react": "^0.88.2",
     "sqlite3": "^4.1.1",
     "sse-express": "^1.0.2",
     "styletron-engine-atomic": "^1.4.6",
@@ -97,9 +96,6 @@
     "@babel/core": "^7.8.4",
     "@babel/node": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
-    "@craco/craco": "^5.6.4",
-    "@semantic-ui-react/craco-less": "^1.2.1",
-    "eslint-plugin-baseui": "^9.67.2",
-    "semantic-ui-less": "^2.4.1"
+    "eslint-plugin-baseui": "^9.67.2"
   }
 }
