@@ -81,7 +81,6 @@ export default class OpenRequest {
 
   async *completeJobs() {
     const layers = [
-      MapLayers.land,
       MapLayers.climate,
       MapLayers.elevation,
       MapLayers.forest,

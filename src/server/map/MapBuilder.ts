@@ -10,7 +10,6 @@ import {
   FeatureType,
   Options
 } from "../../common/types";
-import isForest from "../earth-engine/isForest";
 import {
   getForestType,
   getClimateType,
@@ -23,20 +22,37 @@ import {
   isMarshLocal,
   isForestLocal
 } from "../earth-engine/rasterLocal";
+import Map from "./Map";
 import { logperformance } from "../logging";
 import zip from "lodash/zip";
 
 export default class MapBuilder {
   grid: Polygon[];
+  originalGrid: Polygon[];
   bounds: LatLngBounds;
   options: Options;
   waterLayer: Tile[] | undefined;
 
   constructor(grid: Polygon[], bounds: LatLngBounds, options: Options) {
-    this.grid = grid;
+    this.originalGrid = grid;
+    this.grid = MapBuilder.wrapLongitude(grid);
     this.bounds = bounds;
     this.options = options;
   }
+
+  static wrapLongitude = (grid: Polygon[]): Polygon[] =>
+    grid.map(poly => ({
+      ...poly,
+      coordinates: [
+        poly.coordinates[0].map(([lng, lat]) => [MapBuilder.wrapLng(lng), lat])
+      ]
+    }));
+
+  static wrapLng = (lng: number) => {
+    if (lng < -180) return 180 + ((lng + 180) % 360);
+    if (lng > 180) return ((lng - 180) % 360) - 180;
+    return lng;
+  };
 
   static deserializeBounds(bounds: LatLngBoundsT): LatLngBounds {
     return new LatLngBounds(
@@ -59,14 +75,13 @@ export default class MapBuilder {
     async (layer: MapLayers): Promise<Tile[]> => {
       switch (layer) {
         case MapLayers.climate:
-          return this.createClimateTiles();
+          this.waterLayer = await this.createLandTiles();
+          const climateLayer = await this.createClimateTiles();
+          return Map.mergeTileArrays(this.waterLayer, climateLayer);
         case MapLayers.elevation:
           return this.createElevationTiles();
         case MapLayers.forest:
           return this.createForestTiles();
-        case MapLayers.land:
-          this.waterLayer = await this.createLandTiles();
-          return this.waterLayer;
         case MapLayers.rivers:
           if (!this.waterLayer)
             throw new Error(
@@ -165,8 +180,8 @@ export default class MapBuilder {
     return Promise.all(
       this.grid.map(async (geometry: Polygon) => {
         const koppen = await getClimateType(geometry);
-
-        if (koppen === undefined) return {};
+        console.log(koppen);
+        if (koppen === undefined) return { terrain: TerrainType.ocean };
         else {
           const terrain = getTerrainType(koppen);
           return { terrain };

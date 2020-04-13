@@ -83,7 +83,6 @@ export async function findMax(table: string, tiles: Polygon[]) {
   query = [createTempTable(), generateInsert(tiles), query].join("\n");
 
   const rows = await db.doQuery(query);
-  console.log(query, rows);
   const value = rows.map((row: any) => row.max);
 
   return value;

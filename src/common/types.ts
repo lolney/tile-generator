@@ -25,7 +25,6 @@ export type MapOptions = Options & {
 
 export enum MapLayers {
   climate,
-  land,
   elevation,
   forest,
   rivers,
@@ -34,7 +33,6 @@ export enum MapLayers {
 
 export type MapLayerValue =
   | "climate"
-  | "land"
   | "forest"
   | "elevation"
   | "rivers"

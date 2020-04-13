@@ -17,7 +17,7 @@ export default function TilesController(req: Request, res: Response) {
 
   res.setHeader("Content-Type", "application/json");
   res.send({
-    grid: request.mapBuilder.grid,
+    grid: request.mapBuilder.originalGrid,
     id: request.id,
     nLayers: N_LAYERS
   });

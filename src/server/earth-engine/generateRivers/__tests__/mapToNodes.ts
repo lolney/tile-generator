@@ -46,7 +46,7 @@ describe("mapToNodes", () => {
         const graph = mapToNodes(array);
 
         it("returns the expected number of nodes", () => {
-          expect(graph.graph.nodes()).toHaveLength(10);
+          expect(graph.graph.nodes()).toHaveLength(12);
         });
 
         it("is fully connected", () => {
