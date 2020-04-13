@@ -8,11 +8,18 @@ export const LoadingToggler: React.FC = () => (
     <div className={styles.header}>BUILDING MAP...</div>
     <div className={styles.component_array}>
       <button className={styles.component_btn}>Climate</button>
-      <button className={styles.component_btn}>Land</button>
-      <button className={styles.component_btn}>Elevation</button>
-      <button className={styles.component_btn}>Forest</button>
-      <button className={styles.component_btn}>Rivers</button>
-      <button className={styles.component_btn}>Marsh</button>
+      <button className={styles.component_btn} disabled>
+        Elevation
+      </button>
+      <button className={styles.component_btn} disabled>
+        Forest
+      </button>
+      <button className={styles.component_btn} disabled>
+        Rivers
+      </button>
+      <button className={styles.component_btn} disabled>
+        Marsh
+      </button>
     </div>
     <ProgressBar
       value={23}
@@ -22,18 +29,18 @@ export const LoadingToggler: React.FC = () => (
           style: () => {
             return {
               position: "relative",
-              backgroundcolor: "#4d90e6"
+              backgroundcolor: "#4d90e6",
             };
-          }
+          },
         },
         Bar: {
           style: ({ $theme }) => ({
             height: $theme.sizing.scale300,
             marginLeft: "30px",
             marginRight: "30px",
-            backgroundColor: "#363636"
-          })
-        }
+            backgroundColor: "#363636",
+          }),
+        },
       }}
     />
     <ControlButtons textPrimary={"Download"} textSecondary={"Reset"} />

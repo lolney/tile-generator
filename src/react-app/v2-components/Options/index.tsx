@@ -15,8 +15,8 @@ const TileSlider: React.FC = () => (
       Root: {
         style: () => ({
           width: "75%",
-          height: "16px"
-        })
+          height: "16px",
+        }),
       },
       Track: {
         style: () => ({
@@ -24,8 +24,8 @@ const TileSlider: React.FC = () => (
           paddingLeft: "1px",
           paddingRight: "1px",
           paddingBottom: "5px",
-          marginRight: "0px"
-        })
+          marginRight: "0px",
+        }),
       },
       TickBar: () => null,
       InnerThumb: () => null,
@@ -33,8 +33,8 @@ const TileSlider: React.FC = () => (
       InnerTrack: {
         style: () => ({
           background: colors.textFieldGrey,
-          height: "24px"
-        })
+          height: "24px",
+        }),
       },
       Thumb: {
         style: () => ({
@@ -46,9 +46,9 @@ const TileSlider: React.FC = () => (
           borderStyle: "solid",
           borderWidth: "3px",
           borderColor: "#ccc",
-          backgroundColor: "#fff"
-        })
-      }
+          backgroundColor: "#fff",
+        }),
+      },
     }}
   />
 );
@@ -65,36 +65,37 @@ const TileInput: React.FC = () => (
           marginRight: "20px",
           marginLeft: "20px",
           marginTop: "8px",
-          background: colors.textFieldGrey
-        })
+          background: colors.textFieldGrey,
+        }),
       },
       EndEnhancer: {
         style: () => ({
           fontFamily: "Avenir",
           fontSize: "12px",
           backgroundColor: colors.textFieldGrey,
-          color: colors.textColorWhite
-        })
+          color: colors.textColorWhite,
+        }),
       },
       Input: {
         style: () => ({
           fontFamily: "Avenir",
           fontSize: "12px",
           backgroundColor: colors.textFieldGrey,
-          color: colors.textColorWhite
-        })
+          color: colors.textColorWhite,
+        }),
       },
       InputContainer: {
         style: () => ({
-          borderColor: colors.textFieldGrey
-        })
-      }
+          borderColor: colors.textFieldGrey,
+        }),
+      },
     }}
   />
 );
 
 const SelectMenu: React.FC = () => (
   <Select
+    clearable={false}
     size={SIZE.mini}
     value={[{ id: "Civilization VI" }]}
     options={[{ id: "Civilization VI" }, { id: "Civilization V" }]}
@@ -105,62 +106,69 @@ const SelectMenu: React.FC = () => (
           width: "100%",
           height: "10px",
           marginTop: "10px",
-          marginLeft: "7.19px",
-          marginRight: "112.25px",
+          marginLeft: "6.19px",
+          marginRight: "111.25px",
           padding: "0px",
-          background: colors.textFieldGrey
-        })
+          background: colors.textFieldGrey,
+          borderRadius: "2px",
+        }),
       },
       ValueContainer: {
         style: () => ({
           padding: "0px",
           background: colors.textFieldGrey,
-          color: colors.textColorWhite
-        })
+          color: colors.textColorWhite,
+        }),
       },
       ControlContainer: {
         style: () => ({
-          borderColor: colors.textFieldGrey
-        })
+          borderRadius: "2px",
+          borderColor: colors.textFieldGrey,
+        }),
       },
       IconsContainer: {
         style: () => ({
           background: colors.textFieldGrey,
           borderColor: colors.textFieldGrey,
-          border: "0px"
-        })
+          border: "0px",
+        }),
       },
       SelectArrow: {
         style: () => ({
-          color: colors.textColorWhite
-        })
+          color: colors.textColorWhite,
+        }),
       },
       DropdownContainer: {
         style: () => ({
-          backgroundColor: colors.textFieldGrey
-        })
+          backgroundColor: colors.textFieldGrey,
+        }),
+      },
+      SearchIconContainer: {
+        style: () => ({
+          borderRadius: "2px",
+        }),
       },
       Dropdown: {
         style: () => ({
           backgroundColor: colors.textFieldGrey,
           paddingBottom: "0px",
-          paddingTop: "0px"
-        })
+          paddingTop: "0px",
+        }),
       },
       DropdownListItem: {
         style: () => ({
           backgroundColor: colors.textFieldGrey,
           paddingBottom: "4px",
-          paddingTop: "4px"
-        })
+          paddingTop: "4px",
+        }),
       },
       OptionContent: {
         style: () => ({
           color: colors.textColorWhite,
           fontFamily: "Avenir",
-          fontSize: "12px"
-        })
-      }
+          fontSize: "12px",
+        }),
+      },
     }}
   />
 );

@@ -10,4 +10,6 @@
   bottom: 45.5px;
   left: 0;
   right: 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }

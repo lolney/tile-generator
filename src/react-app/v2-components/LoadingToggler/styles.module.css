@@ -40,9 +40,12 @@
   margin-right: auto;
 }
 
-.component_btn {
-  width: 69.5px;
+.component_btn,
+.btn_selected {
+  width: 75.5px;
   height: 21px;
+  border-radius: 3px;
+  padding-top: 3px;
   background-color: #909090;
   text-align: center;
   border: none;
@@ -50,6 +53,15 @@
   font-size: 12px;
   font-weight: 900;
   color: var(--backgroundGrey);
+  cursor: pointer;
+}
+
+.btn_selected {
+  outline: -webkit-focus-ring-color auto 5px;
+}
+.component_btn:disabled {
+  opacity: 30%;
+  cursor: default;
 }
 
 .left_headers {
