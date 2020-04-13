@@ -19,16 +19,17 @@ describe("generateRivers", () => {
             [-72.431966, 42.741314],
             [-72.431966, 42.699798],
             [-72.431966, 42.699798],
-            [-72.501716, 42.741314]
-          ]
-        ]
-      }
+            [-72.501716, 42.741314],
+          ],
+        ],
+      },
     ];
     const dimensions = { width: 1, height: 1 };
     const rivers = await generateRivers(
       tiles,
       dimensions,
-      createWaterTiles(tiles)
+      createWaterTiles(tiles),
+      1000
     );
 
     expect(rivers).toBeDefined();
@@ -41,7 +42,8 @@ describe("generateRivers", () => {
     const rivers = await generateRivers(
       tiles,
       dimensions,
-      createWaterTiles(tiles)
+      createWaterTiles(tiles),
+      1000
     );
 
     expect(10 * 10).toEqual(eureka.length);

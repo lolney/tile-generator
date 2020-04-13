@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@google/earthengine": "^0.1.171",
+    "@turf/turf": "^5.1.6",
     "@types/cors": "^2.8.4",
     "@types/downloadjs": "^1.4.1",
     "@types/express": "^4.16.1",

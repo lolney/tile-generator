@@ -13,15 +13,16 @@ import ArrayDebugger from "./debug/ArrayDebugger";
 const generateRivers = async (
   tiles: Polygon[],
   dimensions: Dimensions,
-  waterLayer: Tile[]
+  waterLayer: Tile[],
+  diameter: number
 ): Promise<Tile[][]> => {
   const rawData = await isRiverLocal(tiles);
-  const rawRivers = mapToRiversArray(rawData, dimensions);
+  const rawRivers = mapToRiversArray(rawData, dimensions, diameter);
 
   new ArrayDebugger(rawRivers).print("All rivers");
   const systems = findRiverSystems(rawRivers);
 
-  const tileGroups = systems.map(system => {
+  const tileGroups = systems.map((system) => {
     new ArrayDebugger(system).print("River system");
 
     const graph = mapToNodes(system);
