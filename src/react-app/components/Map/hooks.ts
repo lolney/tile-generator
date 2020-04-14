@@ -14,7 +14,7 @@ export const useLeafletMap = () => {
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
     // The map will load initially at a smaller size, then fail
@@ -64,7 +64,7 @@ export const useAreaSelect = (
     const areaSelect = L.areaSelect({
       width: 300,
       height: 300 * (10 / (10 + 0.5)),
-      keepAspectRatio: true
+      keepAspectRatio: true,
     });
     areaSelect.addTo(map);
     onBoundsChange(areaSelect.getBounds());
@@ -113,7 +113,7 @@ export const usePreviewLayer = (
   onBoundsChange: (bounds: L.LatLngBounds) => void,
   settings: MapOptions
 ) => {
-  const drawGrid = useCallback(() => {
+  const grid = useMemo(() => {
     if (!map || !areaSelect) return;
     return drawLayer(
       // todo: change on bounds changing as well
@@ -123,31 +123,31 @@ export const usePreviewLayer = (
       [],
       () => ({
         opacity: 0.2,
-        color: "black"
+        color: "black",
       })
     );
   }, [map, areaSelect, settings]);
 
-  const setPreview = useLayer(map, drawGrid());
+  const setPreview = useLayer(map, grid);
 
   useEffect(() => {
     if (!areaSelect) return;
 
     const handler = () => {
       onBoundsChange(areaSelect.getBounds());
-      setPreview(drawGrid());
+      setPreview(grid);
     };
     // @ts-ignore
     areaSelect.on("change", handler);
     // @ts-ignore
     return () => areaSelect.off("change", handler);
-  }, [areaSelect, setPreview, onBoundsChange, drawGrid]);
+  }, [areaSelect, setPreview, onBoundsChange, grid]);
 
   useDebounce(
     () => {
-      setPreview(drawGrid());
+      setPreview(grid);
     },
     200,
-    [drawGrid, settings] //todo: setpreview
+    [grid, settings] //todo: setpreview
   );
 };

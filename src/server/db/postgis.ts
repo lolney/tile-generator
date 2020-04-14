@@ -69,7 +69,6 @@ export async function sampleRaster(table: string, geom: Polygon, n: number) {
 }
 
 export async function findMax(table: string, tiles: Polygon[]) {
-  // ST_SummaryStatsAgg with ST_SummaryStatsAgg(ST_Clip(raster.rast,temp_geoms.geom), 1, false, 0.05)
   let query = `
     SELECT temp_geoms.id, (ST_SummaryStatsAgg(ST_Clip(raster.rast,temp_geoms.geom), 1, false, 0.05)).max
     FROM temp_geoms, flow_500 AS raster
