@@ -48,7 +48,7 @@ export default class TraceRivers {
 
   findNode = (index: RiverIndex) => {
     const [row, col] = index;
-    const candidates = RiverNode.fromCoords(row, col).filter(node => {
+    const candidates = RiverNode.fromCoords(row, col).filter((node) => {
       const neighbors = this.nodes.graph.neighbors(node);
       return neighbors && neighbors.length > 0;
     });
@@ -69,7 +69,7 @@ export default class TraceRivers {
     };
 
     while (end !== source) {
-      console.log("end", end);
+      console.debug("end", end);
       if (!path[end] || !path[end].predecessor) {
         reportError();
         return;
@@ -79,7 +79,7 @@ export default class TraceRivers {
       end = predecessor;
     }
 
-    console.log("path does lead to source");
+    console.debug("path does lead to source");
     new GraphDebuger(this.weightsGraph).print(
       new RiverNode(source),
       new RiverNode(end)

@@ -13,6 +13,6 @@ export function printSquare<T>(
     lastRow = row;
   }
 
-  if (msg) console.log(msg);
-  console.log(output);
+  if (msg) console.debug(msg);
+  console.debug(output);
 }

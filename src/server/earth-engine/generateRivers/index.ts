@@ -32,12 +32,12 @@ const generateRivers = async (
 
     try {
       const network = TraceRivers.perform(graph, source, endpoints);
-      console.log("edges", network?.graph.edges());
+      console.debug("edges", network?.graph.edges());
       if (!network) throw new Error("Empty network");
       const tiles = mapToTiles(network);
       return tiles;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return RiversArray.fromDimensions(system.width, system.height, {} as Tile)
         .fields;
     }
