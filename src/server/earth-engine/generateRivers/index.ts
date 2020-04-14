@@ -17,7 +17,7 @@ const generateRivers = async (
   diameter: number
 ): Promise<Tile[][]> => {
   const rawData = await isRiverLocal(tiles);
-  const rawRivers = mapToRiversArray(rawData, dimensions, diameter);
+  const rawRivers = mapToRiversArray(rawData, waterLayer, dimensions, diameter);
 
   new ArrayDebugger(rawRivers).print("All rivers");
   const systems = findRiverSystems(rawRivers);
