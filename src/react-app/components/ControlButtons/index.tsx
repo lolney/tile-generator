@@ -4,14 +4,18 @@ import styles from "./styles.module.css";
 interface ControlButtonsProps {
   textPrimary: string;
   textSecondary: string;
+  clickPrimary: () => void;
 }
 
 export const ControlButtons: React.FC<ControlButtonsProps> = ({
   textPrimary,
-  textSecondary
+  textSecondary,
+  clickPrimary,
 }) => (
   <div className={styles.btn_container}>
-    <button className={styles.primary_btm_button}>{textPrimary}</button>
+    <button onClick={clickPrimary} className={styles.primary_btm_button}>
+      {textPrimary}
+    </button>
     <button className={styles.btm_buttons}>{textSecondary}</button>
   </div>
 );

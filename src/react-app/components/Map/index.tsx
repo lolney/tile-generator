@@ -17,7 +17,7 @@ import {
   useAreaSelect,
   usePreviewLayer,
   useTileLayer,
-  useRiverLayer
+  useRiverLayer,
 } from "./hooks";
 
 type MapProps = DispatchProps & StateProps;
@@ -34,16 +34,16 @@ type DispatchProps = {
   onBoundsChange: (bounds: LatLngBounds) => any;
 };
 
-const mapStateToProps: MapStateToProps<StateProps, {}, State> = state => ({
+const mapStateToProps: MapStateToProps<StateProps, {}, State> = (state) => ({
   grid: state.mapData.grid,
   layer: selectedLayer(state),
   riverLines: state.mapData.riverLines,
   selectedLayer: state.leaflet.selectedLayer,
-  settings: state.settings
+  settings: state.settings,
 });
 
 const mapDispatchToProps = {
-  onBoundsChange: changeBounds
+  onBoundsChange: changeBounds,
 };
 
 const Map: React.FC<MapProps> = ({
@@ -52,7 +52,7 @@ const Map: React.FC<MapProps> = ({
   selectedLayer,
   riverLines,
   grid,
-  layer
+  layer,
 }) => {
   const map = useLeafletMap();
   const areaSelect = useAreaSelect(map, onBoundsChange);

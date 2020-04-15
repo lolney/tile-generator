@@ -1,7 +1,7 @@
 @import "../../constants/colors.css";
 
 .top_bar {
-  position: absolute;
+  position: relative;
   width: 100vw;
   background-color: var(--backgroundGrey);
   top: 0;
@@ -19,16 +19,23 @@
   vertical-align: center;
 }
 
-.map {
-  margin-top: 51.5px;
-}
-
 .bottom_bar {
-  position: absolute;
   width: 100vw;
   height: 45.5px;
   background-color: var(--backgroundGrey);
   bottom: 0;
   left: 0;
   display: flex;
+}
+
+.map_container {
+  flex: 1;
+  position: relative;
+}
+
+.page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }

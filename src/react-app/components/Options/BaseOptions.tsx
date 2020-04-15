@@ -2,15 +2,24 @@ import React from "react";
 import { Slider } from "baseui/slider";
 import { Input, SIZE } from "baseui/input";
 import { Select } from "baseui/select";
-import styles from "./styles.module.css";
 import * as colors from "../../constants/colors";
-import ControlButtons from "../ControlButtons";
 
-const TileSlider: React.FC = () => (
+interface TileSliderProps {
+  value: number;
+  onChange: (value: number) => void;
+  max: number;
+  min: number;
+}
+
+export const TileSlider: React.FC<TileSliderProps> = ({
+  value,
+  onChange,
+  ...rest
+}) => (
   <Slider
-    value={[23]}
-    onChange={({ value }) => {}}
-    onFinalChange={({ value }) => console.log(value)}
+    value={[value]}
+    onChange={(e) => onChange(e.value[0])}
+    {...rest}
     overrides={{
       Root: {
         style: () => ({
@@ -53,10 +62,13 @@ const TileSlider: React.FC = () => (
   />
 );
 
-const TileInput: React.FC = () => (
+export const TileInput: React.FC<TileSliderProps> = ({ onChange, ...rest }) => (
   <Input
     endEnhancer="tiles"
+    type="number"
+    onChange={(event) => onChange((event.target as any).value)}
     size={SIZE.mini}
+    {...rest}
     overrides={{
       Root: {
         style: () => ({
@@ -93,7 +105,7 @@ const TileInput: React.FC = () => (
   />
 );
 
-const SelectMenu: React.FC = () => (
+export const SelectMenu: React.FC = () => (
   <Select
     clearable={false}
     size={SIZE.mini}
@@ -172,26 +184,3 @@ const SelectMenu: React.FC = () => (
     }}
   />
 );
-
-export const Options: React.FC = () => (
-  <>
-    <div className={styles.header}>MAP OPTIONS</div>
-    <div className={styles.horizontal_containers}>
-      <div className={styles.left_headers}>Width</div>
-      <TileSlider />
-      <TileInput />
-    </div>
-    <div className={styles.horizontal_containers}>
-      <div className={styles.left_headers}>Height</div>
-      <TileSlider />
-      <TileInput />
-    </div>
-    <div className={styles.horizontal_containers}>
-      <div className={styles.left_headers}>Format</div>
-      <SelectMenu />
-    </div>
-    <ControlButtons textPrimary={"Generate"} textSecondary={"Reset"} />
-  </>
-);
-
-export default Options;
