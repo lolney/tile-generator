@@ -1,5 +1,4 @@
 import { range, zip } from "lodash";
-import { number } from "io-ts";
 
 export class RiversArray<T> {
   fields: T[];
@@ -81,25 +80,25 @@ export class RiversArray<T> {
 
   topLeft = (row: number, col: number): [number, number] => {
     const nextRow = row - 1;
-    const nextCol = row % 2 == 0 ? col : col - 1;
+    const nextCol = row % 2 === 0 ? col : col - 1;
     return [nextRow, nextCol];
   };
 
   topRight = (row: number, col: number): [number, number] => {
     const nextRow = row - 1;
-    const nextCol = row % 2 == 0 ? col + 1 : col;
+    const nextCol = row % 2 === 0 ? col + 1 : col;
     return [nextRow, nextCol];
   };
 
   bottomLeft = (row: number, col: number): [number, number] => {
     const nextRow = row + 1;
-    const nextCol = row % 2 == 0 ? col : col - 1;
+    const nextCol = row % 2 === 0 ? col : col - 1;
     return [nextRow, nextCol];
   };
 
   bottomRight = (row: number, col: number): [number, number] => {
     const nextRow = row + 1;
-    const nextCol = row % 2 == 0 ? col + 1 : col;
+    const nextCol = row % 2 === 0 ? col + 1 : col;
     return [nextRow, nextCol];
   };
 

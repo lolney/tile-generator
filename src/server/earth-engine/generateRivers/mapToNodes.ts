@@ -1,16 +1,15 @@
-import { RawRiverSystem, RiverNodes } from "./types";
-import { Graph, json } from "graphlib";
-import { fromCoords, getConnections, pruneNodes } from "./riverNode";
-import fs from "fs";
+import { RawRiverSystem } from "./types";
+import { Graph } from "graphlib";
+import { pruneNodes } from "./riverNode";
+import RiverNodes from "./RiverNodes";
+import RiverNode from "./RiverNode_";
 
 const createEdges = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const node of graph.nodes()) {
-    const connections = getConnections(
-      node,
-      riverSystem.width,
-      riverSystem.height
+    const connections = RiverNode.getConnections(node, riverSystem);
+    connections.forEach(connection =>
+      graph.setEdge(node, connection).setEdge(connection, node)
     );
-    connections.forEach(connection => graph.setEdge(node, connection));
   }
 };
 
@@ -18,7 +17,7 @@ const createNodes = (riverSystem: RawRiverSystem, graph: Graph) => {
   for (const [row, col] of riverSystem.pairs()) {
     const isRiver = riverSystem.get(row, col);
     if (isRiver) {
-      fromCoords(row, col).map((node: string) => graph.setNode(node));
+      RiverNode.fromCoords(row, col).map((node: string) => graph.setNode(node));
     }
   }
   pruneNodes(graph, riverSystem);
@@ -26,20 +25,12 @@ const createNodes = (riverSystem: RawRiverSystem, graph: Graph) => {
 
 // Map tiles -> nodes at the edges of those tiles
 const mapToNodes = (riverSystem: RawRiverSystem): RiverNodes => {
-  const graph = new Graph({ directed: false });
+  const graph = new Graph({ directed: true });
 
   createNodes(riverSystem, graph);
   createEdges(riverSystem, graph);
 
-  fs.writeFileSync(
-    `/Users/lolney/Downloads/graph-${Math.random()}.json`,
-    JSON.stringify(json.write(graph)),
-    {
-      flag: "w"
-    }
-  );
-
-  return graph;
+  return new RiverNodes(graph, riverSystem.width, riverSystem.height);
 };
 
 export default mapToNodes;

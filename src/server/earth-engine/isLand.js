@@ -1,7 +1,7 @@
 import ee from "@google/earthengine";
 import { reduceRegions } from "./tileAnalysis";
 
-export const IS_WATER_IF_GREATER_THAN = 0.5;
+export const IS_WATER_IF_GREATER_THAN = 0.35;
 
 function setIsLand(square) {
   var mean = square.get("mean");

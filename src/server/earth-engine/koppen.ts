@@ -65,6 +65,7 @@ export async function getClimateType(geom: Polygon) {
   const combined = await getClimateTypeSampled(geom, 8);
 
   const [climates, counts] = _.unzip(combined);
+  if (!counts) return undefined;
   const index = weightedRandom(counts);
 
   return climates[index];

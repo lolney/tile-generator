@@ -1,5 +1,3 @@
-import * as L from "leaflet";
-
 declare module "leaflet-area-select" {
   function areaSelect(box: AreaSelectOptions): AreaSelect;
 
@@ -18,6 +16,7 @@ declare module "leaflet-area-select" {
     addTo(map: Map): Map;
     getBounds(): LatLngBounds;
     remove(): void;
+    on(event: string, handler: () => void): void;
     setDimensions(dim: Dimension): void;
   }
 }

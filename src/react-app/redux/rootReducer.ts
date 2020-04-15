@@ -4,11 +4,10 @@ import { map } from "./modules/map";
 import { leaflet } from "./modules/leaflet";
 import { State } from "./types";
 
-export default combineReducers<State>({
-  // @ts-ignore
+export const rootReducer = combineReducers<State>({
   settings,
-  // @ts-ignore
   leaflet,
-  // @ts-ignore
   mapData: map
 });
+
+export default rootReducer;

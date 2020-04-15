@@ -1,4 +1,3 @@
-import { LatLngBounds as LeafletLatLngBounds } from "react-leaflet";
 import * as t from "io-ts";
 
 export interface Dimensions {
@@ -21,20 +20,25 @@ export type LatLngBounds = {
 };
 
 export type MapOptions = Options & {
-  bounds: LeafletLatLngBounds;
+  bounds: LatLngBounds;
 };
 
 export enum MapLayers {
   climate,
-  land,
   elevation,
   forest,
   rivers,
   marsh
 }
 
-//export type LayersType = { [P in MapLayers]?: Array<Tile> };
-export type LayersType = Record<string, Array<Tile>>;
+export type MapLayerValue =
+  | "climate"
+  | "forest"
+  | "elevation"
+  | "rivers"
+  | "marsh";
+
+export type LayersType = { [P in MapLayerValue]?: Array<Tile> };
 
 // --- Server ----- //
 

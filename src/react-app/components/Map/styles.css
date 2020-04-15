@@ -1,0 +1,12 @@
+#map {
+  height: 80vh;
+  width: 100vw;
+}
+
+.layers-container {
+  display: flex;
+}
+
+.layer-display {
+  flex: 1;
+}

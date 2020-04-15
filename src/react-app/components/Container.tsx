@@ -25,7 +25,7 @@ const options = {
 
 const download = {
   mapStateToProps: (state: State) => ({
-    active: state.mapData.submissionStatus == SubmissionStatus.done
+    active: state.mapData.submissionStatus === SubmissionStatus.done
   }),
   mapDispatchToProps: (dispatch: any) => ({
     download: () => dispatch(downloadMap())

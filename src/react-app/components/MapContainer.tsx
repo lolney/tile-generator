@@ -1,5 +1,5 @@
 import React from "react";
-import Map from "./Map";
+import Map from "./Map/index";
 import MapOptions from "./MapOptions";
 
 const MapContainer: React.SFC = () => {

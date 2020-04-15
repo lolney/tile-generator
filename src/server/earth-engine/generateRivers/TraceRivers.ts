@@ -1,7 +1,10 @@
-import { RiverIndex, RiverNodes } from "./types";
+import { RiverIndex } from "./types";
 import { alg } from "graphlib";
-import { compact, cloneDeep, Dictionary, fromPairs } from "lodash";
-import { fromCoords } from "./riverNode";
+import { compact, cloneDeep } from "lodash";
+import GraphDebuger from "./debug/GraphDebuger";
+import HexDebugger from "./debug/HexDebugger";
+import RiverNodes from "./RiverNodes";
+import RiverNode from "./RiverNode_";
 /*
 Alt river algo:
 - Find the source (if no source, mark one of the endpoints instead)
@@ -30,8 +33,8 @@ export default class TraceRivers {
     this.source = source;
     this.nodes = nodes;
     this.weightsGraph = cloneDeep(nodes);
-    for (const edge of this.weightsGraph.edges()) {
-      this.weightsGraph.setEdge(edge, 1);
+    for (const edge of this.weightsGraph.graph.edges()) {
+      this.weightsGraph.graph.setEdge(edge, 1);
     }
   }
 
@@ -45,35 +48,48 @@ export default class TraceRivers {
 
   findNode = (index: RiverIndex) => {
     const [row, col] = index;
-    const candidates = fromCoords(row, col).filter(node =>
-      this.nodes.hasNode(node)
-    );
+    const candidates = RiverNode.fromCoords(row, col).filter((node) => {
+      const neighbors = this.nodes.graph.neighbors(node);
+      return neighbors && neighbors.length > 0;
+    });
     return candidates.length > 0 ? candidates[0] : undefined;
   };
 
   weightFunction = (v: string) => {
-    return this.weightsGraph.outEdges(v);
+    return this.weightsGraph.graph.outEdges(v);
   };
 
   updateWeights = (path: Path, end: string, source: string) => {
-    const reportError = () =>
-      console.error(`Path does not lead to source: ${end}, ${source}`);
+    const reportError = () => {
+      console.error(`Path does not lead to source: ${end},${source}`);
+      const graphdebug = new GraphDebuger(this.weightsGraph);
+      graphdebug.print(new RiverNode(source), new RiverNode(end));
+      graphdebug.writeGraphVizToFile(`${end},${source}`);
+      new HexDebugger(this.weightsGraph).print();
+    };
 
-    while (end != source) {
+    while (end !== source) {
+      console.debug("end", end);
       if (!path[end] || !path[end].predecessor) {
         reportError();
-        break;
+        return;
       }
       const predecessor = path[end].predecessor;
-      this.weightsGraph.setEdge(end, predecessor, 0);
+      this.weightsGraph.graph.setEdge(end, predecessor, 0);
       end = predecessor;
     }
+
+    console.debug("path does lead to source");
+    new GraphDebuger(this.weightsGraph).print(
+      new RiverNode(source),
+      new RiverNode(end)
+    );
   };
 
   prunedNodes = () => {
-    for (const edge of this.weightsGraph.edges()) {
-      const label = this.weightsGraph.edge(edge);
-      if (label === 1) this.weightsGraph.removeEdge(edge);
+    for (const edge of this.weightsGraph.graph.edges()) {
+      const label = this.weightsGraph.graph.edge(edge);
+      if (label === 1) this.weightsGraph.graph.removeEdge(edge);
     }
     return this.weightsGraph;
   };
@@ -84,9 +100,10 @@ export default class TraceRivers {
     const endpoints = compact(this.endpoints.map(this.findNode));
 
     for (const endpoint of endpoints) {
-      const path = alg.dijkstra(this.weightsGraph, sourceNode);
+      const path = alg.dijkstra(this.weightsGraph.graph, sourceNode);
       this.updateWeights(path, endpoint, sourceNode);
     }
-    return this.prunedNodes();
+    this.prunedNodes();
+    return this.weightsGraph;
   }
 }

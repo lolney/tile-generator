@@ -5,14 +5,11 @@ import "normalize.css";
 import { MapPage } from "./react-app/pages/MapPage";
 import * as serviceWorker from "./serviceWorker";
 
-import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import thunk from "redux-thunk";
-import reducers from "./react-app/redux";
+import { store } from "./react-app/redux/store";
 
-const store = createStore(reducers, applyMiddleware(thunk));
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={store()}>
     <MapPage />
   </Provider>,
   document.getElementById("root")

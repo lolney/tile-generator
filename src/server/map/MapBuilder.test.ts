@@ -3,6 +3,25 @@ import MapBuilder from "./MapBuilder";
 import { LatLngBounds } from "leaflet";
 import { FeatureType, Options } from "../../common/types";
 import EarthEngine from "../earth-engine/EarthEngine";
+import { Polygon } from "geojson";
+
+import { toBeDeepCloseTo, toMatchCloseTo } from "jest-matcher-deep-close-to";
+expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
+
+const polygon: Polygon = {
+  type: "Polygon",
+  coordinates: [
+    [
+      [-124.15564400809153, 41.005732995449414],
+      [-124.14586748395648, 41.01042614430948],
+      [-124.13609095982143, 41.005732995449414],
+      [-124.13609095982143, 40.99634669772929],
+      [-124.14586748395648, 40.99165354886923],
+      [-124.15564400809153, 40.99634669772929],
+      [-124.15564400809153, 41.005732995449414]
+    ]
+  ]
+};
 
 function createFromGridConfig(params: params) {
   const height =
@@ -11,6 +30,7 @@ function createFromGridConfig(params: params) {
     [params.lat_start - height, params.lon_start],
     [params.lat_start, params.lon_end]
   );
+
   const options: Options = {
     dimensions: { width: params.height, height },
     format: "Civ V"
@@ -38,6 +58,30 @@ describe("MapBuilder", () => {
     expect(bounds._southWest.lng).toEqual(deserialized.getWest());
     expect(bounds._southWest.lat).toEqual(deserialized.getSouth());
   });
+
+  it.each([0, 360, -360, -720, 720])(
+    "should create grid with offset %p that's the same as the original",
+    offset => {
+      const polys: Polygon[] = [
+        {
+          ...polygon,
+          coordinates: [
+            polygon.coordinates[0].map(([lng, lat]) => [lng + offset, lat])
+          ]
+        }
+      ];
+      const options: Options = {
+        dimensions: { width: 100, height: 1000 },
+        format: "Civ V"
+      };
+
+      const bounds = new LatLngBounds([36, 98], [34, 100]);
+      const builder = new MapBuilder(polys, bounds, options);
+
+      expect(builder.grid).toBeDeepCloseTo([polygon]);
+      expect(builder.originalGrid).toEqual(polys);
+    }
+  );
 
   describe("createMarshTiles", () => {
     /* Mississippi delta */

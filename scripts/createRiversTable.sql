@@ -1,4 +1,4 @@
-CREATE TABLE rivers_merge AS
+CREATE TABLE IF NOT EXISTS rivers_merge AS
 SELECT name, ST_LineMerge(
                  ST_Collect(
                    ST_LineMerge(

@@ -1,5 +1,10 @@
-import { Polygon } from "geojson";
-import { LayersType, MapOptions } from "../../common/types";
+import { Polygon, Geometry, Feature, LineString } from "geojson";
+import {
+  LayersType,
+  MapOptions,
+  Tile,
+  MapLayerValue
+} from "../../common/types";
 
 export type State = {
   settings: MapOptions;
@@ -12,8 +17,9 @@ export type MapData = {
   layers: LayersType;
   loadingLayer: {
     index: number;
-    name?: string;
+    name?: MapLayerValue;
   };
+  riverLines: LineString[];
   mapId?: string;
   removeSSEListener?: Function;
   submissionStatus: SubmissionStatus;
@@ -22,7 +28,7 @@ export type MapData = {
 };
 
 export type LeafletState = {
-  selectedLayer: string | undefined;
+  selectedLayer: MapLayerValue | undefined;
 };
 
 export enum SubmissionStatus {
@@ -31,3 +37,5 @@ export enum SubmissionStatus {
   done,
   none
 }
+
+export type TileFeature = Feature<Geometry, Tile>;

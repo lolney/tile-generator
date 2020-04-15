@@ -46,11 +46,11 @@ describe("mapToNodes", () => {
         const graph = mapToNodes(array);
 
         it("returns the expected number of nodes", () => {
-          expect(graph.nodes()).toHaveLength(10);
+          expect(graph.graph.nodes()).toHaveLength(12);
         });
 
         it("is fully connected", () => {
-          const genSpanningTree = () => alg.prim(graph, () => 1);
+          const genSpanningTree = () => alg.prim(graph.graph, () => 1);
           expect(genSpanningTree).not.toThrow();
         });
       });

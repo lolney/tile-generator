@@ -1,4 +1,5 @@
 import { Polygon } from "geojson";
+import * as turf from "@turf/turf";
 import createHexGrid from "../earth-engine/createHexGrid";
 import { LatLngBounds } from "leaflet";
 import {
@@ -8,35 +9,51 @@ import {
   LatLngBounds as LatLngBoundsT,
   MapLayers,
   FeatureType,
-  Options
+  Options,
 } from "../../common/types";
-import isForest from "../earth-engine/isForest";
 import {
   getForestType,
   getClimateType,
-  getTerrainType
+  getTerrainType,
 } from "../earth-engine/koppen";
 import generateRivers from "../earth-engine/generateRivers";
 import {
   isLandLocal,
   findSlopeLocal,
   isMarshLocal,
-  isForestLocal
+  isForestLocal,
 } from "../earth-engine/rasterLocal";
+import Map from "./Map";
 import { logperformance } from "../logging";
 import zip from "lodash/zip";
 
 export default class MapBuilder {
   grid: Polygon[];
+  originalGrid: Polygon[];
   bounds: LatLngBounds;
   options: Options;
   waterLayer: Tile[] | undefined;
 
   constructor(grid: Polygon[], bounds: LatLngBounds, options: Options) {
-    this.grid = grid;
+    this.originalGrid = grid;
+    this.grid = MapBuilder.wrapLongitude(grid);
     this.bounds = bounds;
     this.options = options;
   }
+
+  static wrapLongitude = (grid: Polygon[]): Polygon[] =>
+    grid.map((poly) => ({
+      ...poly,
+      coordinates: [
+        poly.coordinates[0].map(([lng, lat]) => [MapBuilder.wrapLng(lng), lat]),
+      ],
+    }));
+
+  static wrapLng = (lng: number) => {
+    if (lng < -180) return 180 + ((lng + 180) % 360);
+    if (lng > 180) return ((lng - 180) % 360) - 180;
+    return lng;
+  };
 
   static deserializeBounds(bounds: LatLngBoundsT): LatLngBounds {
     return new LatLngBounds(
@@ -55,18 +72,25 @@ export default class MapBuilder {
     `;
   }
 
+  getDiameter = () => {
+    const ls = turf.lineString([
+      [this.bounds.getWest(), this.bounds.getNorth()],
+      [this.bounds.getEast(), this.bounds.getSouth()],
+    ]);
+    return turf.length(ls, { units: "miles" });
+  };
+
   createLayer = logperformance(
     async (layer: MapLayers): Promise<Tile[]> => {
       switch (layer) {
         case MapLayers.climate:
-          return this.createClimateTiles();
+          this.waterLayer = await this.createLandTiles();
+          const climateLayer = await this.createClimateTiles();
+          return Map.mergeTileArrays(this.waterLayer, climateLayer);
         case MapLayers.elevation:
           return this.createElevationTiles();
         case MapLayers.forest:
           return this.createForestTiles();
-        case MapLayers.land:
-          this.waterLayer = await this.createLandTiles();
-          return this.waterLayer;
         case MapLayers.rivers:
           if (!this.waterLayer)
             throw new Error(
@@ -83,7 +107,7 @@ export default class MapBuilder {
     const results = await isLandLocal(this.grid);
 
     return results.map((isLand: boolean) => ({
-      terrain: isLand ? TerrainType.grass : TerrainType.coast
+      terrain: isLand ? TerrainType.grass : TerrainType.coast,
     }));
   }
 
@@ -165,8 +189,7 @@ export default class MapBuilder {
     return Promise.all(
       this.grid.map(async (geometry: Polygon) => {
         const koppen = await getClimateType(geometry);
-
-        if (koppen === undefined) return {};
+        if (koppen === undefined) return { terrain: TerrainType.ocean };
         else {
           const terrain = getTerrainType(koppen);
           return { terrain };
@@ -177,7 +200,12 @@ export default class MapBuilder {
 
   async createRiverTiles(waterTiles: Tile[]): Promise<Tile[]> {
     const dimensions = this.options.dimensions;
-    const groups = await generateRivers(this.grid, dimensions, waterTiles);
+    const groups = await generateRivers(
+      this.grid,
+      dimensions,
+      waterTiles,
+      this.getDiameter()
+    );
     const initialValue = Array(this.grid.length).fill({});
 
     return groups.reduce(

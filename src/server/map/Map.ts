@@ -5,6 +5,7 @@ import {
   RiverType,
   MapConfigurable
 } from "../../common/types";
+import zip from "lodash/zip";
 
 export default class Map {
   tiles: Tile[];
@@ -24,7 +25,7 @@ export default class Map {
     const col = index % width;
     const row = Math.floor(index / width);
 
-    const even = row % 2 == 0;
+    const even = row % 2 === 0;
 
     switch (direction) {
       case "east":
@@ -84,26 +85,38 @@ export default class Map {
     return row * width + col;
   }
 
-  addLayer(tiles: Array<Tile>) {
-    this.tiles = this.tiles.map((tile, i) => {
-      const addition = tiles[i];
-      const result = { ...tile, ...addition };
+  static mergeTiles = (tileA: Tile, tileB = {} as Tile) => {
+    const isWater = (tile: Tile) =>
+      tile.terrain === TerrainType.coast || tile.terrain === TerrainType.ocean;
 
-      const isWater = (tile: Tile) =>
-        (result.terrain != undefined && tile.terrain === TerrainType.coast) ||
-        tile.terrain == TerrainType.ocean;
+    const isHilly = (tile: Tile) =>
+      tile.elevation !== undefined && tile.elevation !== Elevation.flat;
 
-      const isHilly = (tile: Tile) =>
-        tile.elevation != undefined && tile.elevation != Elevation.flat;
+    const { terrain, ...addition } = tileB;
+    const result = { ...tileA, ...addition };
 
-      // Remove elevation if it's a water tile
-      if (isWater(result)) {
-        if (isHilly(result)) {
-          delete result.elevation;
-        }
+    // always prioritize water
+    if (!isWater(result) && terrain != null) result.terrain = terrain;
+
+    // Remove elevation if it's a water tile
+    if (isWater(result)) {
+      if (isHilly(result)) {
+        delete result.elevation;
       }
+    }
 
-      return result;
-    });
+    return result;
+  };
+
+  static mergeTileArrays = (...tileArrays: Tile[][]) =>
+    zip(...tileArrays).map((tiles: Array<Tile | undefined>) =>
+      tiles.reduce(
+        (accum: Tile, value: Tile | undefined) => Map.mergeTiles(accum, value),
+        {}
+      )
+    );
+
+  addLayer(tiles: Array<Tile>) {
+    this.tiles = Map.mergeTileArrays(this.tiles, tiles);
   }
 }

@@ -1,4 +1,4 @@
-Web app for generating Civilization maps from Google Earth Engine climate/terrain data.
+Web app for generating tile maps from Google Earth Engine climate/terrain data. The main use is to generate Civilization maps (Civ V or VI) based on real-world locations.
 
 ### Development
 

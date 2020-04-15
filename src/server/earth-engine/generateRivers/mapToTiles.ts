@@ -1,19 +1,16 @@
-import { RiverNodes, RawRiverSystem } from "./types";
 import { Tile, RiverType } from "../../../common/types";
 import { RiversArray } from "./RiversArray";
 import { tileIndexFromEdge } from "./riverNode";
+import RiverNodes from "./RiverNodes";
 
-const mapToTiles = (
-  riverTree: RiverNodes,
-  riverSystem: RawRiverSystem
-): Tile[] => {
+const mapToTiles = (riverTree: RiverNodes): Tile[] => {
   const tiles: RiversArray<Tile> = RiversArray.fromDimensions(
-    riverSystem.width,
-    riverSystem.height,
+    riverTree.width,
+    riverTree.height,
     {}
   );
 
-  for (const { v, w } of riverTree.edges()) {
+  for (const { v, w } of riverTree.graph.edges()) {
     const [row, col, string] = tileIndexFromEdge([v, w]);
     const { river } = tiles.get(row, col);
 

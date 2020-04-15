@@ -6,7 +6,7 @@ import { fstat } from "fs";
 export function serializeGeoJSON(geom: GeoJsonObject): string {
   const taggedBounds = {
     ...geom,
-    crs: { type: "name", properties: { name: "EPSG:4326" } }
+    crs: { type: "name", properties: { name: "EPSG:4326" } },
   };
   const bounds = `ST_GeomFromGeoJSON('${JSON.stringify(taggedBounds)}')`;
   return bounds;
@@ -28,7 +28,7 @@ export function sampleSingleGeom(geom: Polygon, n: number) {
 
 export function createTempTable() {
   return `
-  CREATE TEMPORARY TABLE temp_geoms
+  CREATE TEMPORARY TABLE IF NOT EXISTS temp_geoms 
   (
     id integer,
     geom geometry(Polygon,4326)
@@ -70,20 +70,16 @@ export async function sampleRaster(table: string, geom: Polygon, n: number) {
 
 export async function findMax(table: string, tiles: Polygon[]) {
   let query = `
-    SELECT values.id, MAX((values.stats).max) as max
-    FROM (
-      SELECT points.id as id, ST_SummaryStats(ST_Clip(raster.rast,points.geom)) as stats
-      FROM temp_geoms as points, ${table} AS raster
-	    WHERE ST_Intersects(raster.rast, points.geom)
-    ) as values
-    GROUP BY values.id
-    ORDER BY values.id;
+    SELECT temp_geoms.id, (ST_SummaryStatsAgg(ST_Clip(raster.rast,temp_geoms.geom), 1, false, 0.05)).max
+    FROM temp_geoms, flow_500 AS raster
+    WHERE ST_Intersects(raster.rast, temp_geoms.geom)
+    GROUP BY temp_geoms.id
+    ORDER BY temp_geoms.id;
   `;
 
   query = [createTempTable(), generateInsert(tiles), query].join("\n");
 
   const rows = await db.doQuery(query);
-  console.log(query, rows);
   const value = rows.map((row: any) => row.max);
 
   return value;
@@ -91,7 +87,9 @@ export async function findMax(table: string, tiles: Polygon[]) {
 
 export async function sampleRasterTiles(tiles: Polygon[], dbname: string) {
   return Promise.all(
-    tiles.map(async geom => await sampleRaster(dbname, geom, SAMPLES_PER_TILE))
+    tiles.map(
+      async (geom) => await sampleRaster(dbname, geom, SAMPLES_PER_TILE)
+    )
   );
 }
 

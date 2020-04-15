@@ -1,8 +1,28 @@
 import createRawHexGrid, {
   createHexagon,
   offsets,
-  calcUnit
+  calcUnit,
+  mapRiverToLine
 } from "./createRawHexGrid";
+
+const fixtures = [
+  {
+    width: 7,
+    height: 5,
+    lon_start: 0,
+    lon_end: 50,
+    lat_start: 0,
+    lat_end: -50
+  },
+  {
+    width: 10,
+    height: 10,
+    lon_start: -71.0863494873047,
+    lon_end: -71.03004455566408,
+    lat_start: 42.38086519582323,
+    lat_end: 42.3245602642
+  }
+];
 
 describe("createHexagon", () => {
   it("outputs a hexagon", () => {
@@ -13,25 +33,6 @@ describe("createHexagon", () => {
 });
 
 describe("createHexGrid", () => {
-  const fixtures = [
-    {
-      width: 7,
-      height: 5,
-      lon_start: 0,
-      lon_end: 50,
-      lat_start: 0,
-      lat_end: -50
-    },
-    {
-      width: 10,
-      height: 10,
-      lon_start: -71.0863494873047,
-      lon_end: -71.03004455566408,
-      lat_start: 42.38086519582323,
-      lat_end: 42.3245602642
-    }
-  ];
-
   for (const config of fixtures) {
     const grid = createRawHexGrid(config);
     const { width: m, height: n, lon_end, lon_start, lat_start } = config;
@@ -59,4 +60,15 @@ describe("createHexGrid", () => {
       }
     });
   }
+});
+
+describe("mapRiverToLine", () => {
+  it.each(["northEast", "northWest", "east", "west", "southEast", "southWest"])(
+    "should take a slice of the provided poly %p",
+    river => {
+      const poly = createRawHexGrid(fixtures[0])[0];
+      const result = mapRiverToLine(poly, river);
+      expect(result);
+    }
+  );
 });

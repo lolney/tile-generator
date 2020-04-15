@@ -4,31 +4,34 @@ import {
   LayersType,
   Elevation,
   TerrainType,
-  FeatureType
+  FeatureType,
+  MapLayerValue
 } from "../../../../common/types";
-import { State } from "../../types";
+import { State, TileFeature } from "../../types";
 
 export const layersSelector = (state: State) => state.mapData.layers;
 
-export const hasLayer = (layers: LayersType, layer: string) =>
+export const hasLayer = (layers: LayersType, layer: MapLayerValue) =>
   layers[layer] ? true : false;
 
 export const receivedLayersSelector = (state: State) => {
   const layers = state.mapData.layers;
   const receivedLayers: Record<string, boolean> = _.fromPairs(
-    (Object.values(MapLayers) as string[])
-      .filter((key: string) => typeof key == "string")
-      .map((key: string) => [key, hasLayer(layers, key)])
+    (Object.values(MapLayers) as MapLayerValue[])
+      .filter((key: MapLayerValue) => typeof key === "string")
+      .map((key: MapLayerValue) => [key, hasLayer(layers, key)])
   );
   return receivedLayers;
 };
 
 export const selectedLayer = (state: State) => {
   const layerName = state.leaflet.selectedLayer;
-  return layerName == undefined ? [] : state.mapData.layers[layerName];
+  return layerName === undefined ? [] : state.mapData.layers[layerName] || [];
 };
 
-export const mapFeatureToStyle: L.StyleFunction = feature => {
+export const mapFeatureToStyle: L.StyleFunction = (
+  feature: TileFeature | undefined
+) => {
   if (feature === undefined || feature.properties === undefined) {
     return {};
   } else {
@@ -56,7 +59,7 @@ export const mapFeatureToStyle: L.StyleFunction = feature => {
     const elevation = (() => {
       switch (feature.properties.elevation) {
         case Elevation.flat:
-          if (feature.properties.terrain != TerrainType.coast)
+          if (feature.properties.terrain !== TerrainType.coast)
             return { fillColor: "green" };
         case Elevation.hills:
           return { fillColor: "brown" };

@@ -1,6 +1,7 @@
 import { RiverNode, RiverEdge, VertexType, RawRiverSystem } from "./types";
 import { RiverType } from "../../../common/types";
 import { Graph } from "graphlib";
+import RiverNodeClass from "./RiverNode_";
 
 /* 
 The corresponding vertex number on each neighbor
@@ -37,7 +38,7 @@ const mod = (n: number, divisor: number) => {
 
 // Map a vertex on one hex to neighboring vertices both on itself and its neighbors
 // Only need to map 1-3, because 0,4,5 have their connections set by the neighbor
-const mapVertexToNeighbors = (
+export const mapVertexToNeighbors = (
   row: number,
   col: number,
   vertex: VertexType
@@ -117,7 +118,7 @@ const riverNodesOther = (args: {
 
   switch (key) {
     case "0,1":
-      if (rowA == rowB) {
+      if (rowA === rowB) {
         return [rowA, Math.max(colA, colB), "northWest"];
       } else {
         return rowA < rowB ? [rowA, colA, "east"] : [rowB, colB, "east"];
@@ -131,7 +132,7 @@ const riverNodesOther = (args: {
         ? [rowA, colA, "southEast"]
         : [rowB, colB, "southEast"];
     case "1,2":
-      if (vertexA != 2) {
+      if (vertexA !== 2) {
         const tempRow = rowA;
         const tempCol = colA;
 
@@ -141,21 +142,21 @@ const riverNodesOther = (args: {
         colB = tempCol;
       }
 
-      if (rowA % 2 == 0 && colA == colB) return [rowA, colA, "southEast"];
-      if (rowA % 2 == 0 && colA < colB) return [rowB, colB, "northEast"];
-      if (rowA % 2 == 1 && colA > colB) return [rowB, colB, "southEast"];
-      if (rowA % 2 == 1 && colA == colB) return [rowB, colB, "northEast"];
+      if (rowA % 2 === 0 && colA === colB) return [rowA, colA, "southEast"];
+      if (rowA % 2 === 0 && colA < colB) return [rowB, colB, "northEast"];
+      if (rowA % 2 === 1 && colA > colB) return [rowB, colB, "southEast"];
+      if (rowA % 2 === 1 && colA === colB) return [rowB, colB, "northEast"];
 
       break;
 
     case "2,3":
-      if (rowA == rowB) {
+      if (rowA === rowB) {
         return [rowA, Math.max(colA, colB), "southWest"];
       } else {
         return rowA > rowB ? [rowA, colA, "east"] : [rowB, colB, "east"];
       }
     case "0,3":
-      if (vertexA != 3) {
+      if (vertexA !== 3) {
         const tempRow = rowA;
         const tempCol = colA;
 
@@ -165,14 +166,14 @@ const riverNodesOther = (args: {
         colB = tempCol;
       }
 
-      if (rowA % 2 == 0 && colA == colB) return [rowA, colA, "southWest"];
-      if (rowA % 2 == 0 && colA < colB) return [rowA, colA, "southEast"];
-      if (rowA % 2 == 1 && colA > colB) return [rowA, colA, "southWest"];
-      if (rowA % 2 == 1 && colA == colB) return [rowA, colA, "southEast"];
+      if (rowA % 2 === 0 && colA === colB) return [rowA, colA, "southWest"];
+      if (rowA % 2 === 0 && colA < colB) return [rowA, colA, "southEast"];
+      if (rowA % 2 === 1 && colA > colB) return [rowA, colA, "southWest"];
+      if (rowA % 2 === 1 && colA === colB) return [rowA, colA, "southEast"];
 
       break;
     case "3,4":
-      if (rowA == rowB) {
+      if (rowA === rowB) {
         return [rowA, Math.min(colA, colB), "southEast"];
       } else {
         return [Math.max(rowA, rowB), Math.max(colA, colB), "west"];
@@ -182,13 +183,6 @@ const riverNodesOther = (args: {
   throw new Error(
     `unexpected key ${key} with coords ${rowA},${colA} ${rowB},${colB}`
   );
-};
-
-export const fromCoords = (row: number, col: number): RiverNode[] => {
-  const nodeIndices = Array(6)
-    .fill(0)
-    .map((_, i) => i);
-  return nodeIndices.map(node => `${row},${col},${node}`);
 };
 
 const removeNodes = (
@@ -208,7 +202,7 @@ export const pruneNodes = (graph: Graph, riverSystem: RawRiverSystem) => {
   for (const [row, col] of riverSystem.pairs()) {
     if (riverSystem.leftValue(row, col)) removeNodes(graph, row, col, [4, 5]);
 
-    if (row % 2 == 1) {
+    if (row % 2 === 1) {
       if (riverSystem.topRightValue(row, col))
         removeNodes(graph, row, col, [0, 1]);
       if (riverSystem.topLeftValue(row, col))
@@ -221,35 +215,12 @@ export const pruneNodes = (graph: Graph, riverSystem: RawRiverSystem) => {
   }
 };
 
-export const toCoords = (node: RiverNode) => {
-  const [row, col, vertex] = node.split(",");
-  return [parseInt(row), parseInt(col), parseInt(vertex)];
-};
-
-export const getConnections = (
-  node: RiverNode,
-  width: number,
-  height: number
-): string[] => {
-  const [row, col, vertex] = toCoords(node);
-  const neighbors = mapVertexToNeighbors(row, col, vertex as VertexType);
-
-  const inBounds = (row: number, col: number) =>
-    row >= 0 && row < height && col >= 0 && col < height;
-
-  return neighbors
-    .map(([nextRow, nextCol, nextVertex]) =>
-      inBounds(nextRow, nextCol) ? `${nextRow},${nextCol},${nextVertex}` : ""
-    )
-    .filter(x => x);
-};
-
 export const tileIndexFromEdge = (
   edge: RiverEdge
 ): [number, number, keyof RiverType] => {
   const [node0, node1] = edge;
-  const [rowA, colA, vertexA] = toCoords(node0);
-  const [rowB, colB, vertexB] = toCoords(node1);
+  const [rowA, colA, vertexA] = RiverNodeClass.toCoords(node0);
+  const [rowB, colB, vertexB] = RiverNodeClass.toCoords(node1);
 
   const key = [vertexA, vertexB].sort().join(",");
 

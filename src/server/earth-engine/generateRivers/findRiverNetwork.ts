@@ -1,6 +1,5 @@
 import { alg, Edge, Graph } from "graphlib";
 import { NodeId } from "./types";
-import fs from "fs";
 
 const findSource = (graph: Graph) => graph.nodes()[0];
 
