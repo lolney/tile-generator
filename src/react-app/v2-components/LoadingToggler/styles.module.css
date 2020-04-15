@@ -1,0 +1,74 @@
+@import "../../constants/colors.css";
+
+.container {
+  position: absolute;
+  width: 535px;
+  height: 132px;
+  background-color: var(--backgroundGrey);
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 45.5px;
+  left: 0;
+  right: 0;
+}
+
+.header {
+  font-size: 14px;
+  font-weight: 900;
+  font-family: Avenir;
+  text-align: center;
+  color: var(--textColorWhite);
+  margin-top: 10px;
+}
+
+.component_array {
+  width: 475px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.loading_bar {
+  width: 475px;
+  height: 10.5px;
+  background-color: var(--textFieldGrey);
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.component_btn,
+.btn_selected {
+  width: 75.5px;
+  height: 21px;
+  border-radius: 3px;
+  padding-top: 3px;
+  background-color: #909090;
+  text-align: center;
+  border: none;
+  font-family: Avenir;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--backgroundGrey);
+  cursor: pointer;
+}
+
+.btn_selected {
+  outline: -webkit-focus-ring-color auto 5px;
+}
+.component_btn:disabled {
+  opacity: 30%;
+  cursor: default;
+}
+
+.left_headers {
+  color: var(--textColorWhite);
+  font-family: Avenir;
+  font-size: 12px;
+  font-weight: 900;
+  margin-left: 20px;
+  margin-top: 15px;
+}
