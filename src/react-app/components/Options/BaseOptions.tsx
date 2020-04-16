@@ -66,7 +66,7 @@ export const TileInput: React.FC<TileSliderProps> = ({ onChange, ...rest }) => (
   <Input
     endEnhancer="tiles"
     type="number"
-    onChange={(event) => onChange((event.target as any).value)}
+    onChange={(event) => onChange(parseInt((event.target as any).value))}
     size={SIZE.mini}
     {...rest}
     overrides={{

@@ -44,7 +44,7 @@ export const receiveGrid = (payload: any) => ({
 });
 
 export const resetMap = () => ({
-  type: resetMap,
+  type: RESET_MAP,
 });
 
 export const submitting = () => ({

@@ -1,0 +1,22 @@
+.button,
+.primary_button {
+  width: 78.5px;
+  height: 27px;
+  border-radius: 10.5px;
+  background-color: #909090;
+  padding-top: 4px;
+  text-align: center;
+  border: none;
+  font-family: Avenir;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--backgroundGrey);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.primary_button {
+  background-color: #4d90e6;
+}

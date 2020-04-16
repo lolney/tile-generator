@@ -32,8 +32,15 @@ export const map = (
       };
     case FINISHED_MAP:
       if (state.removeSSEListener) state.removeSSEListener();
-      return { ...state, ...payload, submissionStatus: SubmissionStatus.done };
+      return {
+        ...state,
+        ...payload,
+        submissionStatus: SubmissionStatus.done,
+        removeSSEListener: undefined,
+      };
     case RESET_MAP:
+      // TODO: cancel serverside as well
+      if (state.removeSSEListener) state.removeSSEListener();
       return initialState;
     default:
       return { ...state, ...payload };

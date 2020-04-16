@@ -5,9 +5,11 @@ import {
   Elevation,
   TerrainType,
   FeatureType,
-  MapLayerValue
+  MapLayerValue,
 } from "../../../../common/types";
 import { State, TileFeature } from "../../types";
+
+const fillOpacity = 0.75;
 
 export const layersSelector = (state: State) => state.mapData.layers;
 
@@ -60,11 +62,12 @@ export const mapFeatureToStyle: L.StyleFunction = (
       switch (feature.properties.elevation) {
         case Elevation.flat:
           if (feature.properties.terrain !== TerrainType.coast)
-            return { fillColor: "green" };
+            return { fillColor: "BlanchedAlmond" };
+          return {};
         case Elevation.hills:
-          return { fillColor: "brown" };
+          return { fillColor: "Burlywood", fillOpacity };
         case Elevation.mountain:
-          return { fillColor: "black" };
+          return { fillColor: "SaddleBrown", fillOpacity };
         default:
       }
       return {};
@@ -73,11 +76,11 @@ export const mapFeatureToStyle: L.StyleFunction = (
     const terrainFeature = (() => {
       switch (feature.properties.feature) {
         case FeatureType.forest:
-          return { fillColor: "DarkOliveGreen" };
+          return { fillColor: "ForestGreen", fillOpacity };
         case FeatureType.jungle:
-          return { fillColor: "black" };
+          return { fillColor: "DarkGreen", fillOpacity };
         case FeatureType.marsh:
-          return { fillColor: "lime" };
+          return { fillColor: "LimeGreen", fillOpacity };
         default:
           return {};
       }

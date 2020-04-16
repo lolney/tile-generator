@@ -1,12 +1,13 @@
 import React from "react";
 import { Options } from "../../../common/types";
 import { submit } from "../../redux/modules/map";
-import { changeOptions } from "../../redux/modules/settings";
+import { changeOptions, resetOptions } from "../../redux/modules/settings";
 import { connect } from "react-redux";
 import { State } from "../../redux/types";
 import { TileSlider, TileInput, SelectMenu } from "./BaseOptions";
 import { ControlButtons } from "../ControlButtons";
 import styles from "./styles.module.css";
+import Button from "../Button";
 
 const widthParams = { min: 10, max: 120 };
 
@@ -14,6 +15,7 @@ interface OptionsProps {
   onSubmit: () => void;
   selectedOptions: Options;
   onChange: (options: Options) => void;
+  resetOptions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,12 +28,14 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = {
   onChange: changeOptions,
   onSubmit: submit,
+  resetOptions,
 };
 
 export const OptionsComponent: React.FC<OptionsProps> = ({
   onChange,
   onSubmit,
   selectedOptions,
+  resetOptions,
 }) => {
   return (
     <>
@@ -49,11 +53,12 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
         <div className={styles.left_headers}>Format</div>
         <SelectMenu />
       </div>
-      <ControlButtons
-        clickPrimary={onSubmit}
-        textPrimary={"Generate"}
-        textSecondary={"Reset"}
-      />
+      <ControlButtons>
+        <Button primary onClick={onSubmit}>
+          Generate
+        </Button>
+        <Button onClick={resetOptions}>Reset</Button>
+      </ControlButtons>
     </>
   );
 };
@@ -79,13 +84,11 @@ const InputRow: React.FC<InputRowProps> = ({
     value: selectedOptions.dimensions[field],
     min,
     max,
-    onChange: (value: number) => {
-      console.log(value);
-      return onChange({
+    onChange: (value: number) =>
+      onChange({
         ...selectedOptions,
         dimensions: { ...selectedOptions.dimensions, [field]: value },
-      });
-    },
+      }),
   };
   return (
     <div className={styles.horizontal_containers}>

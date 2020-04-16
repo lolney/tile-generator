@@ -1,28 +1,3 @@
-.btm_buttons,
-.primary_btm_button {
-  width: 78.5px;
-  height: 27px;
-  border-radius: 10.5px;
-  background-color: #909090;
-  flex: 50%;
-  margin: 10px;
-  padding-top: 4px;
-  text-align: center;
-  border: none;
-  font-family: Avenir;
-  font-size: 12px;
-  font-weight: 900;
-  color: var(--backgroundGrey);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.primary_btm_button {
-  background-color: #4d90e6;
-}
-
 .btn_container {
   position: fixed;
   bottom: 0px;
@@ -36,4 +11,8 @@
   padding-top: 0px;
   padding: 10px;
   padding-top: 0px;
+}
+
+.btn_container * {
+  margin: 10px;
 }
