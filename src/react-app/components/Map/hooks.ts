@@ -5,6 +5,7 @@ import { MapOptions, MapLayerValue, Tile } from "../../../common/types";
 import { createPreviewGrid, drawLayer, drawRivers } from "./utils";
 import { LineString, Polygon } from "geojson";
 import { mapFeatureToStyle } from "../../redux/modules/leaflet/selectors";
+import { SubmissionStatus } from "../../redux/types";
 
 export const useLeafletMap = () => {
   const [map, setMap] = useState<L.Map>();
@@ -57,19 +58,35 @@ export const useLayer = (
 
 export const useAreaSelect = (
   map: L.Map | undefined,
-  onBoundsChange: (bounds: L.LatLngBounds) => void
+  onBoundsChange: (bounds: L.LatLngBounds) => void,
+  submissionStatus: SubmissionStatus
 ) => {
+  const [previous, setPrevious] = useState<L.AreaSelect>();
+
   const areaSelect = useMemo(() => {
-    if (!map) return;
+    if (!map || submissionStatus !== SubmissionStatus.none) return;
     const areaSelect = L.areaSelect({
       width: 300,
       height: 300 * (10 / (10 + 0.5)),
       keepAspectRatio: true,
     });
     areaSelect.addTo(map);
+
     onBoundsChange(areaSelect.getBounds());
+
     return areaSelect;
-  }, [map, onBoundsChange]);
+  }, [map, onBoundsChange, submissionStatus]);
+
+  useEffect(() => {
+    if (areaSelect) setPrevious(areaSelect);
+  }, [areaSelect]);
+
+  useEffect(() => {
+    if (!areaSelect && previous) {
+      previous.remove();
+      setPrevious(undefined);
+    }
+  }, [previous, areaSelect]);
 
   return areaSelect;
 };

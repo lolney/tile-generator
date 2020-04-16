@@ -29,7 +29,7 @@
     "@types/supertest": "^2.0.7",
     "@types/uuid": "^3.4.4",
     "babel-cli": "^6.26.0",
-    "baseui": "^9.67.2",
+    "baseui": "^9.70.0",
     "core-js": "^3.0.0",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",

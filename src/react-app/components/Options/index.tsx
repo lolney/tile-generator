@@ -4,7 +4,9 @@ import { submit } from "../../redux/modules/map";
 import { changeOptions, resetOptions } from "../../redux/modules/settings";
 import { connect } from "react-redux";
 import { State } from "../../redux/types";
-import { TileSlider, TileInput, SelectMenu } from "./BaseOptions";
+import TileSlider from "./TileSlider";
+import TileInput from "./TileInput";
+import SelectMenu from "./SelectMenu";
 import { ControlButtons } from "../ControlButtons";
 import styles from "./styles.module.css";
 import Button from "../Button";
@@ -46,6 +48,7 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
           onChange={onChange}
           title={title}
           field={title}
+          key={title}
           {...widthParams}
         />
       ))}

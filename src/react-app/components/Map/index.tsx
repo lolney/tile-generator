@@ -10,7 +10,7 @@ import { Polygon, LineString } from "geojson";
 import { Tile, MapLayerValue, MapOptions } from "../../../common/types";
 import { selectedLayer } from "../../redux/modules/leaflet/selectors";
 import { connect, MapStateToProps } from "react-redux";
-import { State } from "../../redux/types";
+import { State, SubmissionStatus } from "../../redux/types";
 import { changeBounds } from "../../redux/modules/settings";
 import {
   useLeafletMap,
@@ -28,6 +28,7 @@ type StateProps = {
   riverLines: LineString[];
   selectedLayer: MapLayerValue | undefined;
   settings: MapOptions;
+  submissionStatus: SubmissionStatus;
 };
 
 type DispatchProps = {
@@ -40,6 +41,7 @@ const mapStateToProps: MapStateToProps<StateProps, {}, State> = (state) => ({
   riverLines: state.mapData.riverLines,
   selectedLayer: state.leaflet.selectedLayer,
   settings: state.settings,
+  submissionStatus: state.mapData.submissionStatus,
 });
 
 const mapDispatchToProps = {
@@ -53,9 +55,10 @@ const Map: React.FC<MapProps> = ({
   riverLines,
   grid,
   layer,
+  submissionStatus,
 }) => {
   const map = useLeafletMap();
-  const areaSelect = useAreaSelect(map, onBoundsChange);
+  const areaSelect = useAreaSelect(map, onBoundsChange, submissionStatus);
 
   usePreviewLayer(map, areaSelect, onBoundsChange, settings);
   useRiverLayer(map, selectedLayer, riverLines);
