@@ -75,7 +75,7 @@ export default class Civ6Map extends TileMap {
       WrapY: false,
       TopLatitude: 90,
       BottomLatitude: -90,
-      MapSizeType: "MAPSIZE_DUEL",
+      MapSizeType: Civ6Map.getMapSize(this.tiles.length),
     };
 
     this.attributes = {
@@ -124,7 +124,14 @@ export default class Civ6Map extends TileMap {
     };
   }
 
-  static getMapSize = () => {};
+  static getMapSize = (size: number) => {
+    if (size <= 44 * 26) return "MAPSIZE_DUEL";
+    if (size <= 60 * 38) return "MAPSIZE_TINY";
+    if (size <= 74 * 46) return "MAPSIZE_SMALL";
+    if (size <= 84 * 54) return "MAPSIZE_STANDARD";
+    if (size <= 96 * 60) return "MAPSIZE_LARGE";
+    return "MAPSIZE_HUGE";
+  };
 
   static getTerrainType(tile: Tile) {
     const { elevation, terrain } = tile;
