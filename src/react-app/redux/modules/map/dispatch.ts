@@ -13,12 +13,12 @@ export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
   return fetch(`${BACKEND_URL}/api/map`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(options)
+    body: JSON.stringify(options),
   }).then(
-    resp => dispatch(receiveLayers(resp)),
-    error => dispatch(submitError(error))
+    (resp) => dispatch(receiveLayers(resp)),
+    (error) => dispatch(submitError(error))
   );
 };
 
@@ -34,7 +34,7 @@ export const downloadMap = () => async (
   else {
     const filename =
       resp.headers?.get("Content-Disposition")?.split("filename=")[1] ||
-      "generated-map.civ6map";
+      "generated-map.Civ6Map";
     const blob = await resp.blob();
 
     download(blob, filename);

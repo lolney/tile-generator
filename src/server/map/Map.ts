@@ -3,7 +3,7 @@ import {
   TerrainType,
   Elevation,
   RiverType,
-  MapConfigurable
+  MapConfigurable,
 } from "../../common/types";
 import zip from "lodash/zip";
 
@@ -54,7 +54,7 @@ export default class Map {
     const fields: Array<[keyof RiverType, keyof RiverType]> = [
       ["west", "east"],
       ["northWest", "southEast"],
-      ["northEast", "southWest"]
+      ["northEast", "southWest"],
     ];
 
     for (const [originalDirection, mappedDirection] of fields) {
@@ -63,7 +63,7 @@ export default class Map {
         if (newIndex !== undefined) {
           this.tiles[newIndex].river = {
             ...this.tiles[newIndex].river,
-            [mappedDirection]: true
+            [mappedDirection]: true,
           };
         }
       }
@@ -98,11 +98,10 @@ export default class Map {
     // always prioritize water
     if (!isWater(result) && terrain != null) result.terrain = terrain;
 
-    // Remove elevation if it's a water tile
+    // Remove elevation/features if it's a water tile
     if (isWater(result)) {
-      if (isHilly(result)) {
-        delete result.elevation;
-      }
+      if (isHilly(result)) delete result.elevation;
+      if (result.feature) delete result.feature;
     }
 
     return result;
