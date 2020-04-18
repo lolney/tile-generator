@@ -18,9 +18,9 @@ const polygon: Polygon = {
       [-124.13609095982143, 40.99634669772929],
       [-124.14586748395648, 40.99165354886923],
       [-124.15564400809153, 40.99634669772929],
-      [-124.15564400809153, 41.005732995449414]
-    ]
-  ]
+      [-124.15564400809153, 41.005732995449414],
+    ],
+  ],
 };
 
 function createFromGridConfig(params: params) {
@@ -33,7 +33,7 @@ function createFromGridConfig(params: params) {
 
   const options: Options = {
     dimensions: { width: params.height, height },
-    format: "Civ V"
+    format: "Civ V",
   };
 
   const grid = createRawHexGrid(params);
@@ -49,7 +49,7 @@ describe("MapBuilder", () => {
   it("deserializeBounds", () => {
     const bounds = {
       _southWest: { lat: 42.343320316410804, lng: -71.0863494873047 },
-      _northEast: { lat: 42.38086519582323, lng: -71.03004455566408 }
+      _northEast: { lat: 42.38086519582323, lng: -71.03004455566408 },
     };
     const deserialized: LatLngBounds = MapBuilder.deserializeBounds(bounds);
 
@@ -61,18 +61,18 @@ describe("MapBuilder", () => {
 
   it.each([0, 360, -360, -720, 720])(
     "should create grid with offset %p that's the same as the original",
-    offset => {
+    (offset) => {
       const polys: Polygon[] = [
         {
           ...polygon,
           coordinates: [
-            polygon.coordinates[0].map(([lng, lat]) => [lng + offset, lat])
-          ]
-        }
+            polygon.coordinates[0].map(([lng, lat]) => [lng + offset, lat]),
+          ],
+        },
       ];
       const options: Options = {
         dimensions: { width: 100, height: 1000 },
-        format: "Civ V"
+        format: "Civ V",
       };
 
       const bounds = new LatLngBounds([36, 98], [34, 100]);
@@ -91,7 +91,7 @@ describe("MapBuilder", () => {
       lon_start: -90.1,
       lon_end: -89.7,
       lat_start: 29.7,
-      lat_end: 29.3
+      lat_end: 29.3,
     });
 
     /* Western great plains */
@@ -101,7 +101,7 @@ describe("MapBuilder", () => {
       lon_start: -110,
       lon_end: -100,
       lat_start: 40,
-      lat_end: 30
+      lat_end: 30,
     });
 
     it("correcly identifies marshed regions", async () => {
@@ -127,7 +127,7 @@ describe("MapBuilder", () => {
       lon_start: -83.784476,
       lon_end: -83.3,
       lat_start: 35.149286,
-      lat_end: 34.7
+      lat_end: 34.7,
     });
 
     /* Amazon */
@@ -137,7 +137,7 @@ describe("MapBuilder", () => {
       lon_start: -66.206732,
       lon_end: -65,
       lat_start: -5,
-      lat_end: -5.2
+      lat_end: -5.2,
     });
 
     /* North Slope Alaska */
@@ -147,7 +147,7 @@ describe("MapBuilder", () => {
       lon_start: -156.462222,
       lon_end: -156,
       lat_start: 70.699283,
-      lat_end: 70.2
+      lat_end: 70.2,
     });
 
     it("correcly identifies forested regions", async () => {

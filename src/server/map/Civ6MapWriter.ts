@@ -57,7 +57,7 @@ export default class Civ6MapWriter {
     const headers = this.getMetaDataQueries();
     const body = this.getPlotsQueries();
     var schema = fs.readFileSync("./src/server/map/Civ6MapScheme.sql", {
-      encoding: "utf8"
+      encoding: "utf8",
     });
 
     const tables = schema.split(";");
@@ -86,10 +86,14 @@ export default class Civ6MapWriter {
       "PlotRivers",
       "PlotResources",
       "PlotFeatures",
-      "PlotCliffs"
-    ].map(table => `DELETE FROM ${table};`);
+      "PlotCliffs",
+      "MetaData",
+      "ModText",
+      "ModDependencies",
+    ].map((table) => `DELETE FROM ${table};`);
 
     const map = this.getQueryFromEntries("Map", [this.map.map]);
+    const modText = this.getQueryFromEntries("ModText", this.map.modText);
     const body = this.getPlotsQueries();
 
     for (const del of deletes) {
@@ -97,6 +101,7 @@ export default class Civ6MapWriter {
     }
 
     await this.run(map);
+    await this.run(modText);
 
     for (const query of body) {
       await this.run(query);
@@ -126,8 +131,9 @@ export default class Civ6MapWriter {
 
     const map = this.getQueryFromEntries("Map", [this.map.map]);
     const players = this.getQueryFromEntries("Players", this.map.players);
+    const modText = this.getQueryFromEntries("ModText", this.map.modText);
 
-    return [metadata, attributes, map, players];
+    return [metadata, attributes, map, players, modText];
   }
 
   getQueryFromEntries(table: string, objs: any[]) {
@@ -140,10 +146,7 @@ export default class Civ6MapWriter {
     };
 
     const rows = objs.map(
-      obj =>
-        `(${Object.values(obj)
-          .map(format)
-          .join(",")})`
+      (obj) => `(${Object.values(obj).map(format).join(",")})`
     );
     const fields = Object.keys(objs[0]);
 
@@ -165,8 +168,8 @@ export default class Civ6MapWriter {
           return feature ? `(${index}, '${feature}')` : feature;
         }
       ),
-      this.getQueryFromEntries("PlotRivers", this.map.getRivers())
-    ].filter(query => query !== "");
+      this.getQueryFromEntries("PlotRivers", this.map.getRivers()),
+    ].filter((query) => query !== "");
 
     return queries;
   }
@@ -189,8 +192,8 @@ export default class Civ6MapWriter {
   }
 
   getQuery(table: string, fields: string[], rows: string[]) {
-    const formattedRows = rows.filter(row => row !== "").join(",");
-    const formattedFields = fields.map(field => `"${field}"`).join(",");
+    const formattedRows = rows.filter((row) => row !== "").join(",");
+    const formattedFields = fields.map((field) => `"${field}"`).join(",");
 
     const query = `INSERT INTO "${table}" (${formattedFields}) VALUES ${formattedRows};`;
     return query;
