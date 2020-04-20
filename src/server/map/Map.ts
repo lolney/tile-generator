@@ -4,6 +4,7 @@ import {
   Elevation,
   RiverType,
   MapConfigurable,
+  FeatureType,
 } from "../../common/types";
 import zip from "lodash/zip";
 
@@ -95,8 +96,10 @@ export default class Map {
     const { terrain, ...addition } = tileB;
     const result = { ...tileA, ...addition };
 
-    // always prioritize water
+    // prioritize: marsh -> water -> everything else
     if (!isWater(result) && terrain != null) result.terrain = terrain;
+    if (result.feature === FeatureType.marsh)
+      result.terrain = TerrainType.grass;
 
     // Remove elevation/features if it's a water tile
     if (isWater(result)) {

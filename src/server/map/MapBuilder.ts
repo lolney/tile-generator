@@ -104,7 +104,7 @@ export default class MapBuilder {
   );
 
   async createLandTiles(): Promise<Array<Tile>> {
-    const results = await isLandLocal(this.grid);
+    const results = await isLandLocal(this.grid, this.options.dimensions.width);
 
     return results.map((isLand: boolean) => ({
       terrain: isLand ? TerrainType.grass : TerrainType.coast,

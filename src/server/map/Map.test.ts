@@ -6,13 +6,13 @@ const config = {
   height: 4,
   name: "",
   description: "",
-  nPlayers: 1
+  nPlayers: 1,
 };
 
 describe("mergeTiles", () => {
   const tiles1: Array<Tile> = [
     { terrain: TerrainType.grass },
-    { terrain: TerrainType.tundra }
+    { terrain: TerrainType.tundra },
   ];
 
   it("creates an initial tile array", () => {
@@ -33,7 +33,7 @@ describe("mergeTiles", () => {
 
     expect(map.tiles).toEqual([
       { terrain: TerrainType.grass, feature: FeatureType.forest },
-      { terrain: TerrainType.tundra }
+      { terrain: TerrainType.tundra },
     ]);
   });
 
@@ -47,7 +47,7 @@ describe("mergeTiles", () => {
 
     expect(map.tiles).toEqual([
       { terrain: TerrainType.coast },
-      { terrain: TerrainType.tundra }
+      { terrain: TerrainType.tundra },
     ]);
   });
 
@@ -57,13 +57,13 @@ describe("mergeTiles", () => {
     const tilesWater: Array<Tile> = [
       { terrain: TerrainType.coast },
       { terrain: TerrainType.coast },
-      { terrain: TerrainType.grass }
+      { terrain: TerrainType.grass },
     ];
 
     const tiles2: Array<Tile> = [
       { terrain: TerrainType.ocean },
       { terrain: TerrainType.grass },
-      { terrain: TerrainType.ocean }
+      { terrain: TerrainType.ocean },
     ];
 
     map.addLayer(tilesWater);
@@ -72,7 +72,32 @@ describe("mergeTiles", () => {
     expect(map.tiles).toEqual([
       { terrain: TerrainType.coast },
       { terrain: TerrainType.coast },
-      { terrain: TerrainType.ocean }
+      { terrain: TerrainType.ocean },
+    ]);
+  });
+
+  it("doesn't overwrite marsh with water", () => {
+    const map = new Map(2, config);
+
+    const tiles1: Array<Tile> = [
+      { terrain: TerrainType.coast, feature: FeatureType.marsh },
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.grass, feature: FeatureType.marsh },
+    ];
+
+    const tiles2: Array<Tile> = [
+      { terrain: TerrainType.ocean },
+      { terrain: TerrainType.grass },
+      { terrain: TerrainType.ocean },
+    ];
+
+    map.addLayer(tiles1);
+    map.addLayer(tiles2);
+
+    expect(map.tiles).toEqual([
+      { terrain: TerrainType.grass, feature: FeatureType.marsh },
+      { terrain: TerrainType.coast },
+      { terrain: TerrainType.grass, feature: FeatureType.marsh },
     ]);
   });
 
@@ -81,7 +106,7 @@ describe("mergeTiles", () => {
 
     const tiles2: Array<Tile> = [
       { terrain: TerrainType.coast, elevation: Elevation.hills },
-      { terrain: TerrainType.coast, elevation: Elevation.mountain }
+      { terrain: TerrainType.coast, elevation: Elevation.mountain },
     ];
 
     map.addLayer(tiles1);
@@ -89,7 +114,7 @@ describe("mergeTiles", () => {
 
     expect(map.tiles).toEqual([
       { terrain: TerrainType.coast },
-      { terrain: TerrainType.coast }
+      { terrain: TerrainType.coast },
     ]);
   });
 });
@@ -100,7 +125,7 @@ describe("getNeighboringIndex", () => {
     height: 4,
     name: "",
     description: "",
-    nPlayers: 1
+    nPlayers: 1,
   });
 
   it("returns undefined when asked for an element to west, but on first of row", () => {
