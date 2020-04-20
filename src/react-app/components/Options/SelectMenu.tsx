@@ -68,7 +68,7 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ format, changeOptions }) => (
       ControlContainer: {
         style: () => ({
           borderRadius: "2px",
-          borderColor: colors.textFieldGrey,
+          border: "none",
         }),
       },
       IconsContainer: {

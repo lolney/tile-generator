@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import "normalize.css";
 import { MapPage } from "./react-app/pages/MapPage";
+import { About } from "./react-app/pages/About";
+import { Help } from "./react-app/pages/Help";
+
 import * as serviceWorker from "./serviceWorker";
 
 import { Provider } from "react-redux";
@@ -10,7 +13,7 @@ import { store } from "./react-app/redux/store";
 
 ReactDOM.render(
   <Provider store={store()}>
-    <MapPage />
+    <Help />
   </Provider>,
   document.getElementById("root")
 );

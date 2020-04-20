@@ -1,11 +1,13 @@
 import React from "react";
-import Map from "../../components/Map";
-import Dock from "../../components/Dock";
+import { StatefulTabs, Tab } from "baseui/tabs";
+import { SelectButton } from "../../v2-components/Button";
 import { BaseWeb } from "../../baseweb";
 import styles from "./styles.module.css";
+import * as colors from "../../constants/colors";
+import tabStyle from "../../components/TabStyle";
 import InstructionWindow from "../../v2-components/InstructionWindow";
 
-export const MapPage: React.FC = () => (
+export const Help: React.FC = () => (
   <BaseWeb>
     <div className={styles.page}>
       <div className={styles.top_bar}>
@@ -15,11 +17,13 @@ export const MapPage: React.FC = () => (
           <div className={styles.menu_item}>Help</div>
         </div>
       </div>
-      <div className={styles.map_container}>
-        <Map />
-        <Dock />
+      <div className={styles.body}>
+        <div className={styles.intro}>
+          <h1 className={styles.landing_header}>
+            Map Installation Instructions
+          </h1>
+        </div>
       </div>
-      <div className={styles.bottom_bar}></div>
     </div>
   </BaseWeb>
 );

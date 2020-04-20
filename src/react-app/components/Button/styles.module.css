@@ -1,16 +1,16 @@
 .button,
 .primary_button {
-  width: 78.5px;
-  height: 27px;
+  width: var(--button-width, 78.5px);
+  height: var(--button-height, 27px);
   border-radius: 10.5px;
   background-color: #909090;
   padding-top: 4px;
   text-align: center;
   border: none;
   font-family: Avenir;
-  font-size: 12px;
+  font-size: var(--button-font-size, 12px);
   font-weight: 900;
-  color: var(--backgroundGrey);
+  color: var(--button-font-color, --backgroundGrey);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,4 +19,10 @@
 
 .primary_button {
   background-color: #4d90e6;
+}
+
+.button:disabled,
+.primary_button:disabled {
+  opacity: 30%;
+  cursor: default;
 }

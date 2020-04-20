@@ -1,0 +1,117 @@
+@import "../../constants/colors.css";
+@import "../../components/Button/styles.module.css";
+
+.top_bar {
+  position: relative;
+  width: 100vw;
+  background-color: var(--backgroundGrey);
+  top: 0;
+  left: 0;
+  display: flex;
+  padding: 10px 10px;
+  box-sizing: border-box;
+}
+
+.header {
+  font-family: Avenir;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--textColorWhite);
+  vertical-align: center;
+  flex: 80%;
+  cursor: pointer;
+}
+
+.menu_item_container {
+  display: flex;
+}
+
+.menu_item {
+  display: inline-block;
+  font-family: Avenir;
+  font-size: 20px;
+  font-weight: 900;
+  margin-right: 40px;
+  color: var(--textColorWhite);
+  vertical-align: middle;
+  line-height: 23px;
+  padding-bottom: 5px;
+
+  cursor: pointer;
+}
+
+.menu_item_selected {
+  padding-bottom: 5px;
+  border-bottom: 2px solid rgb(77, 144, 230);
+}
+
+.bottom_bar {
+  width: 100vw;
+  height: 45.5px;
+  background-color: var(--backgroundGrey);
+  bottom: 0;
+  left: 0;
+  display: flex;
+}
+
+.intro {
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 75px;
+}
+
+.landing_header {
+  font-size: 42px;
+  text-align: center;
+  font-family: Avenir;
+  font-weight: 900;
+  margin-bottom: 0px;
+}
+
+.landing_subtitle {
+  font-size: 18px;
+  text-align: center;
+  font-family: Avenir;
+}
+
+.btn_container {
+  width: 325px;
+  height: 40px;
+  display: flex;
+  margin: auto;
+  left: 0;
+  right: 0;
+  padding-top: 0px;
+  padding: 10px;
+  padding-top: 0px;
+  --button-width: 149px;
+  --button-height: 46px;
+  --button-font-size: 16px;
+}
+
+.btn_container * {
+  margin: 10px;
+}
+
+.button,
+.primary_button {
+  width: 87px;
+}
+
+video {
+  display: block;
+  min-width: 500px;
+  min-height: 400px;
+  max-width: 1000px;
+  max-height: 800px;
+  background-color: var(--backgroundGrey);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  left: 0;
+  right: 0;
+  border-radius: 5px;
+  box-shadow: 10px 10px 15px grey;
+}

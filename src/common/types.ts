@@ -28,7 +28,7 @@ export enum MapLayers {
   elevation,
   forest,
   rivers,
-  marsh
+  marsh,
 }
 
 export type MapLayerValue =
@@ -75,7 +75,7 @@ export enum TerrainType {
   desert,
   ice,
   coast,
-  ocean
+  ocean,
 }
 
 export enum FeatureType {
@@ -86,13 +86,13 @@ export enum FeatureType {
   oasis,
   floodplains,
   atoll,
-  fallout
+  fallout,
 }
 
 export enum Elevation {
   flat,
   hills,
-  mountain
+  mountain,
 }
 
 // --- Koppen climate --- //
@@ -129,25 +129,25 @@ export enum Koppen {
   Dsd,
   ET,
   EF,
-  Ocean
+  Ocean,
 }
 
 // -------  io-ts dynamic types -------- //
 
 const GameStringT = t.keyof({
   "Civ V": null,
-  "Civ VI": null
+  "Civ VI": null,
 });
 
 const DimensionsT = t.type({ width: t.number, height: t.number });
 
 export const LatLngBoundsT = t.type({
   _southWest: t.type({ lat: t.number, lng: t.number }),
-  _northEast: t.type({ lat: t.number, lng: t.number })
+  _northEast: t.type({ lat: t.number, lng: t.number }),
 });
 
 export const MapOptionsT = t.type({
   dimensions: DimensionsT,
   format: GameStringT,
-  bounds: LatLngBoundsT
+  bounds: LatLngBoundsT,
 });

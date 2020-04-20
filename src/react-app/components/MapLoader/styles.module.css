@@ -40,8 +40,8 @@
   margin-right: auto;
 }
 
-.component_btn,
-.btn_selected {
+.button,
+.button_selected {
   width: 75.5px;
   height: 21px;
   border-radius: 3px;
@@ -56,10 +56,11 @@
   cursor: pointer;
 }
 
-.btn_selected {
-  outline: -webkit-focus-ring-color auto 5px;
+.button_selected {
+  box-shadow: inset 0px 0px 5px black;
 }
-.component_btn:disabled {
+
+.button:disabled {
   opacity: 30%;
   cursor: default;
 }
