@@ -3,7 +3,7 @@ import {
   submitting,
   finishedMap,
   submitError,
-  clearError
+  clearError,
 } from "./actions";
 import { AnyAction } from "redux";
 import { State } from "../../types";

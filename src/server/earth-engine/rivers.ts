@@ -55,7 +55,9 @@ export default async function createRiverTiles(
 
   for (const river of rivers) {
     const riverTiles = await getTiles(river, tiles);
-    console.log(`River ${river.name} has tiles: ${riverTiles.map(t => t.id)}`);
+    console.log(
+      `River ${river.name} has tiles: ${riverTiles.map((t) => t.id)}`
+    );
     const edges = await getEdges(riverTiles);
     indexedTiles = indexedTiles.concat(edges);
   }
@@ -126,7 +128,7 @@ export async function getTiles(
       tiles.map(async (tile, i) => {
         const serializedTile = JSON.stringify({
           ...tile,
-          crs: { type: "name", properties: { name: "EPSG:4326" } }
+          crs: { type: "name", properties: { name: "EPSG:4326" } },
         });
         const query = `
             INSERT INTO ${tableName} VALUES
@@ -162,7 +164,7 @@ export async function getTiles(
         const polygon: IndexedPolygon = {
           id: intersects.id,
           geometry: JSON.parse(intersects.geometry),
-          rivers: [river]
+          rivers: [river],
         };
 
         // console.log(`found river ${river.name} for polygon ${polygon.id}`);
@@ -254,7 +256,7 @@ async function mapRiversToEdges(
   indexedPoly: IndexedPolygon,
   node: number
 ): Promise<IndexedTile> {
-  const getRiverCoords = function*() {
+  const getRiverCoords = function* () {
     for (const river of indexedPoly.rivers) {
       console.log(`River: ${river.name}, Polys: ${indexedPoly.id}`);
       for (const coords of river.geom.coordinates) {
@@ -311,9 +313,9 @@ export async function findClosestNode(
   const pointFromCoords = (coords: Coords, i: number) => ({
     type: "Point",
     properties: {
-      id: i
+      id: i,
     },
-    coordinates: coords
+    coordinates: coords,
   });
 
   const polyPoints = poly.coordinates[0]
@@ -323,7 +325,7 @@ export async function findClosestNode(
   const geometryCollection = {
     type: "GeometryCollection",
     geometries: polyPoints,
-    crs: { type: "name", properties: { name: "EPSG:4326" } }
+    crs: { type: "name", properties: { name: "EPSG:4326" } },
   };
 
   const subquery = `SELECT * FROM ST_Dump(ST_GeomFromGeoJSON('${JSON.stringify(
@@ -344,7 +346,7 @@ export async function findClosestNode(
 // Add a cushion for floating point errors
 const truncate = (a: number) => Math.floor(a * 2 ** 10) / 2 ** 10;
 const truncateCoords = (coords: number[]) =>
-  coords.map(coord => truncate(coord));
+  coords.map((coord) => truncate(coord));
 
 /**
  * Finds the indexes in the coordinate array of b that intersect with a
@@ -356,7 +358,7 @@ export function polyIntersection(a: Polygon, b: Polygon) {
     geom.coordinates[0]
       .slice(0, -1) // last elem of polygon is the same as the first
       .map(truncateCoords)
-      .map(coords => coords.toString());
+      .map((coords) => coords.toString());
   const coordsA = new Set(getKeys(a));
   const coordsB = getKeys(b);
 
@@ -381,7 +383,7 @@ function chooseEdges(
 
   // match the node in the current tile with the next
   const nextCoords = tile.geometry.coordinates[0][myNextNode];
-  const nextNode = nextTile.coordinates[0].findIndex(val =>
+  const nextNode = nextTile.coordinates[0].findIndex((val) =>
     _.isEqual(truncateCoords(nextCoords), truncateCoords(val))
   );
 

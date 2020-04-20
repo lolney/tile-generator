@@ -5,7 +5,7 @@ import { receiveLayerAction, submitting } from "../map";
 import { MapLayerValue } from "../../../../common/types";
 
 const initialState: LeafletState = {
-  selectedLayer: undefined
+  selectedLayer: undefined,
 };
 
 type Action =
@@ -15,7 +15,7 @@ type Action =
 
 export const selectLayer = (layerName: MapLayerValue) => ({
   type: SELECT_LAYER as typeof SELECT_LAYER,
-  payload: { layerName }
+  payload: { layerName },
 });
 
 export const leaflet = (state = initialState, action: Action) => {
@@ -29,7 +29,7 @@ export const leaflet = (state = initialState, action: Action) => {
       if (state.selectedLayer === undefined) {
         return {
           ...state,
-          selectedLayer: Object.keys(action.payload.layer)[0] as MapLayerValue
+          selectedLayer: Object.keys(action.payload.layer)[0] as MapLayerValue,
         };
       }
     default:

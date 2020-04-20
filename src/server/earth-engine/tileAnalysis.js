@@ -6,17 +6,17 @@ import ee from "@google/earthengine";
  * @param {string} band
  */
 export function createFindMean(mask, band) {
-  const findMean = square => {
+  const findMean = (square) => {
     var meanDictionary = mask.reduceRegion({
       reducer: ee.Reducer.mean(),
       geometry: square.geometry(),
       scale: 300,
-      maxPixels: 1e9
+      maxPixels: 1e9,
     });
 
     var mean = meanDictionary.get(band);
     return square.set({
-      mean: mean
+      mean: mean,
     });
   };
 
@@ -27,6 +27,6 @@ export function reduceRegions(image, grid) {
   return image.reduceRegions({
     reducer: ee.Reducer.mean(),
     collection: grid,
-    scale: 500
+    scale: 500,
   });
 }

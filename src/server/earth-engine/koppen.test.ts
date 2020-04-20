@@ -1,7 +1,7 @@
 import {
   getClimateType,
   getClimateTypeSampled,
-  getClimateTypeSingle
+  getClimateTypeSingle,
 } from "./koppen";
 import { Koppen } from "../../common/types";
 import { Polygon } from "geojson";
@@ -26,7 +26,15 @@ describe("koppen", () => {
 
 const easternUS: Polygon = {
   type: "Polygon",
-  coordinates: [[[-100, 30], [-100, 50], [-80, 50], [-80, 30], [-100, 30]]]
+  coordinates: [
+    [
+      [-100, 30],
+      [-100, 50],
+      [-80, 50],
+      [-80, 30],
+      [-100, 30],
+    ],
+  ],
 };
 
 describe("koppen sampled", () => {
@@ -49,11 +57,13 @@ describe("koppen sampled", () => {
     const poly: Polygon = {
       type: "Polygon",
       coordinates: [
-        [[0, 0], [0.1, 0], [0.1, 0.05], [0, 0]].map(([lng, lat]) => [
-          lng + 10,
-          lat + 10
-        ])
-      ]
+        [
+          [0, 0],
+          [0.1, 0],
+          [0.1, 0.05],
+          [0, 0],
+        ].map(([lng, lat]) => [lng + 10, lat + 10]),
+      ],
     };
 
     const sampled = await getClimateTypeSampled(poly, 10);

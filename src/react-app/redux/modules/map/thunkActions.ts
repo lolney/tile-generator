@@ -2,7 +2,7 @@ import {
   receiveLayerAction,
   finishedMap,
   receiveGrid,
-  receiveRiverLines
+  receiveRiverLines,
 } from "./actions";
 import { isLastLayer } from "./selectors";
 import { State } from "../../types";
@@ -25,7 +25,7 @@ const splitRivers = (layer: LayersType) => (
 ) => {
   const { rivers } = layer;
   const {
-    mapData: { grid }
+    mapData: { grid },
   } = getState();
   if (!rivers) return;
 
@@ -39,7 +39,7 @@ const splitRivers = (layer: LayersType) => (
       .map(([direction, bool]) =>
         bool ? mapRiverToLine(poly, direction) : null
       )
-      .filter(elem => elem !== null) as LineString[];
+      .filter((elem) => elem !== null) as LineString[];
     return lines;
   });
   dispatch(receiveRiverLines(lines));
@@ -74,7 +74,7 @@ export const receiveLayers = (resp: Response) => async (
       totalLayers: res.nLayers,
       layers: {},
       mapId: res.id,
-      removeSSEListener
+      removeSSEListener,
     })
   );
 };

@@ -27,7 +27,7 @@ export default class GraphDebuger {
       ),
       JSON.stringify(json.write(this.graph.graph)),
       {
-        flag: "w"
+        flag: "w",
       }
     );
   }
@@ -41,7 +41,7 @@ export default class GraphDebuger {
       ),
       html(JSON.stringify(json.write(this.graph.graph))),
       {
-        flag: "w"
+        flag: "w",
       }
     );
   }

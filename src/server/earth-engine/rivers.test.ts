@@ -7,25 +7,41 @@ import {
   determineEndNode,
   findClosestNode,
   _mapRiversToEdges,
-  River
+  River,
 } from "./rivers";
 import { createHexagon } from "../../common/createRawHexGrid";
 
 const bounds: Polygon = {
   type: "Polygon",
-  coordinates: [[[-120, 35], [-120, 40], [-122, 40], [-122, 35], [-120, 35]]]
+  coordinates: [
+    [
+      [-120, 35],
+      [-120, 40],
+      [-122, 40],
+      [-122, 35],
+      [-120, 35],
+    ],
+  ],
 };
 
 const bounds2: Polygon = {
   type: "Polygon",
-  coordinates: [[[-120, 25], [-120, 30], [-122, 30], [-122, 25], [-120, 25]]]
+  coordinates: [
+    [
+      [-120, 25],
+      [-120, 30],
+      [-122, 30],
+      [-122, 25],
+      [-120, 25],
+    ],
+  ],
 };
 
 it("getRivers finds rivers within bounds", async () => {
   const rivers = await getRivers(bounds);
 
   expect(rivers.length).toBeGreaterThanOrEqual(0);
-  expect(rivers.find(river => river.name === "Salinas")).toBeDefined();
+  expect(rivers.find((river) => river.name === "Salinas")).toBeDefined();
 
   expect(rivers[0].name).toBeDefined();
   expect(rivers[0].geom).toBeDefined();
@@ -62,8 +78,8 @@ describe("getEdges", () => {
     {
       id: 0,
       geometry: createHexagon(<[number, number]>base.coordinates[0][4], 1, 1),
-      rivers: [] as River[]
-    }
+      rivers: [] as River[],
+    },
   ];
 
   it("polyIntersection", () => {

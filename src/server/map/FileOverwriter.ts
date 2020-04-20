@@ -16,7 +16,7 @@ export default class FileOverwriter {
     this.buffer = Buffer.concat([
       this.buffer.slice(0, index),
       buffer,
-      this.buffer.slice(index)
+      this.buffer.slice(index),
     ]);
   }
 

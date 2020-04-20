@@ -7,7 +7,7 @@ describe("findRiverNetwork", () => {
     "b",
     "c",
     "d",
-    "f"
+    "f",
   ]);
 
   graph.setEdge("a", "b");

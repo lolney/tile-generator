@@ -19,6 +19,6 @@ export default function TilesController(req: Request, res: Response) {
   res.send({
     grid: request.mapBuilder.originalGrid,
     id: request.id,
-    nLayers: N_LAYERS
+    nLayers: N_LAYERS,
   });
 }

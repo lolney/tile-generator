@@ -7,7 +7,7 @@ export default async function UpdateController(req: Request, res: Response) {
     for await (const layer of request.completeJobs()) {
       // @ts-ignore
       res.sse("layer", {
-        layer
+        layer,
       });
     }
   } else {

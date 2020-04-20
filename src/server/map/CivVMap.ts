@@ -28,7 +28,7 @@ export const terrainTypes = {
   TERRAIN_TUNDRA: 3,
   TERRAIN_SNOW: 4,
   TERRAIN_COAST: 5,
-  TERRAIN_OCEAN: 6
+  TERRAIN_OCEAN: 6,
 };
 
 export const featureTypes = {
@@ -39,7 +39,7 @@ export const featureTypes = {
   FEATURE_FLOOD_PLAINS: 4,
   FEATURE_FOREST: 5,
   FEATURE_FALLOUT: 6,
-  FEATURE_ATOLL: 7
+  FEATURE_ATOLL: 7,
 };
 
 export const naturalWonderTypes = {
@@ -59,7 +59,7 @@ export const naturalWonderTypes = {
   FEATURE_ULURU: 13,
   FEATURE_LAKE_VICTORIA: 14,
   FEATURE_KILIMANJARO: 15,
-  FEATURE_SOLOMONS_MINES: 16
+  FEATURE_SOLOMONS_MINES: 16,
 };
 
 export const resourceTypes = {
@@ -102,7 +102,7 @@ export const resourceTypes = {
   RESOURCE_NUTMEG: 36,
   RESOURCE_CLOVES: 37,
   RESOURCE_PEPPER: 38,
-  RESOURCE_HIDDEN_ARTIFACT: 39
+  RESOURCE_HIDDEN_ARTIFACT: 39,
 };
 
 const getSettingsByte = (config: SettingsByteConfig) => {
@@ -118,12 +118,12 @@ const CIV_CONSTANT_HEADER: HeaderConstant = {
   settings: getSettingsByte({
     randGoodies: true,
     randResources: true,
-    worldWrap: false
+    worldWrap: false,
   }),
   terrainTypes: Object.keys(terrainTypes),
   featureTypes: Object.keys(featureTypes),
   naturalWonderTypes: Object.keys(naturalWonderTypes),
-  resourceTypes: Object.keys(resourceTypes)
+  resourceTypes: Object.keys(resourceTypes),
 };
 
 export default class CivVMap extends Map {
@@ -134,7 +134,7 @@ export default class CivVMap extends Map {
     this.header = {
       ...CIV_CONSTANT_HEADER,
       mapsize: "WORLDSIZE_STANDARD",
-      ...params
+      ...params,
     };
   }
 }

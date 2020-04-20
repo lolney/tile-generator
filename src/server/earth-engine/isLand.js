@@ -18,7 +18,7 @@ function setIsLand(square) {
  *
  * @param {ee.FeatureCollection} grid
  */
-export default function(grid) {
+export default function (grid) {
   var hasMean = ee.Filter.neq("mean", undefined);
 
   var dataset = ee.Image("MODIS/MOD44W/MOD44W_005_2000_02_24");

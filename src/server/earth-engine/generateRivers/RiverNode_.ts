@@ -19,7 +19,7 @@ export default class RiverNode {
     const nodeIndices = Array(6)
       .fill(0)
       .map((_, i) => i);
-    return nodeIndices.map(node => `${row},${col},${node}`);
+    return nodeIndices.map((node) => `${row},${col},${node}`);
   };
 
   static getConnections = (
@@ -41,6 +41,6 @@ export default class RiverNode {
           ? `${nextRow},${nextCol},${nextVertex}`
           : ""
       )
-      .filter(x => x);
+      .filter((x) => x);
   };
 }

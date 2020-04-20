@@ -7,7 +7,7 @@ import { State } from "./types";
 export const rootReducer = combineReducers<State>({
   settings,
   leaflet,
-  mapData: map
+  mapData: map,
 });
 
 export default rootReducer;

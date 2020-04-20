@@ -7,19 +7,19 @@ import path from "path";
 // @ts-ignore
 import sseExpress from "sse-express";
 
-import './config/polyfills';
+import "./config/polyfills";
 import config from "./config.json";
 import EarthEngine from "./earth-engine/EarthEngine";
 import { AddressInfo } from "net";
 import MapController from "./controllers/MapController.js";
 import UpdateController, {
-  UpdateExistsMiddleware
+  UpdateExistsMiddleware,
 } from "./controllers/UpdateController.js";
 import TilesController from "./controllers/TilesController.js";
 
 let app = express();
 
-export default EarthEngine.init().then(earthEngine => {
+export default EarthEngine.init().then((earthEngine) => {
   const server = http.createServer(app);
 
   // logger
@@ -28,20 +28,20 @@ export default EarthEngine.init().then(earthEngine => {
   // static server
   app.use(express.static(path.join(__dirname, "../../dist")));
 
-  app.get("/", function(req, res) {
+  app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, "../../dist", "index.html"));
   });
 
   // 3rd party middleware
   app.use(
     cors({
-      exposedHeaders: config.corsHeaders
+      exposedHeaders: config.corsHeaders,
     })
   );
 
   app.use(
     bodyParser.json({
-      limit: config.bodyLimit
+      limit: config.bodyLimit,
     })
   );
 

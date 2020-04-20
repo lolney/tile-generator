@@ -3,7 +3,7 @@ import {
   LayersType,
   MapOptions,
   Tile,
-  MapLayerValue
+  MapLayerValue,
 } from "../../common/types";
 
 export type State = {
@@ -35,7 +35,7 @@ export enum SubmissionStatus {
   submitting,
   errored,
   done,
-  none
+  none,
 }
 
 export type TileFeature = Feature<Geometry, Tile>;

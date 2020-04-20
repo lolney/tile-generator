@@ -7,14 +7,14 @@ const testMap = new Civ6Map(
     { terrain: TerrainType.ocean },
     { terrain: TerrainType.desert },
     { terrain: TerrainType.grass },
-    { terrain: TerrainType.grass, elevation: Elevation.mountain }
+    { terrain: TerrainType.grass, elevation: Elevation.mountain },
   ],
   {
     name: "test",
     width: 2,
     height: 2,
     nPlayers: 1,
-    description: ""
+    description: "",
   }
 );
 

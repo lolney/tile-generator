@@ -6,7 +6,7 @@ import {
   Tile,
   MapConfigurable,
   MapLayers,
-  Options
+  Options,
 } from "../../common/types";
 import { failure } from "io-ts";
 import uuidv4 from "uuid/v4";
@@ -20,7 +20,7 @@ import { LatLngBounds } from "leaflet";
 import MapBuilder from "../map/MapBuilder";
 
 export const N_LAYERS = Object.values(MapLayers).filter(
-  val => typeof val === "string"
+  (val) => typeof val === "string"
 ).length;
 
 interface MapInterface {
@@ -47,7 +47,7 @@ export default class OpenRequest {
 
   static parseRequest(req: MapOptions) {
     // Validate request
-    const options = MapOptionsT.decode(req).getOrElseL(errors => {
+    const options = MapOptionsT.decode(req).getOrElseL((errors) => {
       console.log(errors);
       //@ts-ignore
       throw new Error(failure(errors).join("\n"));
@@ -63,7 +63,7 @@ export default class OpenRequest {
       lon_start: bounds.getWest(),
       lon_end: bounds.getEast(),
       lat_start: bounds.getNorth(),
-      lat_end: bounds.getSouth()
+      lat_end: bounds.getSouth(),
     });
 
     let MapType = OpenRequest.getMapType(req.format);
@@ -73,7 +73,7 @@ export default class OpenRequest {
       height,
       nPlayers: 6,
       name: "map",
-      description: ""
+      description: "",
     });
 
     return new OpenRequest(grid, map, bounds, options);
@@ -85,7 +85,7 @@ export default class OpenRequest {
       MapLayers.elevation,
       MapLayers.forest,
       MapLayers.rivers,
-      MapLayers.marsh
+      MapLayers.marsh,
     ];
 
     for (const layer of layers) {

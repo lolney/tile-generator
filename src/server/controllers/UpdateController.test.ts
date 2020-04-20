@@ -28,10 +28,7 @@ describe("UpdateController", () => {
     );
   });
 
-  it("Sends 404 if an invalid map id is requested", done => {
-    request(app)
-      .get("/updates/sdf")
-      .expect(404)
-      .end(done);
+  it("Sends 404 if an invalid map id is requested", (done) => {
+    request(app).get("/updates/sdf").expect(404).end(done);
   });
 });

@@ -5,7 +5,7 @@ import { reduceRegions } from "./tileAnalysis";
 // set isForest
 // set isWetland
 
-export default function(grid) {
+export default function (grid) {
   var dataset = ee
     .ImageCollection("JAXA/ALOS/PALSAR/YEARLY/FNF")
     .filterDate("2017-01-01", "2017-12-31")

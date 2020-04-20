@@ -12,7 +12,9 @@ const findBranchesToPrune = (graph: Graph): Edge[] => {
     if (neighbors.length === 1 && neighbors[0] === predecessor)
       toPrune.push({ v: predecessor, w: node });
 
-    neighbors.filter(id => id !== predecessor).forEach(id => explore(node, id));
+    neighbors
+      .filter((id) => id !== predecessor)
+      .forEach((id) => explore(node, id));
   };
 
   const source: NodeId = findSource(graph);
@@ -32,7 +34,7 @@ const pruneBranches = (graph: Graph, branches: Edge[]) => {
 
 // Find minimum spanning tree, then prune 1-edge branches
 const findRiverNetwork = (graph: Graph): Graph => {
-  const mst = alg.prim(graph, e => 1);
+  const mst = alg.prim(graph, (e) => 1);
 
   const branches = findBranchesToPrune(mst);
   return pruneBranches(graph, branches);

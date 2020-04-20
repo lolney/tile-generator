@@ -90,7 +90,7 @@ export async function getClimateTypeSampled(geom: Polygon, n: number) {
 
   return Object.entries(_.countBy(climates)).map(([key, count]) => [
     dbStringToClimateType(key),
-    count
+    count,
   ]);
 }
 

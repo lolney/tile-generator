@@ -11,7 +11,7 @@ export default class EarthEngine {
           console.log("auth succeeded");
           resolve();
         },
-        function(e: Error) {
+        function (e: Error) {
           reject(e);
         }
       );

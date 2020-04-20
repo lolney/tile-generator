@@ -10,7 +10,7 @@ describe("CivVMapWriter", () => {
     height: 10,
     nPlayers: 2,
     name: "a",
-    description: "b"
+    description: "b",
   };
 
   it("writes map header without errors", () => {
@@ -56,7 +56,7 @@ describe("CivVMapWriter", () => {
   describe("remapTiles", () => {
     const tiles: Tile[] = Array(100)
       .fill(_.random(3))
-      .map(rand => ({ terrain: rand }));
+      .map((rand) => ({ terrain: rand }));
     const map = new CivVMap(tiles, config);
     const writer = new CivVMapWriter(map);
 

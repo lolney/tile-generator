@@ -56,13 +56,13 @@ export const mapVertexToNeighbors = (
       // needed for odd rows.
       // might not actually be on the hex described?
       [row + 1, col + colOffset + 1, 0], // bottom right
-      [row - 1, col + colOffset + 1, 4]
+      [row - 1, col + colOffset + 1, 4],
       // 1,4 right should never exist, because 4 will be pruned
     ],
     2: [
       [row, col + 1, 3], // right
       [row + 1, col + colOffset + 1, 5], // bottom right
-      [row + 1, col + colOffset, 1] // bottom left
+      [row + 1, col + colOffset, 1], // bottom left
       // 2,5 right should never exist, because 5 will be pruned
     ],
     3: [
@@ -70,15 +70,15 @@ export const mapVertexToNeighbors = (
       [row, col + 1, 4],
       [row + 1, col + colOffset, 2],
       [row + 1, col + colOffset, 0],
-      [row + 1, col + colOffset + 1, 0]
+      [row + 1, col + colOffset + 1, 0],
     ],
     4: [],
-    5: []
+    5: [],
   };
 
   const selfMap = (vertex: VertexType): Neighbors => [
     [row, col, mod(vertex + 1, 6)],
-    [row, col, mod(vertex - 1, 6)]
+    [row, col, mod(vertex - 1, 6)],
   ];
 
   return [...otherMap[vertex], ...selfMap(vertex)];
@@ -191,7 +191,7 @@ const removeNodes = (
   col: number,
   vertices: number[]
 ) => {
-  vertices.forEach(vertex => graph.removeNode(`${row},${col},${vertex}`));
+  vertices.forEach((vertex) => graph.removeNode(`${row},${col},${vertex}`));
 };
 
 // Remove edges are that duplicated on another hex

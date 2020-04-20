@@ -6,24 +6,24 @@ L.AreaSelect = L.Class.extend({
   options: {
     width: 200,
     height: 300,
-    keepAspectRatio: false
+    keepAspectRatio: false,
   },
 
-  initialize: function(options) {
+  initialize: function (options) {
     L.Util.setOptions(this, options);
 
     this._width = this.options.width;
     this._height = this.options.height;
   },
 
-  addTo: function(map) {
+  addTo: function (map) {
     this.map = map;
     this._createElements();
     this._render();
     return this;
   },
 
-  getBounds: function() {
+  getBounds: function () {
     var size = this.map.getSize();
     var topRight = new L.Point();
     var bottomLeft = new L.Point();
@@ -39,7 +39,7 @@ L.AreaSelect = L.Class.extend({
     return new L.LatLngBounds(sw, ne);
   },
 
-  remove: function() {
+  remove: function () {
     this.map.off("moveend", this._onMapChange);
     this.map.off("zoomend", this._onMapChange);
     this.map.off("resize", this._onMapResize);
@@ -47,7 +47,7 @@ L.AreaSelect = L.Class.extend({
     this._container.parentNode.removeChild(this._container);
   },
 
-  setDimensions: function(dimensions) {
+  setDimensions: function (dimensions) {
     if (!dimensions) return;
 
     this._height = parseInt(dimensions.height) || this._height;
@@ -56,7 +56,7 @@ L.AreaSelect = L.Class.extend({
     this.fire("change");
   },
 
-  _createElements: function() {
+  _createElements: function () {
     if (!!this._container) return;
 
     this._container = L.DomUtil.create(
@@ -118,7 +118,7 @@ L.AreaSelect = L.Class.extend({
     this.fire("change");
   },
 
-  _setUpHandlerEvents: function(handle, xMod, yMod) {
+  _setUpHandlerEvents: function (handle, xMod, yMod) {
     xMod = xMod || 1;
     yMod = yMod || 1;
 
@@ -167,15 +167,15 @@ L.AreaSelect = L.Class.extend({
     L.DomEvent.addListener(handle, "mousedown", onMouseDown);
   },
 
-  _onMapResize: function() {
+  _onMapResize: function () {
     this._render();
   },
 
-  _onMapChange: function() {
+  _onMapChange: function () {
     this.fire("change");
   },
 
-  _render: function() {
+  _render: function () {
     var size = this.map.getSize();
     var handleOffset = Math.round(this._nwHandle.offsetWidth / 2);
 
@@ -195,46 +195,46 @@ L.AreaSelect = L.Class.extend({
       width: size.x,
       height: topBottomHeight,
       top: 0,
-      left: 0
+      left: 0,
     });
     setDimensions(this._bottomShade, {
       width: size.x,
       height: topBottomHeight,
       bottom: 0,
-      left: 0
+      left: 0,
     });
     setDimensions(this._leftShade, {
       width: leftRightWidth,
       height: size.y - topBottomHeight * 2,
       top: topBottomHeight,
-      left: 0
+      left: 0,
     });
     setDimensions(this._rightShade, {
       width: leftRightWidth,
       height: size.y - topBottomHeight * 2,
       top: topBottomHeight,
-      right: 0
+      right: 0,
     });
 
     setDimensions(this._nwHandle, {
       left: leftRightWidth - handleOffset,
-      top: topBottomHeight - 7
+      top: topBottomHeight - 7,
     });
     setDimensions(this._neHandle, {
       right: leftRightWidth - handleOffset,
-      top: topBottomHeight - 7
+      top: topBottomHeight - 7,
     });
     setDimensions(this._swHandle, {
       left: leftRightWidth - handleOffset,
-      bottom: topBottomHeight - 7
+      bottom: topBottomHeight - 7,
     });
     setDimensions(this._seHandle, {
       right: leftRightWidth - handleOffset,
-      bottom: topBottomHeight - 7
+      bottom: topBottomHeight - 7,
     });
-  }
+  },
 });
 
-L.areaSelect = function(options) {
+L.areaSelect = function (options) {
   return new L.AreaSelect(options);
 };

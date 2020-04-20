@@ -1,6 +1,6 @@
 import ee from "@google/earthengine";
 
-export default function() {
+export default function () {
   var dataset = ee.Image("USGS/GTOPO30");
   var elevation = dataset.select("elevation");
 
@@ -9,7 +9,14 @@ export default function() {
 
   // Polygon covering the world
   var polygon = ee.Geometry.Polygon(
-    [[[lat[0], lng[0]], [lat[1], lng[0]], [lat[1], lng[1]], [lat[0], lng[1]]]],
+    [
+      [
+        [lat[0], lng[0]],
+        [lat[1], lng[0]],
+        [lat[1], lng[1]],
+        [lat[0], lng[1]],
+      ],
+    ],
     undefined,
     false
   );
@@ -21,7 +28,7 @@ export default function() {
   var samples = elevation.sampleRegions({
     collection: fromList,
     scale: 500000,
-    geometries: true
+    geometries: true,
   });
 
   console.log(samples.getInfo());

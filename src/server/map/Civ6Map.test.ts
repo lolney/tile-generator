@@ -7,7 +7,7 @@ describe("getRiverType", () => {
     height: 2,
     nPlayers: 1,
     description: "",
-    name: ""
+    name: "",
   };
 
   it("affects self", () => {
@@ -26,7 +26,7 @@ describe("getRiverType", () => {
         { terrain: TerrainType.desert },
         { terrain: TerrainType.ice },
         { terrain: TerrainType.ocean },
-        { terrain: TerrainType.plains }
+        { terrain: TerrainType.plains },
       ],
       { ...base, height: 3 }
     );
@@ -37,7 +37,7 @@ describe("getRiverType", () => {
       { terrain: TerrainType.desert },
       { terrain: TerrainType.ice },
       { terrain: TerrainType.coast },
-      { terrain: TerrainType.tundra }
+      { terrain: TerrainType.tundra },
     ];
 
     expect(map.orderedTiles).toEqual(expectedTiles);

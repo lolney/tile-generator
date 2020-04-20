@@ -14,7 +14,7 @@ export const createPreviewGrid = (
     lon_start: bounds.getWest(),
     lon_end: bounds.getEast(),
     lat_start: bounds.getNorth(),
-    lat_end: bounds.getSouth()
+    lat_end: bounds.getSouth(),
   });
 };
 
@@ -30,8 +30,8 @@ export const drawLayer = (
       features: grid.map((hex, i) => ({
         geometry: hex,
         properties: layer[i],
-        type: "Feature"
-      }))
+        type: "Feature",
+      })),
     },
     { style }
   );
@@ -41,12 +41,12 @@ export const drawRivers = (riverLines: LineString[]) =>
     {
       type: "GeometryCollection",
       // @ts-ignore
-      features: riverLines
+      features: riverLines,
     },
     {
       style: () => ({
         color: "blue",
-        opacity: 0.5
-      })
+        opacity: 0.5,
+      }),
     }
   );

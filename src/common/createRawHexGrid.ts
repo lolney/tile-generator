@@ -21,7 +21,7 @@ export default function createRawHexGrid({
   lon_start,
   lon_end,
   lat_start,
-  lat_end
+  lat_end,
 }: params): Polygon[] {
   var x_unit = calcUnit(lon_start, lon_end, width);
   const y_unit = calcUnit(lat_end, lat_start, height) / 0.75;
@@ -37,7 +37,7 @@ export default function createRawHexGrid({
 
     let start: coords = [
       lon_offset + lon_start,
-      latStart - y_unit * 0.75 * row
+      latStart - y_unit * 0.75 * row,
     ];
 
     // for each col
@@ -68,7 +68,7 @@ export function addOffsets(
   y_unit: number
 ) {
   const [sa, sb] = start;
-  return offsets.map(offset => {
+  return offsets.map((offset) => {
     const [a, b] = offset;
     return [sa + a * x_unit, sb + b * y_unit];
   });
@@ -82,7 +82,7 @@ export const offsets: coords[] = [
   [1, -0.5], // southeast
   [0.5, -0.75], // south
   [0, -0.5], // southwest
-  [0, 0] // northwest
+  [0, 0], // northwest
 ];
 
 export const mapRiverToLine = (
@@ -95,12 +95,12 @@ export const mapRiverToLine = (
     east: 2,
     southEast: 3,
     southWest: 4,
-    west: 5
+    west: 5,
   }[river];
   const coordinates = poly.coordinates[0].slice(index, index + 2);
   return {
     type: "LineString",
-    coordinates
+    coordinates,
   };
 };
 
@@ -111,6 +111,6 @@ export function createHexagon(
 ): Polygon {
   return {
     type: "Polygon",
-    coordinates: [addOffsets(offsets, start, x_unit, y_unit)]
+    coordinates: [addOffsets(offsets, start, x_unit, y_unit)],
   };
 }

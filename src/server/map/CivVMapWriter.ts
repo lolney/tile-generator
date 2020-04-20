@@ -26,7 +26,7 @@ const headerFormat: Array<HeaderFormat> = [
   ["string", "name"],
   ["string", "description"],
   ["length(int)", "mapsize"],
-  ["string", "mapsize"]
+  ["string", "mapsize"],
 ];
 
 const TEMPLATE_FILE = path.join(__dirname, "../../../template.Civ5Map");
