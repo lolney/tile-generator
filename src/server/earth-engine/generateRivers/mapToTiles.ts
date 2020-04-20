@@ -1,10 +1,10 @@
 import { Tile, RiverType } from "../../../common/types";
-import { RiversArray } from "./RiversArray";
+import { TilesArray } from "../../../common/TilesArray";
 import { tileIndexFromEdge } from "./riverNode";
 import RiverNodes from "./RiverNodes";
 
 const mapToTiles = (riverTree: RiverNodes): Tile[] => {
-  const tiles: RiversArray<Tile> = RiversArray.fromDimensions(
+  const tiles: TilesArray<Tile> = TilesArray.fromDimensions(
     riverTree.width,
     riverTree.height,
     {}

@@ -1,7 +1,7 @@
-import { RiversArray } from "../RiversArray";
+import { TilesArray } from "../../../../common/TilesArray";
 
 export function printSquare<T>(
-  array: RiversArray<T>,
+  array: TilesArray<T>,
   formatter: (row: number, col: number) => string,
   msg?: string
 ) {

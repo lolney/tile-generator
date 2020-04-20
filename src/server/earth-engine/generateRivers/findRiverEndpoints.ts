@@ -1,11 +1,11 @@
 import { maxBy } from "lodash";
 import { RawRiverSystem } from "./types";
 import { Tile, TerrainType } from "../../../common/types";
-import { RiversArray } from "./RiversArray";
+import { TilesArray } from "../../../common/TilesArray";
 
 function* findNeighbors<T>(
-  base: RiversArray<boolean>,
-  overlay: RiversArray<T>,
+  base: TilesArray<boolean>,
+  overlay: TilesArray<T>,
   condition: (t: T) => boolean
 ) {
   for (const [i, j] of base.pairs()) {
@@ -19,7 +19,7 @@ function* findNeighbors<T>(
 
 const findCoastNeighbors = (
   river: RawRiverSystem,
-  waterArray: RiversArray<Tile>
+  waterArray: TilesArray<Tile>
 ) =>
   findNeighbors(
     river,
@@ -32,7 +32,7 @@ const findRiverNeighbors = (river: RawRiverSystem) =>
 
 export const findSourceTile = (
   river: RawRiverSystem,
-  water: RiversArray<Tile>
+  water: TilesArray<Tile>
 ): [number, number] | undefined => {
   const neighborCounts = Array.from(findCoastNeighbors(river, water));
   const maxPair = maxBy(neighborCounts, ({ count, index }) => count);
@@ -40,10 +40,7 @@ export const findSourceTile = (
 };
 
 // these need not be the actual endpoints
-const findRiverEndpoints = (
-  river: RawRiverSystem,
-  water: RiversArray<Tile>
-) => {
+const findRiverEndpoints = (river: RawRiverSystem, water: TilesArray<Tile>) => {
   const neighborCounts = Array.from(findRiverNeighbors(river));
   // todo: also count adjacent neighbors
   const endpoints = neighborCounts

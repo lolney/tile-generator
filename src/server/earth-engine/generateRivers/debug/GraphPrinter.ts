@@ -11,12 +11,7 @@ export default class GraphPrinter {
   constructor(graph: RiverNodes, source?: RiverNode, ...ends: RiverNode[]) {
     this.graph = graph;
     this.ends = new Set(
-      ends.map(end =>
-        end
-          .toCoords()
-          .slice(0, 2)
-          .join(",")
-      )
+      ends.map((end) => end.toCoords().slice(0, 2).join(","))
     );
     this.source = source?.toCoords() ?? [];
   }
@@ -42,7 +37,7 @@ export default class GraphPrinter {
   }
 
   print() {
-    const array = this.graph.toRiversArray();
+    const array = this.graph.toTilesArray();
     printSquare(array, (row, col) =>
       this.getChar(row, col, array.get(row, col))
     );

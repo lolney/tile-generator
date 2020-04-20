@@ -1,9 +1,9 @@
 import { RawRivers, RawRiverSystem } from "./types";
-import { RiversArray } from "./RiversArray";
+import { TilesArray } from "../../../common/TilesArray";
 
 const markRiverSystem = (
   rivers: RawRivers,
-  explored: RiversArray<Boolean>,
+  explored: TilesArray<Boolean>,
   i: number,
   j: number
 ): RawRiverSystem => {

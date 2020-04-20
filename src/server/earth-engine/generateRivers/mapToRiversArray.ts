@@ -1,5 +1,5 @@
 import { range, sortBy } from "lodash";
-import { RiversArray } from "./RiversArray";
+import { TilesArray } from "../../../common/TilesArray";
 import { Dimensions, Tile, TerrainType } from "../../../common/types";
 
 export const threshold = 6000;
@@ -20,7 +20,7 @@ const descreaseWithNumberOfTiles = (dimensions: Dimensions) => {
   return BASE_AREA / area;
 };
 
-const mapToRiversArray = (
+const mapToTilesArray = (
   rawdata: number[],
   waterLayer: Tile[],
   dimensions: Dimensions,
@@ -59,7 +59,7 @@ const mapToRiversArray = (
 
   const addedIndices = new Set(indices.slice(start));
 
-  return new RiversArray(
+  return new TilesArray(
     rawdata.map(
       (value, i) =>
         addedIndices.has(i) &&
@@ -71,4 +71,4 @@ const mapToRiversArray = (
   );
 };
 
-export default mapToRiversArray;
+export default mapToTilesArray;

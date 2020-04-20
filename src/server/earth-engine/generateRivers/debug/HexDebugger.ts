@@ -1,6 +1,6 @@
 import { chain } from "lodash";
 import RiverNodes from "../RiverNodes";
-import { RiversArray } from "../RiversArray";
+import { TilesArray } from "../../../../common/TilesArray";
 import { printSquare } from "./printSquare";
 
 const hex = (row: number, col: number) => (
@@ -30,7 +30,7 @@ ${e}\\-          -/
 
 export default class HexDebugger {
   graph: RiverNodes;
-  array: RiversArray<number[]>;
+  array: TilesArray<number[]>;
 
   constructor(graph: RiverNodes) {
     this.graph = graph;
@@ -42,7 +42,7 @@ export default class HexDebugger {
       .sortBy([([key]) => key])
       .value();
 
-    this.array = RiversArray.fromDimensions(
+    this.array = TilesArray.fromDimensions(
       this.graph.width,
       this.graph.height,
       []

@@ -1,10 +1,10 @@
-import { RiversArray } from "../RiversArray";
+import { TilesArray } from "../../../../common/TilesArray";
 import { printSquare } from "./printSquare";
 
 export default class ArrayDebugger {
-  array: RiversArray<boolean>;
+  array: TilesArray<boolean>;
 
-  constructor(array: RiversArray<boolean>) {
+  constructor(array: TilesArray<boolean>) {
     this.array = array;
   }
 

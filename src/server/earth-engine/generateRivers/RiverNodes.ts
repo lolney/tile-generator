@@ -1,5 +1,5 @@
 import { Graph } from "graphlib";
-import { RiversArray } from "./RiversArray";
+import { TilesArray } from "../../../common/TilesArray";
 import RiverNode from "./RiverNode_";
 
 export default class RiverNodes {
@@ -13,15 +13,15 @@ export default class RiverNodes {
     this.height = height;
   }
 
-  nodes = () => this.graph.nodes().map(node => new RiverNode(node));
+  nodes = () => this.graph.nodes().map((node) => new RiverNode(node));
 
-  toRiversArray() {
+  toTilesArray() {
     const coords = this.graph.nodes().map(RiverNode.toCoords);
-    const array = RiversArray.fromDimensions(
+    const array = TilesArray.fromDimensions(
       this.width,
       this.height,
       false
-    ) as RiversArray<boolean>;
+    ) as TilesArray<boolean>;
 
     for (const [x, y] of coords) {
       array.set(x, y, true);

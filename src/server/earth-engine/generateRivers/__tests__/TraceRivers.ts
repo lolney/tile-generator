@@ -1,11 +1,11 @@
 import mapToNodes from "../mapToNodes";
-import { RiversArray } from "../RiversArray";
+import { TilesArray } from "../../../../common/TilesArray";
 import TraceRivers from "../TraceRivers";
 import { RiverIndex } from "../types";
 
 const endpoints: RiverIndex[] = [
   [2, 2],
-  [4, 2]
+  [4, 2],
 ];
 
 const source: RiverIndex = [0, 0];
@@ -15,10 +15,10 @@ const river = [
   [true, false, false],
   [true, true, true],
   [true, false, false],
-  [true, false, false]
+  [true, false, false],
 ];
 
-const graph = mapToNodes(RiversArray.from2D(river));
+const graph = mapToNodes(TilesArray.from2D(river));
 
 describe("TraceRivers", () => {
   it("should output a graph", () => {

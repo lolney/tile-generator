@@ -1,4 +1,4 @@
-import { TilesArray } from "../../../../common/TilesArray";
+import { TilesArray } from "../TilesArray";
 
 describe("TilesArray", () => {
   describe("neighbors", () => {

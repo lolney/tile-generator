@@ -1,5 +1,5 @@
 import { range } from "lodash";
-import mapToRiversArray, { threshold } from "../mapToRiversArray";
+import mapToTilesArray, { threshold } from "../mapToRiversArray";
 import { Tile, TerrainType } from "../../../../common/types";
 
 describe("mapToRiversArray", () => {
@@ -9,14 +9,14 @@ describe("mapToRiversArray", () => {
   const diameter = 1000;
 
   it("should include 20% of the raw data if 20% is above threshold", () => {
-    const result = mapToRiversArray(rawData, waterLayer, dimensions, diameter);
+    const result = mapToTilesArray(rawData, waterLayer, dimensions, diameter);
     expect(result.fields.filter((elem) => elem)).toHaveLength(
       Math.round(rawData.length * 0.2)
     );
   });
 
   it("should include no elems if all are below the min", () => {
-    const result = mapToRiversArray(
+    const result = mapToTilesArray(
       range(0, 10, 0.1),
       waterLayer,
       dimensions,
@@ -26,7 +26,7 @@ describe("mapToRiversArray", () => {
   });
 
   it("should include no elems if all are water", () => {
-    const result = mapToRiversArray(
+    const result = mapToTilesArray(
       rawData,
       rawData.map(() => ({ terrain: TerrainType.coast })),
       dimensions,

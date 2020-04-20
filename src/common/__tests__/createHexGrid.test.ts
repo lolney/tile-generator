@@ -2,8 +2,8 @@ import createRawHexGrid, {
   createHexagon,
   offsets,
   calcUnit,
-  mapRiverToLine
-} from "./createRawHexGrid";
+  mapRiverToLine,
+} from "../createRawHexGrid";
 
 const fixtures = [
   {
@@ -12,7 +12,7 @@ const fixtures = [
     lon_start: 0,
     lon_end: 50,
     lat_start: 0,
-    lat_end: -50
+    lat_end: -50,
   },
   {
     width: 10,
@@ -20,8 +20,8 @@ const fixtures = [
     lon_start: -71.0863494873047,
     lon_end: -71.03004455566408,
     lat_start: 42.38086519582323,
-    lat_end: 42.3245602642
-  }
+    lat_end: 42.3245602642,
+  },
 ];
 
 describe("createHexagon", () => {
@@ -65,7 +65,7 @@ describe("createHexGrid", () => {
 describe("mapRiverToLine", () => {
   it.each(["northEast", "northWest", "east", "west", "southEast", "southWest"])(
     "should take a slice of the provided poly %p",
-    river => {
+    (river) => {
       const poly = createRawHexGrid(fixtures[0])[0];
       const result = mapRiverToLine(poly, river);
       expect(result);

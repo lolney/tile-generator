@@ -1,12 +1,12 @@
 import mapToNodes from "./mapToNodes";
-import mapToRiversArray from "./mapToRiversArray";
+import mapToTilesArray from "./mapToRiversArray";
 import mapToTiles from "./mapToTiles";
 import { Tile, Dimensions } from "../../../common/types";
 import findRiverSystems from "./findRiverSystems";
 import { isRiverLocal } from "../rasterLocal";
 import { Polygon } from "geojson";
 import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
-import { RiversArray } from "./RiversArray";
+import { TilesArray } from "../../../common/TilesArray";
 import TraceRivers from "./TraceRivers";
 import ArrayDebugger from "./debug/ArrayDebugger";
 
@@ -17,7 +17,7 @@ const generateRivers = async (
   diameter: number
 ): Promise<Tile[][]> => {
   const rawData = await isRiverLocal(tiles);
-  const rawRivers = mapToRiversArray(rawData, waterLayer, dimensions, diameter);
+  const rawRivers = mapToTilesArray(rawData, waterLayer, dimensions, diameter);
 
   new ArrayDebugger(rawRivers).print("All rivers");
   const systems = findRiverSystems(rawRivers);
@@ -26,7 +26,7 @@ const generateRivers = async (
     new ArrayDebugger(system).print("River system");
 
     const graph = mapToNodes(system);
-    const waterArray = new RiversArray(waterLayer, system.width);
+    const waterArray = new TilesArray(waterLayer, system.width);
     const endpoints = findRiverEndpoints(system, waterArray);
     const source = findSourceTile(system, waterArray);
 
@@ -38,7 +38,7 @@ const generateRivers = async (
       return tiles;
     } catch (error) {
       console.error(error);
-      return RiversArray.fromDimensions(system.width, system.height, {} as Tile)
+      return TilesArray.fromDimensions(system.width, system.height, {} as Tile)
         .fields;
     }
   });

@@ -49,6 +49,10 @@ const generateInsert = (tiles: Polygon[]) => {
   return begin + middle + end;
 };
 
+/**
+ * Note: can use ST_SummaryStatsAgg for this as in `findMax`,
+ * but perfroms significantly worse
+ */
 export async function sampleRaster(table: string, geom: Polygon, n: number) {
   const points = sampleRows(geom, n);
   const query = `
@@ -70,7 +74,7 @@ export async function sampleRaster(table: string, geom: Polygon, n: number) {
 export async function findMax(table: string, tiles: Polygon[]) {
   let query = `
     SELECT temp_geoms.id, (ST_SummaryStatsAgg(ST_Clip(raster.rast,temp_geoms.geom), 1, false, 0.05)).max
-    FROM temp_geoms, flow_500 AS raster
+    FROM temp_geoms, ${table} AS raster
     WHERE ST_Intersects(raster.rast, temp_geoms.geom)
     GROUP BY temp_geoms.id
     ORDER BY temp_geoms.id;

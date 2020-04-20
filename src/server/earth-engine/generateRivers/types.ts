@@ -1,5 +1,5 @@
 import { Graph } from "graphlib";
-import { RiversArray } from "./RiversArray";
+import { TilesArray } from "../../../common/TilesArray";
 
 export type NodeId = string;
 
@@ -8,9 +8,9 @@ export type RiverNode = string;
 export type RiverEdge = [RiverNode, RiverNode];
 export type RiverIndex = [number, number];
 
-export type RawRivers = RiversArray<boolean>;
-export type RawRiverSystem = RiversArray<boolean>;
-export type RiverEndpoints = RiversArray<boolean>;
+export type RawRivers = TilesArray<boolean>;
+export type RawRiverSystem = TilesArray<boolean>;
+export type RiverEndpoints = TilesArray<boolean>;
 export type RiverNodes = Graph;
 export type RiverNodesWithSource = {
   graph: Graph;
