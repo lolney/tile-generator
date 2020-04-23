@@ -1,72 +1,38 @@
-import { range, sortBy } from "lodash";
+import { sortBy, zip } from "lodash";
 import { TilesArray } from "../../../common/TilesArray";
 import { Dimensions, Tile, TerrainType } from "../../../common/types";
 
-export const threshold = 6000;
-export const BASE_DIAMETER_MILES = 1000;
-export const BASE_AREA = 3600;
-
 const MIN_THRESHOLD = 100;
 
-const LOW_PERCENTILE = 0.7;
-const MID_PERCENTILE = 0.8;
-const HIGH_PERCENTILE = 0.95;
+const PERCENTILE = 0.75;
 
-const increaseWithDiameter = (diameter: number) =>
-  diameter / BASE_DIAMETER_MILES;
+const INCH_IN_MM = 2.5 * 10;
+export const BASE_RAINFALL = 40 * INCH_IN_MM;
 
-const descreaseWithNumberOfTiles = (dimensions: Dimensions) => {
-  const area = dimensions.width * dimensions.height;
-  return BASE_AREA / area;
-};
+const rainfallFactor = (rainfall: number) =>
+  Math.min(BASE_RAINFALL, rainfall + INCH_IN_MM) / BASE_RAINFALL;
 
 const mapToTilesArray = (
-  rawdata: number[],
+  rawData: number[],
   waterLayer: Tile[],
   dimensions: Dimensions,
-  diameter: number
+  precipitationLayer: number[]
 ) => {
-  const adjustedThreshold =
-    threshold *
-    descreaseWithNumberOfTiles(dimensions) *
-    increaseWithDiameter(diameter);
-
-  const indices = sortBy(range(0, rawdata.length), (i: number) => rawdata[i]);
-
-  const [highIndex, midIndex, lowIndex] = [
-    HIGH_PERCENTILE,
-    MID_PERCENTILE,
-    LOW_PERCENTILE,
-  ].map((percentile) => Math.floor(percentile * indices.length));
-
-  const [highValue, midValue, lowValue] = [highIndex, midIndex, lowIndex].map(
-    (index) => rawdata[indices[index]]
+  const sorted = sortBy(rawData);
+  const cutoffValue = Math.max(
+    sorted[Math.floor(PERCENTILE * sorted.length)],
+    MIN_THRESHOLD
   );
 
-  const params = { adjustedThreshold, highValue, midValue, lowValue };
-
-  let start: number;
-  if (midValue > adjustedThreshold * (4 / 3)) {
-    start = lowIndex;
-    console.log("Including more rivers", params);
-  } else if (midValue < adjustedThreshold * (2 / 3)) {
-    start = highIndex;
-    console.log("Including fewer rivers", params);
-  } else {
-    start = midIndex;
-    console.log("Not adjusting rivers", params);
-  }
-
-  const addedIndices = new Set(indices.slice(start));
-
   return new TilesArray(
-    rawdata.map(
-      (value, i) =>
-        addedIndices.has(i) &&
-        value > MIN_THRESHOLD &&
-        waterLayer[i]?.terrain !== TerrainType.coast &&
-        waterLayer[i]?.terrain !== TerrainType.ocean
-    ),
+    (zip(rawData, precipitationLayer) as [number, number][])
+      .map(([flow, rainfall]) => flow * rainfallFactor(rainfall))
+      .map(
+        (value, i) =>
+          value > cutoffValue &&
+          waterLayer[i]?.terrain !== TerrainType.coast &&
+          waterLayer[i]?.terrain !== TerrainType.ocean
+      ),
     dimensions.width
   );
 };

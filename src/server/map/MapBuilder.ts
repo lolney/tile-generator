@@ -200,12 +200,7 @@ export default class MapBuilder {
 
   async createRiverTiles(waterTiles: Tile[]): Promise<Tile[]> {
     const dimensions = this.options.dimensions;
-    const groups = await generateRivers(
-      this.grid,
-      dimensions,
-      waterTiles,
-      this.getDiameter()
-    );
+    const groups = await generateRivers(this.grid, dimensions, waterTiles);
     const initialValue = Array(this.grid.length).fill({});
 
     return groups.reduce(

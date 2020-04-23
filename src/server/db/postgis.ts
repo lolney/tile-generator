@@ -88,11 +88,13 @@ export async function findMax(table: string, tiles: Polygon[]) {
   return value;
 }
 
-export async function sampleRasterTiles(tiles: Polygon[], dbname: string) {
+export async function sampleRasterTiles(
+  tiles: Polygon[],
+  dbname: string,
+  samples = SAMPLES_PER_TILE
+) {
   return Promise.all(
-    tiles.map(
-      async (geom) => await sampleRaster(dbname, geom, SAMPLES_PER_TILE)
-    )
+    tiles.map(async (geom) => await sampleRaster(dbname, geom, samples))
   );
 }
 

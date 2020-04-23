@@ -1,28 +1,33 @@
 import { range } from "lodash";
-import mapToTilesArray, { threshold } from "../mapToRiversArray";
+import mapToTilesArray, { BASE_RAINFALL } from "../mapToRiversArray";
 import { Tile, TerrainType } from "../../../../common/types";
 
 describe("mapToRiversArray", () => {
-  const rawData = range(0, 1.25 * threshold, 0.05 * threshold);
+  const rawData = range(0, 1000, 10);
+  const rainfallLayer = Array(rawData.length).fill(BASE_RAINFALL);
   const waterLayer = [] as Tile[];
   const dimensions = { width: 60, height: 60 };
-  const diameter = 1000;
 
-  it("should include 20% of the raw data if 20% is above threshold", () => {
-    const result = mapToTilesArray(rawData, waterLayer, dimensions, diameter);
-    expect(result.fields.filter((elem) => elem)).toHaveLength(
-      Math.round(rawData.length * 0.2)
-    );
-  });
-
-  it("should include no elems if all are below the min", () => {
+  it("should 25% of tiles if rainfall is at the base rainfall", () => {
     const result = mapToTilesArray(
-      range(0, 10, 0.1),
+      rawData,
       waterLayer,
       dimensions,
-      diameter
+      rainfallLayer
     );
-    expect(result.fields.filter((elem) => elem)).toHaveLength(0);
+    expect(result.fields.filter((elem) => elem)).toHaveLength(24);
+  });
+
+  it("should include less than 25% if rainfall is lower than the base", () => {
+    const result = mapToTilesArray(
+      rawData,
+      waterLayer,
+      dimensions,
+      Array(rawData.length).fill((BASE_RAINFALL * 3) / 4)
+    );
+    const length = result.fields.filter((elem) => elem).length;
+    expect(length).toBeLessThan(25);
+    expect(length).toBeGreaterThan(0);
   });
 
   it("should include no elems if all are water", () => {
@@ -30,7 +35,7 @@ describe("mapToRiversArray", () => {
       rawData,
       rawData.map(() => ({ terrain: TerrainType.coast })),
       dimensions,
-      diameter
+      rainfallLayer
     );
     expect(result.fields.filter((elem) => elem)).toHaveLength(0);
   });

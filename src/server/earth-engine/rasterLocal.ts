@@ -8,6 +8,7 @@ const SLOPE_DB_NAME = "slope_500";
 const FOREST_DB_NAME = "forest_500";
 const MARSH_DB_NAME = "marsh_500";
 const FLOW_DB_NAME = "flow_500";
+const PRECIPITATION_DB_NAME = "precipitation_500";
 
 const waterThresholdByNWaterTilesNeighbors: { [a: number]: number } = {
   0: 0.05,
@@ -51,4 +52,8 @@ export async function isForestLocal(tiles: Polygon[]) {
 
 export async function isRiverLocal(tiles: Polygon[]) {
   return findTileMax(tiles, FLOW_DB_NAME);
+}
+
+export async function precipitationLocal(tiles: Polygon[]) {
+  return sampleRasterTiles(tiles, PRECIPITATION_DB_NAME, 2);
 }

@@ -3,7 +3,7 @@ import mapToTilesArray from "./mapToRiversArray";
 import mapToTiles from "./mapToTiles";
 import { Tile, Dimensions } from "../../../common/types";
 import findRiverSystems from "./findRiverSystems";
-import { isRiverLocal } from "../rasterLocal";
+import { isRiverLocal, precipitationLocal } from "../rasterLocal";
 import { Polygon } from "geojson";
 import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
 import { TilesArray } from "../../../common/TilesArray";
@@ -13,11 +13,16 @@ import ArrayDebugger from "./debug/ArrayDebugger";
 const generateRivers = async (
   tiles: Polygon[],
   dimensions: Dimensions,
-  waterLayer: Tile[],
-  diameter: number
+  waterLayer: Tile[]
 ): Promise<Tile[][]> => {
   const rawData = await isRiverLocal(tiles);
-  const rawRivers = mapToTilesArray(rawData, waterLayer, dimensions, diameter);
+  const precipitationLayer = await precipitationLocal(tiles);
+  const rawRivers = mapToTilesArray(
+    rawData,
+    waterLayer,
+    dimensions,
+    precipitationLayer
+  );
 
   new ArrayDebugger(rawRivers).print("All rivers");
   const systems = findRiverSystems(rawRivers);

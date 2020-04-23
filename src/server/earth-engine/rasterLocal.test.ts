@@ -1,4 +1,9 @@
-import { isLandLocal, findSlopeLocal, isRiverLocal } from "./rasterLocal";
+import {
+  isLandLocal,
+  findSlopeLocal,
+  isRiverLocal,
+  precipitationLocal,
+} from "./rasterLocal";
 import { Polygon } from "geojson";
 
 const fixtures: { [key: string]: Polygon } = {
@@ -129,6 +134,20 @@ describe("isRiverLocal", () => {
 
     for (const result of results) {
       expect(result).toBeGreaterThan(3);
+    }
+  });
+});
+
+describe("precipitationLocal", () => {
+  it("is > 0 and < 10000", async () => {
+    const results = await precipitationLocal([
+      fixtures.sacDelta,
+      fixtures.connecticutRiver,
+    ]);
+
+    for (const result of results) {
+      expect(result).toBeGreaterThan(0);
+      expect(result).toBeLessThan(10000);
     }
   });
 });
