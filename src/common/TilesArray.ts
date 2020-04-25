@@ -135,9 +135,12 @@ export class TilesArray<T> {
     }
   }
 
-  *pairs(): IterableIterator<[number, number]> {
-    for (let i = 0; i < this.height; i++) {
-      for (let j = 0; j < this.width; j++) {
+  *pairs(
+    start = [0, 0],
+    end = [this.height, this.width]
+  ): IterableIterator<[number, number]> {
+    for (let i = start[0]; i < end[0]; i++) {
+      for (let j = start[1]; j < end[1]; j++) {
         yield [i, j];
       }
     }
