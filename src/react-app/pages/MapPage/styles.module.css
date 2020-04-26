@@ -60,7 +60,7 @@
 
 .page {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 45px);
   display: flex;
   flex-direction: column;
 }

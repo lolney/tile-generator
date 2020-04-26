@@ -1,4 +1,5 @@
 @import "../../constants/colors.css";
+@import "../../components/Button/styles.module.css";
 
 .screen {
   background-color: rgba(255, 255, 255, 0.5);
@@ -22,7 +23,7 @@
   box-shadow: 10px 10px 15px grey;
 }
 
-.header {
+header {
   font-family: Avenir;
   font-size: 20px;
   font-weight: 900;
@@ -39,4 +40,8 @@
 
 .instructionList {
   margin-bottom: 5px;
+}
+
+.buttonContainer > * {
+  margin: auto;
 }

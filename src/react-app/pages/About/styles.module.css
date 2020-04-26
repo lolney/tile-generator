@@ -59,6 +59,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 75px;
+  color: var(--backgroundGrey);
 }
 
 .landing_header {
@@ -67,12 +68,14 @@
   font-family: Avenir;
   font-weight: 900;
   margin-bottom: 0px;
+  color: inherit;
 }
 
 .landing_subtitle {
   font-size: 18px;
   text-align: center;
   font-family: Avenir;
+  color: inherit;
 }
 
 .btn_container {
@@ -91,7 +94,7 @@
 }
 
 .btn_container * {
-  margin: 10px;
+  margin-left: 10px;
 }
 
 .button,
