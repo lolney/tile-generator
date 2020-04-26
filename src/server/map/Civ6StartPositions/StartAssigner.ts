@@ -1,8 +1,9 @@
-import { sortBy } from "lodash";
 import { Quadrant } from "./types";
 import { TilesArray } from "../../../common/TilesArray";
 import { Tile } from "../../../common/types";
 import FertilityMap from "./FertilityMap";
+import SumMap from "./SumMap";
+import TileUtils from "../../../common/Tile";
 
 export default class StartAssigner {
   quadrants: Quadrant[];
@@ -10,6 +11,7 @@ export default class StartAssigner {
   tiles: TilesArray<Tile>;
   minorCount: number;
   majorCount: number;
+  settlableCount: SumMap;
 
   constructor(
     quadrants: Quadrant[],
@@ -17,7 +19,34 @@ export default class StartAssigner {
     tiles: TilesArray<Tile>,
     minorCount: number,
     majorCount: number
-  ) {}
+  ) {
+    this.quadrants = quadrants;
+    this.fertility = fertility;
+    this.tiles = tiles;
+    this.minorCount = minorCount;
+    this.majorCount = majorCount;
+    this.settlableCount = new SumMap(
+      new TilesArray<number>(
+        tiles.fields.map((tile) => (TileUtils.isSettlable(tile) ? 1 : 0)),
+        tiles.width
+      )
+    );
+  }
+
+  static process = (
+    quadrants: Quadrant[],
+    fertility: FertilityMap,
+    tiles: TilesArray<Tile>,
+    minorCount: number,
+    majorCount: number
+  ) =>
+    new StartAssigner(
+      quadrants,
+      fertility,
+      tiles,
+      minorCount,
+      majorCount
+    ).assignStarts();
 
   assignStarts = () => {
     let candidateQuadrants = this.quadrants
@@ -25,10 +54,15 @@ export default class StartAssigner {
       .sort(this.sortByFertility);
 
     while (candidateQuadrants.length < this.count) {
+      throw new Error(
+        `Not enough land to generate the map: need ${this.count}, narrowed to ${candidateQuadrants.length} from ${this.quadrants.length} quadrants `
+      );
       // candidateQuadrants = candidateQuadrants.flatMap(Quadrants.divideQuadrant)
     }
 
-    return candidateQuadrants.slice(0, this.count).map((quad) => undefined); // this.fertility.maxScoredTile(quad))
+    return candidateQuadrants
+      .slice(0, this.count)
+      .map((quad) => this.fertility.maxScoredTile(quad));
   };
 
   get count() {
@@ -43,5 +77,6 @@ export default class StartAssigner {
     this.fertility.sumMap.sumBetweenValues(a.start, a.end) -
     this.fertility.sumMap.sumBetweenValues(b.start, b.end);
 
-  quadrantLandContent = () => {};
+  quadrantLandContent = ({ start, end }: Quadrant) =>
+    this.settlableCount.sumBetweenValues(start, end) > 0;
 }

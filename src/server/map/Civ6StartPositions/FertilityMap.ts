@@ -1,12 +1,22 @@
-import { TerrainType, FeatureType, Tile } from "../../../common/types";
+import { maxBy } from "lodash";
+import {
+  TerrainType,
+  FeatureType,
+  Tile,
+  RiverType,
+} from "../../../common/types";
 import { TilesArray } from "../../../common/TilesArray";
+import TileUtils from "../../../common/Tile";
 import SumMap from "./SumMap";
+import { Quadrant, Coords } from "./types";
 
 export default class FertilityMap {
+  tiles: TilesArray<Tile>;
   map: TilesArray<number>;
   sumMap: SumMap;
 
   constructor(tiles: TilesArray<Tile>) {
+    this.tiles = tiles;
     this.map = FertilityMap.createMap(tiles);
     this.sumMap = new SumMap(this.map);
   }
@@ -16,7 +26,8 @@ export default class FertilityMap {
       tiles.fields.map(
         (tile) =>
           FertilityMap.fertilityForFeature(tile.feature) +
-          FertilityMap.fertilityForTerrain(tile.terrain)
+          FertilityMap.fertilityForTerrain(tile.terrain) +
+          FertilityMap.fertilityForRiver(tile.river)
       ),
       tiles.width
     );
@@ -54,4 +65,25 @@ export default class FertilityMap {
         return 0;
     }
   };
+
+  static fertilityForRiver = (river: RiverType | undefined) =>
+    river && Object.values(river).filter((val) => val).length > 0 ? 1 : 0;
+
+  startScore = ({ i, j }: Coords) => {
+    const buffer = 2;
+    if (TileUtils.isWater(this.tiles.get(i, j))) return 0;
+    return this.sumMap.sumBetweenValues(
+      { i: i - buffer, j: j - buffer },
+      { i: i + buffer, j: j + buffer }
+    );
+  };
+
+  maxScoredTile = ({ start, end }: Quadrant) =>
+    maxBy(
+      Array.from(
+        this.tiles.pairs(Object.values(start), Object.values(end)),
+        ([i, j]) => ({ coords: { i, j }, score: this.startScore({ i, j }) })
+      ),
+      "score"
+    );
 }

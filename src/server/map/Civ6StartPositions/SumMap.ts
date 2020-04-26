@@ -7,36 +7,31 @@ export default class SumMap {
     this.map = SumMap.createSumMap(valuesMap);
   }
 
-  static createSumMap = (valuesMap: TilesArray<number>) =>
-    new TilesArray(
-      Array.from(valuesMap.pairs(), ([i, j]) => {
-        const val = valuesMap.get(i, j);
-        const a = valuesMap.getWithBoundsCheck(i - 1, j - 1) || 0;
-        const b = valuesMap.getWithBoundsCheck(i, j - 1) || 0;
-        const c = valuesMap.getWithBoundsCheck(i - 1, j) || 0;
-        return val + b + c - a;
-      }),
-      valuesMap.width
-    );
+  static createSumMap = (valuesMap: TilesArray<number>) => {
+    const tiles = valuesMap.cloneWith(0);
+    for (const [i, j] of valuesMap.pairs()) {
+      const val = valuesMap.get(i, j);
+      const a = tiles.getWithBoundsCheck(i - 1, j - 1) || 0;
+      const b = tiles.getWithBoundsCheck(i, j - 1) || 0;
+      const c = tiles.getWithBoundsCheck(i - 1, j) || 0;
+      tiles.set(i, j, val + b + c - a);
+    }
+    return tiles;
+  };
 
   sumBetweenValues = (
     start: { i: number; j: number },
     end: { i: number; j: number }
   ) => {
-    if (
-      start.i < 0 ||
-      start.j < 0 ||
-      end.i >= this.map.height ||
-      end.j >= this.map.width
-    )
-      throw new Error(
-        `Out of bounds: ${start}, ${end} for dimensions ${this.map.width}, ${this.map.height}`
-      );
+    const startI = Math.max(0, start.i);
+    const startJ = Math.max(0, start.j);
+    const endI = Math.min(this.map.height - 1, end.i - 1);
+    const endJ = Math.min(this.map.width - 1, end.j - 1);
 
-    const endVal = this.map.get(end.i, end.j);
-    const startVal = this.map.getWithBoundsCheck(start.i - 1, start.j - 1) || 0;
-    const leftVal = this.map.getWithBoundsCheck(end.i, start.j - 1) || 0;
-    const topVal = this.map.getWithBoundsCheck(end.i - 1, start.j) || 0;
+    const endVal = this.map.getWithBoundsCheck(endI, endJ) || 0;
+    const startVal = this.map.getWithBoundsCheck(startI - 1, startJ - 1) || 0;
+    const leftVal = this.map.getWithBoundsCheck(endI, startJ - 1) || 0;
+    const topVal = this.map.getWithBoundsCheck(startI - 1, endJ) || 0;
 
     return endVal + startVal - leftVal - topVal;
   };

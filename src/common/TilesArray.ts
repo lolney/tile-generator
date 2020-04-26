@@ -28,7 +28,7 @@ export class TilesArray<T> {
   clone = () => new TilesArray(this.fields, this.width);
 
   cloneWith = (value: T) =>
-    new TilesArray(new Array(this.fields.length).fill(value), this.width);
+    new TilesArray<T>(new Array(this.fields.length).fill(value), this.width);
 
   get(row: number, col: number) {
     return this.fields[row * this.width + col];
@@ -139,6 +139,8 @@ export class TilesArray<T> {
     start = [0, 0],
     end = [this.height, this.width]
   ): IterableIterator<[number, number]> {
+    start = start.map((val) => Math.max(0, val));
+    end = end.map((val) => Math.min(val));
     for (let i = start[0]; i < end[0]; i++) {
       for (let j = start[1]; j < end[1]; j++) {
         yield [i, j];

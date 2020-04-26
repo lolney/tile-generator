@@ -33,18 +33,21 @@ export default class Quadrants {
   *bufferedQuadrants() {
     const totalBuffer = Quadrants.buffer * 2;
     if (
-      totalBuffer >= Math.floor(this.strides.height[0] / 2) ||
-      totalBuffer >= Math.floor(this.strides.width[0] / 2)
+      [...this.strides.height, ...this.strides.width].some(
+        (val) => val <= totalBuffer
+      )
     )
       throw new Error(
-        `Quadrants are too small to be buffered: ${this.strides}`
+        `Quadrants are too small to be buffered: ${JSON.stringify(
+          this.strides
+        )}`
       );
 
     for (const quadrant of this.quadrants()) {
       quadrant.start.i += Quadrants.buffer;
       quadrant.start.j += Quadrants.buffer;
-      quadrant.end.j += Quadrants.buffer;
-      quadrant.start.j += Quadrants.buffer;
+      quadrant.end.i -= Quadrants.buffer;
+      quadrant.end.j -= Quadrants.buffer;
       yield quadrant;
     }
   }

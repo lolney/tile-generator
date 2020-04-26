@@ -94,6 +94,7 @@ export default class OpenRequest {
       this.map.addLayer(tiles);
       yield { [MapLayers[layer]]: tiles };
     }
+    console.log(JSON.stringify(this.map.tiles));
     this.complete = true;
   }
 
