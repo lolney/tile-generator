@@ -48,6 +48,7 @@ export const MapLoader: React.FC<MapLoaderProps> = ({
   submissionStatus,
   onLayerSelect,
   resetMap,
+  selectedLayer,
 }) => {
   const [downloaded, setDownloaded] = React.useState(false);
   return (
@@ -60,7 +61,9 @@ export const MapLoader: React.FC<MapLoaderProps> = ({
           ([layer, enabled]) => (
             <button
               onClick={() => onLayerSelect(layer)}
-              className={styles.component_btn}
+              className={
+                selectedLayer === layer ? styles.button_selected : styles.button
+              }
               disabled={!enabled}
             >
               {layer}
