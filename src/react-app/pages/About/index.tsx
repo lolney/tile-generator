@@ -1,7 +1,6 @@
 import React from "react";
 import { BaseWeb } from "../../baseweb";
-import { BrowserRouter, Route, Switch, Link, NavLink } from "react-router-dom";
-import * as colors from "../../constants/colors";
+import { NavLink } from "react-router-dom";
 import Button from "../../components/Button";
 import styles from "./styles.module.css";
 

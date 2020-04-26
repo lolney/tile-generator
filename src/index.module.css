@@ -13,7 +13,7 @@
   flex: 80%;
 }
 
-.header {
+a.header {
   display: inline-block;
   font-family: Avenir;
   font-size: 20px;
@@ -23,6 +23,7 @@
   cursor: pointer;
   line-height: 23px;
   padding-bottom: 2px;
+  text-decoration: none;
 }
 
 .menu_item_container {
@@ -34,7 +35,7 @@
   width: 100px;
 }
 
-.menu_item {
+a.menu_item {
   display: inline-block;
   font-family: Avenir;
   font-size: 20px;
@@ -45,6 +46,7 @@
   line-height: 23px;
   padding-bottom: 2px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .menu_item_selected {

@@ -1,4 +1,3 @@
-import React from "react";
 import * as colors from "../../constants/colors";
 
 const tabStyle = ({ $active, $disabled, $theme }: any) => ({

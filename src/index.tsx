@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch, Link, NavLink } from "react-router-dom";
+import { BrowserRouter, Route, NavLink } from "react-router-dom";
 import ReactDOM from "react-dom";
 import styles from "./index.module.css";
 import "normalize.css";
@@ -17,11 +17,7 @@ ReactDOM.render(
     <BrowserRouter>
       <div className={styles.top_bar}>
         <div className={styles.header_container}>
-          <NavLink
-            to="/"
-            className={styles.header}
-            style={{ textDecoration: "none" }}
-          >
+          <NavLink to="/" className={styles.header}>
             Civilization Tile Builder
           </NavLink>
         </div>
@@ -31,7 +27,6 @@ ReactDOM.render(
             <NavLink
               to="/About"
               className={styles.menu_item}
-              style={{ textDecoration: "none" }}
               activeClassName={styles.menu_item_selected}
             >
               About
@@ -41,7 +36,6 @@ ReactDOM.render(
             <NavLink
               to="/Help"
               className={styles.menu_item}
-              style={{ textDecoration: "none" }}
               activeClassName={styles.menu_item_selected}
             >
               Help

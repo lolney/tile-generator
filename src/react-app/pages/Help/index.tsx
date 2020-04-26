@@ -1,10 +1,7 @@
 import React from "react";
 import { StatefulTabs, Tab } from "baseui/tabs";
-import Button from "../../components/Button";
 import { BaseWeb } from "../../baseweb";
 import styles from "./styles.module.css";
-import * as colors from "../../constants/colors";
-import InstructionWindow from "../../v2-components/InstructionWindow";
 
 const tabStyle = ({ $active, $disabled, $theme }: any) => ({
   borderBottomColor: "#4d90e6",

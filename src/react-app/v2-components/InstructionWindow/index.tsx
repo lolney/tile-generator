@@ -2,7 +2,6 @@ import React from "react";
 import { StatefulTabs, Tab } from "baseui/tabs";
 import Button from "../../components/Button";
 import styles from "./styles.module.css";
-import * as colors from "../../constants/colors";
 import tabStyle from "../../components/TabStyle";
 
 const OSTabs: React.FC = () => (
@@ -100,7 +99,7 @@ export const InstructionWindow: React.FC = () => (
   <>
     <div className={styles.screen}>
       <div className={styles.window}>
-        <header>Install Instructions</header>
+        <header className={styles.header}>Install Instructions</header>
         <OSTabs></OSTabs>
         <div className={styles.buttonContainer}>
           <Button primary>Ok</Button>
