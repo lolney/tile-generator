@@ -30,8 +30,12 @@ export class TilesArray<T> {
   cloneWith = (value: T) =>
     new TilesArray<T>(new Array(this.fields.length).fill(value), this.width);
 
+  getIndex(row: number, col: number) {
+    return row * this.width + col;
+  }
+
   get(row: number, col: number) {
-    return this.fields[row * this.width + col];
+    return this.fields[this.getIndex(row, col)];
   }
 
   getWithBoundsCheck(row: number, col: number) {

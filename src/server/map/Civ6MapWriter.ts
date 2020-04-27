@@ -5,13 +5,11 @@ import Civ6Map from "./Civ6Map";
 import { Tile } from "../../common/types";
 import fs from "fs";
 import path from "path";
+import Errors from "./Errors";
 
 const TEMPLATE_FILE = path.join(__dirname, "../../../CustomMap.Civ6Map");
 const SAVE_DIRECTORY = path.join(__dirname, "../../../maps");
 
-// Tables of interest:
-// Plots, PlotRivers, PlotResources, PlotFeatures, PlotCliffs, Players?,
-// MetaData, MapAttributes, Map
 export default class Civ6MapWriter {
   map: Civ6Map;
   db: sqlite3.Database;
@@ -79,6 +77,8 @@ export default class Civ6MapWriter {
    * Add a set of plots to an existing db
    */
   async writeExistingDb() {
+    const errors = new Errors();
+
     const deletes = [
       "Map",
       "Plots",
@@ -94,6 +94,14 @@ export default class Civ6MapWriter {
 
     const map = this.getQueryFromEntries("Map", [this.map.map]);
     const modText = this.getQueryFromEntries("ModText", this.map.modText);
+    const starts = await errors.collect(
+      () =>
+        this.getQueryFromEntries(
+          "StartPositions",
+          this.map.getStartPositions()
+        ),
+      ""
+    );
     const body = this.getPlotsQueries();
 
     for (const del of deletes) {
@@ -102,10 +110,13 @@ export default class Civ6MapWriter {
 
     await this.run(map);
     await this.run(modText);
+    await this.run(starts);
 
     for (const query of body) {
       await this.run(query);
     }
+
+    return errors;
   }
 
   async run(query: string) {

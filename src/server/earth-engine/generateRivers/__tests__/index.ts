@@ -28,8 +28,7 @@ describe("generateRivers", () => {
     const rivers = await generateRivers(
       tiles,
       dimensions,
-      createWaterTiles(tiles),
-      1000
+      createWaterTiles(tiles)
     );
 
     expect(rivers).toBeDefined();
@@ -42,8 +41,7 @@ describe("generateRivers", () => {
     const rivers = await generateRivers(
       tiles,
       dimensions,
-      createWaterTiles(tiles),
-      1000
+      createWaterTiles(tiles)
     );
 
     expect(10 * 10).toEqual(eureka.length);

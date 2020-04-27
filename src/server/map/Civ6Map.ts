@@ -8,6 +8,8 @@ import {
 } from "../../common/types";
 import { Map as DBMap, Players, PlotRivers } from "./Civ6Map.types";
 import uuid from "uuid/v4";
+import findStartPositions from "./Civ6StartPositions/findStartPositions";
+import { TilesArray } from "../../common/TilesArray";
 
 type MetaData = {
   MetaDataVersion: number;
@@ -133,6 +135,24 @@ export default class Civ6Map extends TileMap {
     return "MAPSIZE_HUGE";
   };
 
+  getDefaultCivCount = () => {
+    switch (this.map.MapSizeType) {
+      case "MAPSIZE_DUEL":
+        return { minorCount: 3, majorCount: 2 };
+      case "MAPSIZE_TINY":
+        return { minorCount: 6, majorCount: 4 };
+      case "MAPSIZE_SMALL":
+        return { minorCount: 9, majorCount: 6 };
+      case "MAPSIZE_STANDARD":
+        return { minorCount: 12, majorCount: 8 };
+      case "MAPSIZE_LARGE":
+        return { minorCount: 15, majorCount: 10 };
+      case "MAPSIZE_HUGE":
+      default:
+        return { minorCount: 18, majorCount: 12 };
+    }
+  };
+
   static getTerrainType(tile: Tile) {
     const { elevation, terrain } = tile;
 
@@ -208,6 +228,29 @@ export default class Civ6Map extends TileMap {
 
     return plotRivers;
   }
+
+  getStartPositions = () => {
+    const { majorCount, minorCount } = this.getDefaultCivCount();
+    const tilesArray = new TilesArray(this.orderedTiles, this.map.Width);
+    const { majors, minors } = findStartPositions(
+      tilesArray,
+      minorCount,
+      majorCount
+    );
+
+    return [
+      ...majors.map(({ i, j }) => ({
+        Plot: tilesArray.getIndex(i, j),
+        Type: "RANDOM_MAJOR",
+        Value: "-1",
+      })),
+      ...minors.map(({ i, j }) => ({
+        Plot: tilesArray.getIndex(i, j),
+        Type: "RANDOM_MINOR",
+        Value: "-1",
+      })),
+    ];
+  };
 
   getRivers(): PlotRivers[] {
     this.remapRivers();

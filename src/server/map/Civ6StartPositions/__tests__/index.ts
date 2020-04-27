@@ -1,4 +1,4 @@
-import { findStartPositions } from "../index";
+import findStartPositions from "../findStartPositions";
 import italyTiles from "../../../../fixtures/tiles-italy-24-24.json";
 import tibetTiles from "../../../../fixtures/tiles-tibet-80-80.json";
 import { TilesArray } from "../../../../common/TilesArray";
@@ -32,6 +32,8 @@ describe("findStartPositions", () => {
 
     expect(majors).toHaveLength(majorCount);
     expect(minors).toHaveLength(minorCount);
+
+    console.log([...majors, ...minors]);
 
     for (const start of [...majors, ...minors]) {
       expect(start.i).toBeGreaterThanOrEqual(0);

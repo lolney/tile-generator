@@ -1,5 +1,6 @@
 import { mapValues } from "lodash";
 import Quadrants from "../Quadrants";
+import { QuadrantsTooSmallError } from "../errors";
 
 describe("Quadrants", () => {
   it.each([
@@ -95,7 +96,7 @@ describe("buffered quadrants", () => {
       const quadrants = new Quadrants({ width: 20, height: 20 }, 6);
       quadrants.strides = strides;
       expect(() => Array.from(quadrants.bufferedQuadrants())).toThrow(
-        /Quadrants are too small to be buffered/
+        QuadrantsTooSmallError
       );
     }
   );

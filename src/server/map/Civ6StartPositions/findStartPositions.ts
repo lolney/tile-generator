@@ -4,7 +4,7 @@ import Quadrants from "./Quadrants";
 import FertilityMap from "./FertilityMap";
 import StartAssigner from "./StartAssigner";
 
-export const findStartPositions = (
+const findStartPositions = (
   tiles: TilesArray<Tile>,
   minorCount: number,
   majorCount: number
@@ -20,7 +20,7 @@ export const findStartPositions = (
 
   // 3. Eliminate all tiles that don't meet fertility score or min land tiles
   const startPositions = StartAssigner.process(
-    Array.from(quadrants.quadrants()),
+    Array.from(quadrants.bufferedQuadrants()),
     fertility,
     tiles,
     minorCount,
@@ -32,3 +32,5 @@ export const findStartPositions = (
     minors: startPositions.slice(majorCount).map((val) => val?.coords!),
   };
 };
+
+export default findStartPositions;

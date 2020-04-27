@@ -4,6 +4,7 @@ import { Tile } from "../../../common/types";
 import FertilityMap from "./FertilityMap";
 import SumMap from "./SumMap";
 import TileUtils from "../../../common/Tile";
+import QuadrantSplitter from "./QuadrantSplitter";
 
 export default class StartAssigner {
   quadrants: Quadrant[];
@@ -49,16 +50,13 @@ export default class StartAssigner {
     ).assignStarts();
 
   assignStarts = () => {
-    let candidateQuadrants = this.quadrants
-      .filter(this.quadrantLandContent)
-      .sort(this.sortByFertility);
+    let candidateQuadrants = this.quadrants.filter(this.quadrantLandContent);
 
-    while (candidateQuadrants.length < this.count) {
-      throw new Error(
-        `Not enough land to generate the map: need ${this.count}, narrowed to ${candidateQuadrants.length} from ${this.quadrants.length} quadrants `
-      );
-      // candidateQuadrants = candidateQuadrants.flatMap(Quadrants.divideQuadrant)
-    }
+    candidateQuadrants = QuadrantSplitter.perform(
+      candidateQuadrants,
+      this.count,
+      this.quadrantLandContent
+    ).sort(this.sortByFertility);
 
     return candidateQuadrants
       .slice(0, this.count)
@@ -69,13 +67,9 @@ export default class StartAssigner {
     return this.majorCount + this.minorCount;
   }
 
-  subDivide = () => {
-    // subdivide quadrants?
-  };
-
   sortByFertility = (a: Quadrant, b: Quadrant) =>
-    this.fertility.sumMap.sumBetweenValues(a.start, a.end) -
-    this.fertility.sumMap.sumBetweenValues(b.start, b.end);
+    this.fertility.sumMap.sumBetweenValues(b.start, b.end) -
+    this.fertility.sumMap.sumBetweenValues(a.start, a.end);
 
   quadrantLandContent = ({ start, end }: Quadrant) =>
     this.settlableCount.sumBetweenValues(start, end) > 0;

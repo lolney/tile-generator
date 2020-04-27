@@ -1,5 +1,6 @@
 import { range } from "lodash";
 import { Dimensions } from "../../../common/types";
+import { QuadrantsTooSmallError } from "./errors";
 
 export default class Quadrants {
   strides: {
@@ -37,7 +38,7 @@ export default class Quadrants {
         (val) => val <= totalBuffer
       )
     )
-      throw new Error(
+      throw new QuadrantsTooSmallError(
         `Quadrants are too small to be buffered: ${JSON.stringify(
           this.strides
         )}`

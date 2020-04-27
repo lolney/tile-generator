@@ -3,7 +3,7 @@ import { TilesArray } from "../../../common/TilesArray";
 
 const markRiverSystem = (
   rivers: RawRivers,
-  explored: TilesArray<Boolean>,
+  explored: TilesArray<boolean>,
   i: number,
   j: number
 ): RawRiverSystem => {
