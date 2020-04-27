@@ -50,6 +50,7 @@ export default class StartAssigner {
     ).assignStarts();
 
   assignStarts = () => {
+    // todo: remove buffer to adjoining tile if filtered out
     let candidateQuadrants = this.quadrants.filter(this.quadrantLandContent);
 
     candidateQuadrants = QuadrantSplitter.perform(

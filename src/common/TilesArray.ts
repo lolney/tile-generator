@@ -30,6 +30,11 @@ export class TilesArray<T> {
   cloneWith = (value: T) =>
     new TilesArray<T>(new Array(this.fields.length).fill(value), this.width);
 
+  map<R = T>(func: (elem: T) => R) {
+    const result = this.fields.map(func);
+    return new TilesArray<R>(result, this.width);
+  }
+
   getIndex(row: number, col: number) {
     return row * this.width + col;
   }
