@@ -11,16 +11,6 @@
   box-sizing: border-box;
 }
 
-.header {
-  font-family: Avenir;
-  font-weight: 900;
-  font-size: 20px;
-  color: var(--textColorWhite);
-  vertical-align: center;
-  flex: 80%;
-  cursor: pointer;
-}
-
 .menu_item_container {
   display: flex;
 }
