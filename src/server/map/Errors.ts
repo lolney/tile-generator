@@ -17,6 +17,7 @@ export default class Errors {
       return await func();
     } catch (e) {
       if (Errors.isNonFatalError(e)) {
+        console.error(`Nonfatal error: ${e}`);
         this.nonFatalErrors.push(e);
         return defaultValue;
       }

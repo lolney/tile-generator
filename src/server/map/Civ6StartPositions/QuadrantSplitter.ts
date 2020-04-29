@@ -1,19 +1,20 @@
 import { QuadrantsTooSmallError, StartGenerationError } from "./errors";
 import { Quadrant } from "./types";
 import Quadrants from "./Quadrants";
+import BufferedQuadrant from "./BufferedQuadrant";
 
 export default class QuadrantSplitter {
   targetCount: number;
   startCount: number;
-  filter: (quad: Quadrant) => boolean;
-  private splitQuadrants: Quadrant[];
-  private nonSplitQuadrants: Quadrant[];
-  private unsplitableQuadrants: Quadrant[];
+  filter: (quad: BufferedQuadrant) => boolean;
+  private splitQuadrants: BufferedQuadrant[];
+  private nonSplitQuadrants: BufferedQuadrant[];
+  private unsplitableQuadrants: BufferedQuadrant[];
 
   constructor(
-    inputQuadrants: Quadrant[],
+    inputQuadrants: BufferedQuadrant[],
     targetCount: number,
-    filter: (quad: Quadrant) => boolean
+    filter: (quad: BufferedQuadrant) => boolean
   ) {
     this.targetCount = targetCount;
     this.filter = filter;
@@ -24,9 +25,9 @@ export default class QuadrantSplitter {
   }
 
   static perform = (
-    inputQuadrants: Quadrant[],
+    inputQuadrants: BufferedQuadrant[],
     targetCount: number,
-    filter: (quad: Quadrant) => boolean
+    filter: (quad: BufferedQuadrant) => boolean
   ) => new QuadrantSplitter(inputQuadrants, targetCount, filter).perform();
 
   perform() {
@@ -48,13 +49,17 @@ export default class QuadrantSplitter {
     ];
   }
 
-  getCandidate = (): Quadrant => {
+  getCandidate = (): BufferedQuadrant => {
     if (
       this.nonSplitQuadrants.length === 0 &&
       this.splitQuadrants.length === 0
     ) {
+      console.log(
+        this.quadrants,
+        this.quadrants.map((quad) => quad.quadrant)
+      );
       throw new StartGenerationError(
-        `Not enough land to generate the map: need ${this.targetCount}, narrowed to ${this.quadrants.length} from ${this.startCount} quadrants`
+        `Not enough land to assign all start positions: need ${this.targetCount}, narrowed to ${this.quadrants.length} from ${this.startCount} quadrants`
       );
     }
     if (this.nonSplitQuadrants.length === 0) {
@@ -64,13 +69,13 @@ export default class QuadrantSplitter {
     return this.nonSplitQuadrants.pop()!;
   };
 
-  static split(quad: Quadrant) {
-    const { start, end } = quad;
+  static split(quad: BufferedQuadrant): BufferedQuadrant[] {
+    const { start, end } = quad.quadrant;
     const width = end.j - start.j;
     const height = end.i - start.i;
     try {
       return QuadrantSplitter.adjustBuffers(
-        quad,
+        quad.quadrant,
         Array.from(new Quadrants({ width, height }, 2).quadrants())
       );
     } catch (error) {
@@ -96,25 +101,39 @@ export default class QuadrantSplitter {
 
   static adjustBuffers(original: Quadrant, newQuads: Quadrant[]) {
     const { start } = original;
-    // vertical, so add top padding from bottom and bottom from top
+    const bufferedNewQuads = newQuads.map(
+      (quad) => new BufferedQuadrant(quad, Quadrants.buffer, [])
+    );
+    // vertical
     if (newQuads[0].start.j === newQuads[1].start.j) {
-      newQuads[0].end.i -= Quadrants.buffer;
-      newQuads[1].start.i += Quadrants.buffer;
-      if (newQuads.some((quad) => quad.start.i >= quad.end.i)) {
+      bufferedNewQuads[0].add("bottom");
+      bufferedNewQuads[1].add("top");
+      if (
+        bufferedNewQuads.some(
+          ({ quadrant }) => quadrant.start.i >= quadrant.end.i
+        )
+      ) {
         QuadrantSplitter.throwTooSmallError(newQuads);
       }
     }
-    // horizontal, so add left padding from right and right from left
+    // horizontal
     if (newQuads[0].start.i === newQuads[1].start.i) {
-      newQuads[0].end.j -= Quadrants.buffer;
-      newQuads[1].start.j += Quadrants.buffer;
-      if (newQuads.some((quad) => quad.start.j >= quad.end.j)) {
+      bufferedNewQuads[0].add("right");
+      bufferedNewQuads[1].add("left");
+      if (
+        bufferedNewQuads.some(
+          ({ quadrant }) => quadrant.start.j >= quadrant.end.j
+        )
+      ) {
         QuadrantSplitter.throwTooSmallError(newQuads);
       }
     }
-    return newQuads.map((quad) => ({
-      start: { i: quad.start.i + start.i, j: quad.start.j + start.j },
-      end: { i: quad.end.i + start.i, j: quad.end.j + start.j },
+    return bufferedNewQuads.map(({ quadrant, ...rest }) => ({
+      quadrant: {
+        start: { i: quadrant.start.i + start.i, j: quadrant.start.j + start.j },
+        end: { i: quadrant.end.i + start.i, j: quadrant.end.j + start.j },
+      },
+      ...rest,
     }));
   }
 }

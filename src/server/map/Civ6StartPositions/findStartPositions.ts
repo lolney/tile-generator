@@ -20,7 +20,7 @@ const findStartPositions = (
 
   // 3. Eliminate all tiles that don't meet fertility score or min land tiles
   const startPositions = StartAssigner.process(
-    Array.from(quadrants.bufferedQuadrants()),
+    quadrants,
     fertility,
     tiles,
     minorCount,

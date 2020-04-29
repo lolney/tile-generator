@@ -1,13 +1,15 @@
-import { Quadrant } from "./types";
+import { range } from "lodash";
 import { TilesArray } from "../../../common/TilesArray";
 import { Tile } from "../../../common/types";
 import FertilityMap from "./FertilityMap";
 import SumMap from "./SumMap";
 import TileUtils from "../../../common/Tile";
 import QuadrantSplitter from "./QuadrantSplitter";
+import BufferedQuadrant from "./BufferedQuadrant";
+import Quadrants from "./Quadrants";
 
 export default class StartAssigner {
-  quadrants: Quadrant[];
+  quadrants: Quadrants;
   fertility: FertilityMap;
   tiles: TilesArray<Tile>;
   minorCount: number;
@@ -15,7 +17,7 @@ export default class StartAssigner {
   settlableCount: SumMap;
 
   constructor(
-    quadrants: Quadrant[],
+    quadrants: Quadrants,
     fertility: FertilityMap,
     tiles: TilesArray<Tile>,
     minorCount: number,
@@ -35,7 +37,7 @@ export default class StartAssigner {
   }
 
   static process = (
-    quadrants: Quadrant[],
+    quadrants: Quadrants,
     fertility: FertilityMap,
     tiles: TilesArray<Tile>,
     minorCount: number,
@@ -51,27 +53,32 @@ export default class StartAssigner {
 
   assignStarts = () => {
     // todo: remove buffer to adjoining tile if filtered out
-    let candidateQuadrants = this.quadrants.filter(this.quadrantLandContent);
+    const candidateQuadrants = Array.from(
+      this.quadrants.bufferedQuadrants(),
+      (quad) => (this.quadrantLandContent(quad) ? quad : null)
+    );
 
-    candidateQuadrants = QuadrantSplitter.perform(
-      candidateQuadrants,
+    let filteredQuadrants = this.quadrants.removeBuffers(candidateQuadrants);
+
+    filteredQuadrants = QuadrantSplitter.perform(
+      filteredQuadrants,
       this.count,
       this.quadrantLandContent
     ).sort(this.sortByFertility);
 
-    return candidateQuadrants
+    return filteredQuadrants
       .slice(0, this.count)
-      .map((quad) => this.fertility.maxScoredTile(quad));
+      .map((quad) => this.fertility.maxScoredTile(quad.quadrant));
   };
 
   get count() {
     return this.majorCount + this.minorCount;
   }
 
-  sortByFertility = (a: Quadrant, b: Quadrant) =>
-    this.fertility.sumMap.sumBetweenValues(b.start, b.end) -
-    this.fertility.sumMap.sumBetweenValues(a.start, a.end);
+  sortByFertility = (a: BufferedQuadrant, b: BufferedQuadrant) =>
+    this.fertility.sumMap.sumBetweenValues(b.quadrant.start, b.quadrant.end) -
+    this.fertility.sumMap.sumBetweenValues(a.quadrant.start, a.quadrant.end);
 
-  quadrantLandContent = ({ start, end }: Quadrant) =>
+  quadrantLandContent = ({ quadrant: { start, end } }: BufferedQuadrant) =>
     this.settlableCount.sumBetweenValues(start, end) > 0;
 }

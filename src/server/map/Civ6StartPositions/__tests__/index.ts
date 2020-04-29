@@ -1,5 +1,6 @@
 import findStartPositions from "../findStartPositions";
 import italyTiles from "../../../../fixtures/tiles-italy-24-24.json";
+import italyTilesTiny from "../../../../fixtures/tiles-italy-35-35.json";
 import tibetTiles from "../../../../fixtures/tiles-tibet-80-80.json";
 import { TilesArray } from "../../../../common/TilesArray";
 import { Tile } from "../../../../common/types";
@@ -10,6 +11,13 @@ describe("findStartPositions", () => {
     height: 24,
     minorCount: 3,
     majorCount: 2,
+  };
+
+  const tinyParams = {
+    width: 35,
+    height: 35,
+    minorCount: 6,
+    majorCount: 4,
   };
 
   const hugeParams = {
@@ -33,8 +41,6 @@ describe("findStartPositions", () => {
     expect(majors).toHaveLength(majorCount);
     expect(minors).toHaveLength(minorCount);
 
-    console.log([...majors, ...minors]);
-
     for (const start of [...majors, ...minors]) {
       expect(start.i).toBeGreaterThanOrEqual(0);
       expect(start.i).toBeLessThan(height);
@@ -47,6 +53,13 @@ describe("findStartPositions", () => {
     "should generate start positions for a duel map %p",
     (_, rawTiles: Tile[]) => {
       checkTiles(rawTiles, duelParams);
+    }
+  );
+
+  it.each([["italyTilesTiny", italyTilesTiny]])(
+    "should generate start positions for a tiny map %p",
+    (_, rawTiles: Tile[]) => {
+      checkTiles(rawTiles, tinyParams);
     }
   );
 

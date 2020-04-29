@@ -1,6 +1,7 @@
 import { mapValues } from "lodash";
 import Quadrants from "../Quadrants";
 import { QuadrantsTooSmallError } from "../errors";
+import BufferedQuadrant from "../BufferedQuadrant";
 
 describe("Quadrants", () => {
   it.each([
@@ -77,9 +78,9 @@ describe("buffered quadrants", () => {
     "should place the appropriate buffer for targetCount %p and dims %p",
     (targetCount, dimensions, expectedQuadrants) => {
       const quadrants = new Quadrants(dimensions, targetCount);
-      expect(Array.from(quadrants.bufferedQuadrants())).toEqual(
-        expectedQuadrants
-      );
+      expect(
+        Array.from(quadrants.bufferedQuadrants(), (quad) => quad.quadrant)
+      ).toEqual(expectedQuadrants);
     }
   );
 
@@ -98,6 +99,39 @@ describe("buffered quadrants", () => {
       expect(() => Array.from(quadrants.bufferedQuadrants())).toThrow(
         QuadrantsTooSmallError
       );
+    }
+  );
+
+  it.each([[4, { width: 20, height: 20 }]])(
+    "should trim quadrants appropriately when one is missing",
+    (targetCount, dimensions) => {
+      const quadrants = new Quadrants(dimensions, targetCount);
+      const buffered: Array<BufferedQuadrant | null> = Array.from(
+        quadrants.bufferedQuadrants()
+      );
+      buffered[0] = null;
+      const trimmed = quadrants.removeBuffers(buffered);
+
+      expect(trimmed.map((quad) => quad.buffers)).toEqual([
+        {
+          bottom: 2,
+          left: 0,
+          right: 0,
+          top: 0,
+        },
+        {
+          bottom: 0,
+          left: 0,
+          right: 2,
+          top: 0,
+        },
+        {
+          bottom: 0,
+          left: 2,
+          right: 0,
+          top: 2,
+        },
+      ]);
     }
   );
 });

@@ -120,6 +120,8 @@ export default class Civ6MapWriter {
   }
 
   async run(query: string) {
+    if (!query) return;
+
     return new Promise((resolve, reject) => {
       const finalCallback = (err: Error | null) => {
         if (err) {
