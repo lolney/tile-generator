@@ -1,9 +1,10 @@
 {
-  "name": "tile-generator",
+  "name": "@tile-generator/server",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@google/earthengine": "^0.1.171",
+    "@tile-generator/common": "^0.1.0",
     "@turf/turf": "^5.1.6",
     "@types/cors": "^2.8.4",
     "@types/downloadjs": "^1.4.1",
@@ -25,7 +26,6 @@
     "@types/react-redux": "^7.0.6",
     "@types/react-router": "^5.1.5",
     "@types/react-router-dom": "^5.1.4",
-    "@types/react-router-hash-link": "^1.2.1",
     "@types/sqlite3": "^3.1.5",
     "@types/styletron-engine-atomic": "^1.1.0",
     "@types/styletron-react": "^5.0.2",
@@ -63,7 +63,6 @@
     "react-redux": "^7.0.2",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "react-router-hash-link": "^1.2.2",
     "react-scripts": "^3.4.0",
     "react-use": "^14.1.1",
     "redux": "^4.0.1",
@@ -81,11 +80,12 @@
     "weighted-random": "^0.1.0"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap --hoist",
-    "postinstall": "npm run bootstrap",
-    "clean": "lerna run clean",
-    "build": "lerna run build",
-    "pub": "lerna publish"
+    "start": "babel-node dist/server/main.js",
+    "profile": "babel-node --inspect dist/server/main.js",
+    "db:create": "sh ./scripts/create_db.sh",
+    "db:seed": "sh ./scripts/load_all.sh",
+    "build": "tsc",
+    "watch": "tsc -p tsconfig.json --watch"
   },
   "eslintConfig": {
     "extends": "react-app"

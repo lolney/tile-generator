@@ -1,0 +1,18 @@
+.btn_container {
+  position: fixed;
+  bottom: 0px;
+  width: 200px;
+  height: 35.5px;
+  background-color: var(--backgroundGrey);
+  display: flex;
+  margin: auto;
+  left: 0;
+  right: 0;
+  padding-top: 0px;
+  padding: 10px;
+  padding-top: 0px;
+}
+
+.btn_container * {
+  margin: 10px;
+}

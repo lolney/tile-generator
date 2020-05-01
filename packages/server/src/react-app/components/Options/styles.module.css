@@ -1,0 +1,27 @@
+@import "../../constants/colors.css";
+
+.header {
+  font-size: 14px;
+  font-weight: 900;
+  font-family: Avenir;
+  text-align: center;
+  color: var(--textColorWhite);
+  margin-top: 10px;
+}
+
+.horizontal_containers {
+  display: flex;
+  position: relative;
+}
+
+.left_headers {
+  color: var(--textColorWhite);
+  font-family: Avenir;
+  font-size: 12px;
+  font-weight: 900;
+  margin-left: 20px;
+  margin-top: 14px;
+  margin-right: 10px;
+  width: 10%;
+  text-transform: capitalize;
+}

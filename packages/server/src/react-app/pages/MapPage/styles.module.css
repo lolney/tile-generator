@@ -1,0 +1,66 @@
+@import "../../constants/colors.css";
+
+.top_bar {
+  position: relative;
+  width: 100vw;
+  background-color: var(--backgroundGrey);
+  top: 0;
+  left: 0;
+  display: flex;
+  padding: 10px 10px;
+  box-sizing: border-box;
+}
+
+.header {
+  font-family: Avenir;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--textColorWhite);
+  vertical-align: center;
+  flex: 80%;
+  cursor: pointer;
+}
+
+.menu_item_container {
+  display: flex;
+}
+
+.menu_item {
+  display: inline-block;
+  font-family: Avenir;
+  font-size: 20px;
+  font-weight: 900;
+  margin-right: 40px;
+  color: var(--textColorWhite);
+  vertical-align: middle;
+  line-height: 23px;
+  padding-bottom: 5px;
+
+  cursor: pointer;
+}
+
+.menu_item_selected {
+  padding-bottom: 5px;
+  border-bottom: 2px solid rgb(77, 144, 230);
+}
+
+.bottom_bar {
+  width: 100vw;
+  height: 45.5px;
+  background-color: var(--backgroundGrey);
+  bottom: 0;
+  left: 0;
+  display: flex;
+}
+
+.map_container {
+  flex: 1;
+  position: relative;
+}
+
+.page {
+  width: 100vw;
+  height: calc(100vh - 45px);
+  display: flex;
+  flex-direction: column;
+}
