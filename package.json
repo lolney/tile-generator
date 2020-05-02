@@ -4,11 +4,17 @@
   "private": true,
   "dependencies": {},
   "scripts": {
-    "add": "lerna add",
+    "add-client": "lerna add --scope=@tile-generator/react-app",
+    "add-common": "lerna add --scope=@tile-generator/common",
+    "add-server": "lerna add --scope=@tile-generator/server",
     "bootstrap": "lerna bootstrap",
-    "postinstall": "npm run bootstrap",
-    "clean": "lerna run clean",
+    "build-client": "lerna run build --scope=@tile-generator/react-app",
+    "build-server": "lerna run build --scope=@tile-generator/server",
+    "build-common": "lerna run build --scope=@tile-generator/common",
     "build": "lerna run build",
+    "build-client-prod": "npm install && npm run build-common && npm install && npm run build-client",
+    "clean": "lerna run clean",
+    "postinstall": "npm run bootstrap",
     "pub": "lerna publish"
   },
   "eslintConfig": {
