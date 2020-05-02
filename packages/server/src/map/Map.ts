@@ -5,6 +5,8 @@ import {
   RiverType,
   MapConfigurable,
   FeatureType,
+  TilesArray,
+  TileUtils,
 } from "@tile-generator/common";
 import zip from "lodash/zip";
 
@@ -20,6 +22,20 @@ export default class Map {
 
     this.configurable = configurable;
   }
+
+  static remapCoastTiles = (tiles: TilesArray<Tile>) =>
+    Array.from(tiles.pairs(), ([i, j]) => {
+      const tile = tiles.get(i, j);
+      if (!TileUtils.isWater(tile)) return tile;
+
+      const terrain = Array.from(tiles.neighbors(i, j)).every(([i, j]) =>
+        TileUtils.isWater(tiles.get(i, j))
+      )
+        ? TerrainType.ocean
+        : TerrainType.coast;
+
+      return { ...tile, terrain };
+    });
 
   getNeighboringIndex(index: number, direction: keyof RiverType) {
     const { width } = this.configurable;

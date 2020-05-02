@@ -83,8 +83,6 @@ export async function findMode(table: string, geom: Polygon, n: number) {
     WHERE values.value != double precision 'NaN';
   `;
 
-  console.log(query);
-
   const rows = await db.doQuery(query);
   const value = rows[0]["mode"];
 

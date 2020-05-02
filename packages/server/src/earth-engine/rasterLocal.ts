@@ -11,17 +11,17 @@ const FLOW_DB_NAME = "flow_500";
 const PRECIPITATION_DB_NAME = "precipitation_500";
 
 const waterThresholdByNWaterTilesNeighbors: { [a: number]: number } = {
-  0: 0.05,
+  0: 0.2,
   1: 0.1,
-  2: 0.2,
-  3: 0.3,
+  2: 0.3,
+  3: 0.5,
   4: 0.5,
   5: 0.8,
   6: 0.9,
 };
 
 export async function isLandLocal(tiles: Polygon[], width: number) {
-  const dbResults = await sampleRasterTiles(tiles, WATERMASK_DB_NAME);
+  const dbResults = await sampleRasterTiles(tiles, WATERMASK_DB_NAME, 50);
   const valuesArray = new TilesArray<number>(dbResults, width);
   const waterArray = new TilesArray<boolean>(
     dbResults.map((val) => val > waterThresholdByNWaterTilesNeighbors[4]),

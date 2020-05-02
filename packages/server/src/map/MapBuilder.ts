@@ -11,6 +11,7 @@ import {
   FeatureType,
   Options,
   Koppen,
+  TilesArray,
 } from "@tile-generator/common";
 import { getForestType, getTerrainType } from "../earth-engine/koppen";
 import generateRivers from "../earth-engine/generateRivers";
@@ -91,7 +92,10 @@ export default class MapBuilder {
         case MapLayers.climate:
           this.waterLayer = await this.createLandTiles();
           const climateLayer = await this.createClimateTiles();
-          return Map.mergeTileArrays(this.waterLayer, climateLayer);
+          const merged = Map.mergeTileArrays(this.waterLayer, climateLayer);
+          return Map.remapCoastTiles(
+            new TilesArray(merged, this.options.dimensions.width)
+          );
         case MapLayers.elevation:
           return this.createElevationTiles();
         case MapLayers.forest:

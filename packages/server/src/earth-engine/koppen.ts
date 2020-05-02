@@ -49,8 +49,6 @@ export function getTerrainType(koppen: Koppen): TerrainType {
     case Koppen.EF:
       return TerrainType.ice;
     case Koppen.Ocean:
-      return TerrainType.coast;
-    default:
       return TerrainType.ocean;
   }
 }
