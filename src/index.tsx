@@ -18,7 +18,8 @@ ReactDOM.render(
       <div className={styles.top_bar}>
         <div className={styles.header_container}>
           <NavLink to="/" className={styles.header}>
-            Civilization Tile Builder
+            <img className={styles.logo} src="/logo.svg" alt="logo"></img>
+            <header>Civilization Tile Builder</header>
           </NavLink>
         </div>
         <div className={styles.space}></div>

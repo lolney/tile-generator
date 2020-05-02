@@ -1,14 +1,14 @@
 @import "../../constants/colors.css";
 
 .container {
-  z-index: 1;
+  z-index: 0;
   position: absolute;
   width: 535px;
   height: 132px;
   background-color: var(--backgroundGrey);
   margin-left: auto;
   margin-right: auto;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
   right: 0;
   border-top-left-radius: 5px;

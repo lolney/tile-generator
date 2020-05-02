@@ -82,18 +82,30 @@
   box-shadow: 3px 3px 25px lightgrey;
 }
 
-.civvLogo {
-  max-width: 376px;
-}
-
-.civviLogo {
-  max-width: 376px;
-}
-
 h1 {
   font-family: Avenir;
   text-align: center;
   margin-bottom: 30px;
   color: inherit;
   color: var(--backgroundGrey);
+}
+
+.body {
+  margin-top: 40px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-bottom: 100px;
+}
+
+.questionHeader {
+  font: 900 20px Avenir;
+}
+
+.questionHeader:target {
+  background-color: #ffff00;
+}
+
+.answerText {
+  font: 300 16px Avenir;
+  padding-left: 24px;
 }

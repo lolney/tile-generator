@@ -1,0 +1,10 @@
+.header {
+  text-align: center;
+  font-weight: 900;
+}
+
+.body {
+  font-weight: 500;
+  margin-top: 15px;
+  line-height: 20px;
+}
