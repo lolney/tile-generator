@@ -26,7 +26,7 @@ ReactDOM.render(
         <div className={styles.menu_item_container}>
           <div className={styles.button_container}>
             <NavLink
-              to="/About"
+              to="/about"
               className={styles.menu_item}
               activeClassName={styles.menu_item_selected}
             >
@@ -35,7 +35,7 @@ ReactDOM.render(
           </div>
           <div className={styles.button_container}>
             <NavLink
-              to="/Help"
+              to="/help"
               className={styles.menu_item}
               activeClassName={styles.menu_item_selected}
             >
@@ -47,10 +47,10 @@ ReactDOM.render(
       <Route exact path="/">
         <MapPage></MapPage>
       </Route>
-      <Route path="/About">
+      <Route path="/about">
         <About></About>
       </Route>
-      <Route path="/Help">
+      <Route path="/help">
         <Help></Help>
       </Route>
     </BrowserRouter>

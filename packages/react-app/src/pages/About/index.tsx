@@ -31,7 +31,7 @@ export const About: React.FC = () => (
           </div>
         </div>
         <video controls>
-          <source src="About_Video.mp4" type="video/mp4"></source>
+          <source src="/about-video.mp4" type="video/mp4"></source>
         </video>
       </div>
     </div>

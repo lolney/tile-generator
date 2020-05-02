@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { toaster, ToasterContainer, PLACEMENT } from "baseui/toast";
-import { BaseWeb } from "../../baseweb";
 import { Button, SIZE } from "baseui/button";
 import { Block } from "baseui/block";
 import styles from "./styles.module.css";
@@ -18,7 +17,7 @@ export const ToastError: React.FC = () => {
     const info = (
       <Block marginTop="15px" display="flex" justifyContent="center">
         <a
-          href="/Help/#errorQuestion"
+          href="/help#errorQuestion"
           target="_blank"
           style={{ textDecoration: "none" }}
         >
@@ -27,9 +26,9 @@ export const ToastError: React.FC = () => {
             size={SIZE.compact}
             overrides={{
               BaseButton: {
-                style: ({ $theme }) => ({
+                style: {
                   borderRadius: "10.5px",
-                }),
+                },
               },
             }}
           >
