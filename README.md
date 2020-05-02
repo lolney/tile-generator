@@ -12,6 +12,12 @@ npm run build
 npm install
 ```
 
+To install a package in one of ours, use the `add` script:
+
+```
+npm run add @package/name --scope=common
+```
+
 ```sh
 # Start the server
 npm run watch-server
