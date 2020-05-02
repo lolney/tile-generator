@@ -1,7 +1,9 @@
 h3.header {
   margin-left: 10px;
+  font-family: Avenir;
 }
 
 .instructionList > ul {
   padding-left: 2em;
+  font-family: Avenir;
 }

@@ -60,7 +60,7 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ format, changeOptions }) => (
       },
       ValueContainer: {
         style: () => ({
-          padding: "0px",
+          paddingLeft: "10px",
           background: colors.textFieldGrey,
           color: colors.textColorWhite,
         }),
