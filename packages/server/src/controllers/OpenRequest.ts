@@ -47,7 +47,7 @@ export default class OpenRequest {
 
   static parseRequest(req: MapOptions) {
     // Validate request
-    const options = MapOptionsT.decode(req).getOrElseL((errors: string[]) => {
+    const options = MapOptionsT.decode(req).getOrElseL((errors) => {
       console.log(errors);
       //@ts-ignore
       throw new Error(failure(errors).join("\n"));

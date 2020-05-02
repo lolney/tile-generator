@@ -14,12 +14,11 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "fp-ts": "^2.5.4",
     "geojson": "^0.5.0",
-    "io-ts": "^2.2.1",
+    "io-ts": "^1.8.3",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "typescript": "^3.4.5"
+    "typescript": "^3.8.3"
   }
 }

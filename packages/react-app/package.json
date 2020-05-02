@@ -24,16 +24,14 @@
     "@types/react-redux": "^7.0.6",
     "@types/react-router": "^5.1.5",
     "@types/react-router-dom": "^5.1.4",
+    "@types/react-router-hash-link": "^1.2.1",
     "@types/sqlite3": "^3.1.5",
     "@types/styletron-engine-atomic": "^1.1.0",
     "@types/styletron-react": "^5.0.2",
     "@types/supertest": "^2.0.7",
     "@types/uuid": "^3.4.4",
-    "babel-cli": "^6.26.0",
     "baseui": "^9.70.0",
     "core-js": "^3.0.0",
-    "cors": "^2.8.5",
-    "dotenv": "^7.0.0",
     "downloadjs": "^1.4.7",
     "http": "0.0.0",
     "leaflet": "^1.4.0",
@@ -54,6 +52,7 @@
     "react-leaflet-vectorgrid": "^2.2.1",
     "react-redux": "^7.0.2",
     "react-router": "^5.1.2",
+    "react-router-hash-link": "^1.2.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "react-use": "^14.1.1",
@@ -68,17 +67,11 @@
     "weighted-random": "^0.1.0"
   },
   "scripts": {
-    "start": "babel-node dist/server/main.js",
-    "profile": "babel-node --inspect dist/server/main.js",
+    "start": "react-scripts start",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "db:create": "sh ./scripts/create_db.sh",
-    "db:seed": "sh ./scripts/load_all.sh",
-    "watch-all": "npm run watch-server & npm run build & npm start",
-    "watch-server": "tsc -p server-tsconfig.json --watch",
-    "watch-client": "node scripts/watch.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -1,4 +1,10 @@
-const { performance } = require("perf_hooks");
+const { PerformanceObserver, performance } = require("perf_hooks");
+
+const obs = new PerformanceObserver((items: any) => {
+  console.log(items.getEntries()[0].duration);
+  performance.clearMarks();
+});
+obs.observe({ entryTypes: ["measure"] });
 
 export function logperformance<T extends Array<any>, U>(f: (...args: T) => U) {
   return async function (...args: T) {
@@ -8,11 +14,8 @@ export function logperformance<T extends Array<any>, U>(f: (...args: T) => U) {
 
     performance.mark("B");
     performance.measure("A to B", "A", "B");
-    const measure = performance.getEntriesByName("A to B")[0];
-    console.log(`${f.name} took ${measure.duration} milis`);
 
     performance.clearMarks();
-    performance.clearMeasures();
 
     return result;
   };

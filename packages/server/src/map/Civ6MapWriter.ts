@@ -7,8 +7,8 @@ import fs from "fs";
 import path from "path";
 import Errors from "./Errors";
 
-const TEMPLATE_FILE = path.join(__dirname, "../../../CustomMap.Civ6Map");
-const SAVE_DIRECTORY = path.join(__dirname, "../../../maps");
+const TEMPLATE_FILE = path.join(__dirname, "../templates/CustomMap.Civ6Map");
+const SAVE_DIRECTORY = path.join(__dirname, "../../maps");
 
 export default class Civ6MapWriter {
   map: Civ6Map;
@@ -21,8 +21,13 @@ export default class Civ6MapWriter {
     if (filename !== undefined) {
       // Copy template file to save directory
       this.path = path.join(SAVE_DIRECTORY, filename);
+      if (!fs.existsSync(SAVE_DIRECTORY)) {
+        fs.mkdirSync(SAVE_DIRECTORY);
+      }
       fs.copyFileSync(TEMPLATE_FILE, this.path);
     } else this.path = ":memory:";
+
+    console.log("wrote temp file");
 
     this.db = new sqlite3.Database(
       this.path,

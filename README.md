@@ -2,17 +2,15 @@ Web app for generating tile maps from Google Earth Engine climate/terrain data. 
 
 ### Development
 
+This project uses Lerna to manage its packages: `server`, `react-app`, and `common`.
+
+To get started, run these commands in the project directory:
+
 ```
 npm install
+npm run build
+npm install
 ```
-
-Create the file `tile-generator-private-key.json` in src/server
-
-```
-npm run watch-all
-```
-
-or, separately:
 
 ```sh
 # Start the server

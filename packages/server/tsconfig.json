@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
+    "baseUrl": "src",
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules", "dist", "src/react-app/**/*"]
+  "exclude": ["node_modules", "dist"]
 }
