@@ -4,7 +4,7 @@ Web app for generating tile maps from Google Earth Engine climate/terrain data. 
 
 This project uses Lerna to manage its packages: `server`, `react-app`, and `common`.
 
-To get started, run these commands in the project directory:
+To get started, run these commands in the top-level directory:
 
 ```
 npm install
@@ -15,14 +15,24 @@ npm install
 To install a package in one of ours, use the `add` script:
 
 ```
-npm run add @package/name --scope=common
+lerna add @package/name -- --scope=@tile-generator/common
 ```
+
+To best way to remove a dependency (pending an addition to Lerna like this [PR](https://github.com/lerna/lerna/issues/1886)) is to remove it from the package.json, delete `node_modules`, then run `npm i` at the top level.
+
+### Building and running:
 
 ```sh
 # Start the server
+cd packages/server
 npm run watch-server
+# Separately,
 npm start
+```
+
+```sh
 # Start the client
+cd packages/react-app
 npm run dev
 ```
 

@@ -5,6 +5,7 @@ import {
   calcUnit,
   mapRiverToLine,
 } from "../createRawHexGrid";
+import { RiverType } from "types";
 
 const fixtures = [
   {
@@ -66,7 +67,7 @@ describe("createHexGrid", () => {
 describe("mapRiverToLine", () => {
   it.each(["northEast", "northWest", "east", "west", "southEast", "southWest"])(
     "should take a slice of the provided poly %p",
-    (river) => {
+    (river: keyof RiverType) => {
       const poly = createRawHexGrid(fixtures[0])[0];
       const result = mapRiverToLine(poly, river);
       expect(result);
