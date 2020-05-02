@@ -5,6 +5,7 @@
   "dependencies": {
     "@google/earthengine": "^0.1.171",
     "@tile-generator/common": "^0.1.0",
+    "@toverux/expresse": "^2.4.0",
     "@turf/turf": "^5.1.6",
     "@types/cors": "^2.8.4",
     "@types/downloadjs": "^1.4.1",
@@ -47,7 +48,6 @@
     "randomstring": "^1.1.5",
     "resource-router-middleware": "^0.7.0",
     "sqlite3": "^4.2.0",
-    "sse-express": "^1.0.2",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": "^5.2.7",
     "supertest": "^4.0.2",

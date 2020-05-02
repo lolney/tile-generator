@@ -4,8 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import path from "path";
-// @ts-ignore
-import sseExpress from "sse-express";
+import sse from "@toverux/expresse";
 
 import "./config/polyfills";
 import config from "./config.json";
@@ -42,7 +41,7 @@ app.use(
 
 // API
 app.post("/api/map", TilesController);
-app.get("/updates/:id", UpdateExistsMiddleware, sseExpress, UpdateController);
+app.get("/updates/:id", UpdateExistsMiddleware, sse(), UpdateController);
 app.get("/api/map/:id", MapController);
 
 server.listen(process.env.PORT || config.port, () => {

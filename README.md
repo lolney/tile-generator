@@ -1,6 +1,8 @@
 Web app for generating tile maps from Google Earth Engine climate/terrain data. The main use is to generate Civilization maps (Civ V or VI) based on real-world locations.
 
-### Development
+## Development
+
+### Lerna
 
 This project uses Lerna to manage its packages: `server`, `react-app`, and `common`.
 
@@ -18,15 +20,20 @@ To install a package in one of ours, use the `add` script:
 lerna add @package/name -- --scope=@tile-generator/common
 ```
 
-To best way to remove a dependency (pending an addition to Lerna like this [PR](https://github.com/lerna/lerna/issues/1886)) is to remove it from the package.json, delete `node_modules`, then run `npm i` at the top level.
+The command `npm run reinstall-common` will update the @tile-generator/common in the
+
+To best way to remove a dependency (pending an addition to Lerna like this [PR](https://github.com/lerna/lerna/issues/1886)) is to remove it from the package.json, delete the package from `node_modules`, then run `npm i` at the top level.
 
 ### Building and running:
 
 ```sh
-# Start the server
+# Compile on watch mode
 cd packages/server
 npm run watch-server
-# Separately,
+```
+
+```sh
+# Start the server
 npm start
 ```
 
@@ -35,8 +42,6 @@ npm start
 cd packages/react-app
 npm run dev
 ```
-
-Later versions of node currently don't work with node-postgres, so the configued Node version is 8.10.
 
 ### Database setup
 

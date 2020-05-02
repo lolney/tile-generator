@@ -1,7 +1,11 @@
 import requests from "../db/openRequest";
 import { Request, Response } from "express";
+import { ISseResponse } from "@toverux/expresse";
 
-export default async function UpdateController(req: Request, res: Response) {
+export default async function UpdateController(
+  req: Request,
+  res: ISseResponse
+) {
   const { id } = req.params;
   const request = requests.get(id);
 
@@ -13,11 +17,10 @@ export default async function UpdateController(req: Request, res: Response) {
   if (request) {
     for await (const layer of request.completeJobs()) {
       if (!requests.has(id)) {
-        console.log(`Request ${id}no longer exists. Aborting.`);
+        console.log(`Request ${id} no longer exists. Aborting.`);
         break;
       }
-      // @ts-ignore
-      res.sse("layer", {
+      res.sse.event("layer", {
         layer,
       });
     }
