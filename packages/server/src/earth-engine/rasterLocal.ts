@@ -1,8 +1,8 @@
-import { sampleRasterTiles, findTileMax } from "../db/postgis";
+import { sampleRasterTiles, findTileMax, findTileMode } from "../db/postgis";
 import { Polygon } from "geojson";
-import { IS_WATER_IF_GREATER_THAN } from "./isLand";
 import { TilesArray } from "@tile-generator/common";
 
+const KOPPEN_DB_NAME = "beck_kg_v1_present_0p0083";
 const WATERMASK_DB_NAME = "watermask_500";
 const SLOPE_DB_NAME = "slope_500";
 const FOREST_DB_NAME = "forest_500";
@@ -24,7 +24,7 @@ export async function isLandLocal(tiles: Polygon[], width: number) {
   const dbResults = await sampleRasterTiles(tiles, WATERMASK_DB_NAME);
   const valuesArray = new TilesArray<number>(dbResults, width);
   const waterArray = new TilesArray<boolean>(
-    dbResults.map((val) => val > IS_WATER_IF_GREATER_THAN),
+    dbResults.map((val) => val > waterThresholdByNWaterTilesNeighbors[4]),
     width
   );
 
@@ -40,6 +40,10 @@ export async function isLandLocal(tiles: Polygon[], width: number) {
 
 export async function findSlopeLocal(tiles: Polygon[]) {
   return sampleRasterTiles(tiles, SLOPE_DB_NAME);
+}
+
+export async function findClimateLocal(tiles: Polygon[]) {
+  return findTileMode(tiles, KOPPEN_DB_NAME);
 }
 
 export async function isMarshLocal(tiles: Polygon[]) {

@@ -71,6 +71,26 @@ export async function sampleRaster(table: string, geom: Polygon, n: number) {
   return value;
 }
 
+export async function findMode(table: string, geom: Polygon, n: number) {
+  const points = sampleRows(geom, n);
+  const query = `
+    SELECT MODE() WITHIN GROUP (ORDER BY CAST(values.value AS INTEGER)) AS mode 
+    FROM (
+      SELECT ST_Value(raster.rast, points.geom) As value
+      FROM (${points}) AS points, ${table} AS raster
+      WHERE ST_Intersects(raster.rast, points.geom)
+    ) as values 
+    WHERE values.value != double precision 'NaN';
+  `;
+
+  console.log(query);
+
+  const rows = await db.doQuery(query);
+  const value = rows[0]["mode"];
+
+  return value;
+}
+
 export async function findMax(table: string, tiles: Polygon[]) {
   let query = `
     SELECT temp_geoms.id, (ST_SummaryStatsAgg(ST_Clip(raster.rast,temp_geoms.geom), 1, false, 0.05)).max
@@ -95,6 +115,16 @@ export async function sampleRasterTiles(
 ) {
   return Promise.all(
     tiles.map(async (geom) => await sampleRaster(dbname, geom, samples))
+  );
+}
+
+export async function findTileMode(
+  tiles: Polygon[],
+  dbname: string,
+  samples = SAMPLES_PER_TILE
+) {
+  return Promise.all(
+    tiles.map(async (geom) => await findMode(dbname, geom, samples))
   );
 }
 

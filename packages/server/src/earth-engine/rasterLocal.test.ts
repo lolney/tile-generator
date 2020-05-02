@@ -3,8 +3,10 @@ import {
   findSlopeLocal,
   isRiverLocal,
   precipitationLocal,
+  findClimateLocal,
 } from "./rasterLocal";
 import { Polygon } from "geojson";
+import { Koppen } from "@tile-generator/common";
 
 const fixtures: { [key: string]: Polygon } = {
   isLand: {
@@ -116,6 +118,28 @@ describe("findSlopeLocal", () => {
 
       expect(result).not.toBeNull();
     }
+  });
+});
+
+const easternUS: Polygon = {
+  type: "Polygon",
+  coordinates: [
+    [
+      [-100, 30],
+      [-100, 50],
+      [-80, 50],
+      [-80, 30],
+      [-100, 30],
+    ],
+  ],
+};
+
+describe("findClimateLocal", () => {
+  it("returns proper values for the eastern US", async () => {
+    const [result] = await findClimateLocal([easternUS]);
+
+    const possibles = [Koppen.Cfa, Koppen.Dfa, Koppen.Dfb];
+    expect(possibles).toContain(Koppen.Cfa);
   });
 });
 

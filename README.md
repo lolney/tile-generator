@@ -63,10 +63,10 @@ npm run db:seed
 
 #### Downloading and adding data sources
 
-Download the Koppen data from https://geoafrikana.com/resources/, then:
+Download the Koppen data from https://figshare.com/articles/Present_and_future_K_ppen-Geiger_climate_classification_maps_at_1-km_resolution/6396959/2, then:
 
 ```
-shp2pgsql -I -s 4326 ~/Downloads/Koppen_Geiger\ Edited\ and\ Completed/Shapefiles/world_climates_completed_koppen_geiger.shp | psql -h localhost -d tilegenerator -U postgres
+raster2pgsql -I -t 200x200 -s 4326 ~/Downloads/Beck_KG_V1/Beck_KG_V1_present_0p0083.tif  | psql -h localhost -d tilegenerator -U postgres
 ```
 
 River centerlines, downloaded from https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-rivers-lake-centerlines/:
@@ -75,7 +75,7 @@ River centerlines, downloaded from https://www.naturalearthdata.com/downloads/10
 shp2pgsql -I -s 4326 ~/Downloads/river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.shp | psql -h localhost -d tilegenerator -U postgres
 ```
 
-###### Water mask:
+###### Water mask and other Google Earth Engine Sources:
 
 - Run the script [](https://code.earthengine.google.com/67d5310441e9d02d8e630167d87f5070), exporting to Google Drive
 - Download the image from Drive, then run the following:

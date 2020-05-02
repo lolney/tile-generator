@@ -1,17 +1,10 @@
 import { Koppen, FeatureType, TerrainType } from "@tile-generator/common";
-import db from "../db";
-import { sampleRows } from "../db/postgis";
-import { Polygon } from "geojson";
-import _ from "lodash";
-// @ts-ignore
-import weightedRandom from "weighted-random";
 
 export function getForestType(koppen: Koppen): FeatureType {
   switch (koppen) {
     case Koppen.Af:
     case Koppen.Am:
     case Koppen.Aw: // mix forest
-    case Koppen.As: // mix forest
       return FeatureType.jungle;
     default:
       return FeatureType.forest;
@@ -41,7 +34,6 @@ export function getTerrainType(koppen: Koppen): TerrainType {
     case Koppen.Af:
     case Koppen.Am:
     case Koppen.Aw:
-    case Koppen.As:
     case Koppen.Dfa:
     case Koppen.Dfb:
     case Koppen.Dwa:
@@ -58,80 +50,7 @@ export function getTerrainType(koppen: Koppen): TerrainType {
       return TerrainType.ice;
     case Koppen.Ocean:
       return TerrainType.coast;
+    default:
+      return TerrainType.ocean;
   }
-}
-
-export async function getClimateType(geom: Polygon) {
-  const combined = await getClimateTypeSampled(geom, 8);
-
-  const [climates, counts] = _.unzip(combined);
-  if (!counts) return undefined;
-  const index = weightedRandom(counts);
-
-  return climates[index];
-}
-
-export async function getClimateTypeSampled(geom: Polygon, n: number) {
-  const query = `
-    SELECT climates_f
-    FROM 
-      (${sampleRows(geom, n)}) as points
-    JOIN
-      "world_climates_completed_koppen_geiger" as climate  
-    ON
-      ST_Intersects(
-        points.geom,
-        climate.geom  
-    );
-  `;
-
-  const rows = await db.doQuery(query);
-  const climates = rows.map((row: any) => row["climates_f"]);
-
-  return Object.entries(_.countBy(climates)).map(([key, count]) => [
-    dbStringToClimateType(key),
-    count,
-  ]);
-}
-
-export async function getClimateTypeSingle(lng: number, lat: number) {
-  const query = `
-    SELECT * FROM "world_climates_completed_koppen_geiger" where
-      ST_Intersects(
-        ST_GeomFromText(
-        'Point(${lng} ${lat})', 4326
-        ),
-        world_climates_completed_koppen_geiger.geom  
-    );
-  `;
-
-  // Note on performance:
-  // - Takes several seconds for large (eg, 50x50) maps
-  // - Most CPU time is spent in native code (~67%) or garbage collection
-  // - Roughly 12 connections are opened at once
-  const rows = await db.doQuery(query);
-  const row = rows[0];
-  if (row === undefined) {
-    return undefined;
-  }
-
-  const str = row["climates_f"];
-  const koppen = dbStringToClimateType(str);
-
-  if (koppen === undefined) {
-    throw new Error("Unexpected climate type: " + str);
-  }
-
-  return koppen;
-}
-
-const koppenLookup: Map<string, Koppen> = new Map();
-
-for (const [str, enu] of Object.entries(Koppen)) {
-  koppenLookup.set(str.toUpperCase(), enu as Koppen);
-}
-
-function dbStringToClimateType(string: string): Koppen | undefined {
-  if (string === null) return Koppen.Ocean;
-  return koppenLookup.get(string.toUpperCase());
 }

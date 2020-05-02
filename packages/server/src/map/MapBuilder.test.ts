@@ -2,7 +2,6 @@ import { createRawHexGrid, params } from "@tile-generator/common";
 import MapBuilder from "./MapBuilder";
 import { LatLngBounds } from "leaflet";
 import { FeatureType, Options } from "@tile-generator/common";
-import EarthEngine from "../earth-engine/EarthEngine";
 import { Polygon } from "geojson";
 
 import { toBeDeepCloseTo, toMatchCloseTo } from "jest-matcher-deep-close-to";
@@ -42,10 +41,6 @@ function createFromGridConfig(params: params) {
 }
 
 describe("MapBuilder", () => {
-  beforeAll(async () => {
-    await EarthEngine.init();
-  });
-
   it("deserializeBounds", () => {
     const bounds = {
       _southWest: { lat: 42.343320316410804, lng: -71.0863494873047 },

@@ -10,18 +10,16 @@ import {
   MapLayers,
   FeatureType,
   Options,
+  Koppen,
 } from "@tile-generator/common";
-import {
-  getForestType,
-  getClimateType,
-  getTerrainType,
-} from "../earth-engine/koppen";
+import { getForestType, getTerrainType } from "../earth-engine/koppen";
 import generateRivers from "../earth-engine/generateRivers";
 import {
   isLandLocal,
   findSlopeLocal,
   isMarshLocal,
   isForestLocal,
+  findClimateLocal,
 } from "../earth-engine/rasterLocal";
 import Map from "./Map";
 import { logperformance } from "../logging";
@@ -33,6 +31,7 @@ export default class MapBuilder {
   bounds: LatLngBounds;
   options: Options;
   waterLayer: Tile[] | undefined;
+  climateTypes: Koppen[] | undefined;
 
   constructor(grid: Polygon[], bounds: LatLngBounds, options: Options) {
     this.originalGrid = grid;
@@ -79,6 +78,12 @@ export default class MapBuilder {
     ]);
     return turf.length(ls, { units: "miles" });
   };
+
+  async getClimateTypes() {
+    if (!this.climateTypes)
+      this.climateTypes = await findClimateLocal(this.grid);
+    return this.climateTypes;
+  }
 
   createLayer = logperformance(
     async (layer: MapLayers): Promise<Tile[]> => {
@@ -138,10 +143,9 @@ export default class MapBuilder {
 
       if (!isForest) return {};
 
-      const geometry = this.grid[i];
-      const koppen = await getClimateType(geometry);
+      const koppen = (await this.getClimateTypes())[i];
 
-      if (koppen === undefined) return {};
+      if (!koppen) return {};
 
       const feature = getForestType(koppen);
 
@@ -185,17 +189,10 @@ export default class MapBuilder {
         */
   }
 
-  createClimateTiles(): Promise<Array<Tile>> {
-    return Promise.all(
-      this.grid.map(async (geometry: Polygon) => {
-        const koppen = await getClimateType(geometry);
-        if (koppen === undefined) return { terrain: TerrainType.ocean };
-        else {
-          const terrain = getTerrainType(koppen);
-          return { terrain };
-        }
-      })
-    );
+  async createClimateTiles(): Promise<Array<Tile>> {
+    return (await this.getClimateTypes()).map((koppen) => ({
+      terrain: getTerrainType(koppen),
+    }));
   }
 
   async createRiverTiles(waterTiles: Tile[]): Promise<Tile[]> {
