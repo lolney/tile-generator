@@ -2,9 +2,20 @@ import requests from "../db/openRequest";
 import { Request, Response } from "express";
 
 export default async function UpdateController(req: Request, res: Response) {
-  const request = requests.get(req.params.id);
+  const { id } = req.params;
+  const request = requests.get(id);
+
+  req.on("close", () => {
+    console.log(`disconnected: ${id}`);
+    requests.delete(id);
+  });
+
   if (request) {
     for await (const layer of request.completeJobs()) {
+      if (!requests.has(id)) {
+        console.log(`Request ${id}no longer exists. Aborting.`);
+        break;
+      }
       // @ts-ignore
       res.sse("layer", {
         layer,

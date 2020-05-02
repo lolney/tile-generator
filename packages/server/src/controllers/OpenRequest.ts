@@ -46,17 +46,14 @@ export default class OpenRequest {
   }
 
   static parseRequest(req: MapOptions) {
-    // Validate request
     const options = MapOptionsT.decode(req).getOrElseL((errors) => {
-      console.log(errors);
-      //@ts-ignore
-      throw new Error(failure(errors).join("\n"));
+      console.error(errors);
+      throw new Error(errors.map((val) => val.message).join("\n"));
     });
 
     const { width, height } = options.dimensions;
     const bounds = MapBuilder.deserializeBounds(options.bounds);
 
-    // Start jobs
     const grid = createRawHexGrid({
       width,
       height,

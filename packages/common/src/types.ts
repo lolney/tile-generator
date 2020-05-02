@@ -1,5 +1,3 @@
-import * as t from "io-ts";
-
 export interface Dimensions {
   width: number;
   height: number;
@@ -130,23 +128,3 @@ export enum Koppen {
   ET = 29,
   EF = 30,
 }
-
-// -------  io-ts dynamic types -------- //
-
-const GameStringT = t.keyof({
-  "Civ V": null,
-  "Civ VI": null,
-});
-
-const DimensionsT = t.type({ width: t.number, height: t.number });
-
-export const LatLngBoundsT = t.type({
-  _southWest: t.type({ lat: t.number, lng: t.number }),
-  _northEast: t.type({ lat: t.number, lng: t.number }),
-});
-
-export const MapOptionsT = t.type({
-  dimensions: DimensionsT,
-  format: GameStringT,
-  bounds: LatLngBoundsT,
-});

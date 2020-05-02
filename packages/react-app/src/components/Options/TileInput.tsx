@@ -1,6 +1,7 @@
 import React from "react";
 import { clamp } from "lodash";
 import { Input, SIZE } from "baseui/input";
+import { MapDimensionT } from "@tile-generator/common";
 import * as colors from "../../constants/colors";
 
 interface TileSliderProps {
@@ -15,7 +16,7 @@ const TileInput: React.FC<TileSliderProps> = ({ onChange, value, ...rest }) => {
   const [focused, setFocused] = React.useState(false);
 
   const numberValue = parseInt(typedValue);
-  const isValid = numberValue >= 10 && numberValue <= 120;
+  const isValid = MapDimensionT.is(numberValue);
 
   return (
     <Input
@@ -40,35 +41,35 @@ const TileInput: React.FC<TileSliderProps> = ({ onChange, value, ...rest }) => {
       {...rest}
       overrides={{
         Root: {
-          style: () => ({
+          style: {
             width: "15%",
             height: "24px",
             marginRight: "20px",
             marginLeft: "20px",
             marginTop: "8px",
             background: colors.textFieldGrey,
-          }),
+          },
         },
         EndEnhancer: {
-          style: () => ({
+          style: {
             fontFamily: "Avenir",
             fontSize: "12px",
             backgroundColor: colors.textFieldGrey,
             color: colors.textColorWhite,
-          }),
+          },
         },
         Input: {
-          style: () => ({
+          style: {
             fontFamily: "Avenir",
             fontSize: "12px",
             backgroundColor: colors.textFieldGrey,
             color: colors.textColorWhite,
-          }),
+          },
         },
         InputContainer: {
-          style: () => ({
+          style: {
             borderColor: colors.textFieldGrey,
-          }),
+          },
         },
       }}
     />

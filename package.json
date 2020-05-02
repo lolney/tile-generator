@@ -16,7 +16,8 @@
     "build-client-prod": "npm install && npm run build-common && npm install && npm run build-client",
     "clean": "lerna run clean",
     "postinstall": "npm run bootstrap",
-    "pub": "lerna publish"
+    "pub": "lerna publish",
+    "reinstall-common": "./scripts/reinstall_common.sh"
   },
   "eslintConfig": {
     "extends": "react-app"

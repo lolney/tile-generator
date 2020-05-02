@@ -23,9 +23,6 @@ const server = http.createServer(app);
 // logger
 app.use(morgan("dev"));
 
-// static server
-app.use(express.static(path.join(__dirname, "../../dist")));
-
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "../../dist", "index.html"));
 });

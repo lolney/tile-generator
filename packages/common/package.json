@@ -18,6 +18,7 @@
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^25.2.1",
     "@types/lodash": "^4.14.150",
+    "fp-ts": "1.19.5",
     "geojson": "^0.5.0",
     "io-ts": "^1.8.3",
     "jest": "^25.5.3",
