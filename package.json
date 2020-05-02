@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {},
   "scripts": {
+    "audit": "lerna-audit",
     "add-client": "lerna add --scope=@tile-generator/react-app",
     "add-common": "lerna add --scope=@tile-generator/common",
     "add-server": "lerna add --scope=@tile-generator/server",
@@ -27,6 +28,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "lerna": "^3.20.2",
+    "lerna-audit": "^1.2.0"
   }
 }
