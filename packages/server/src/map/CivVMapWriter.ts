@@ -34,7 +34,7 @@ const headerFormat: Array<HeaderFormat> = [
   ["string", "mapsize"],
 ];
 
-const TEMPLATE_FILE = path.join(__dirname, "../templates/template.Civ5Map");
+const TEMPLATE_FILE = path.join(__dirname, "../../templates/template.Civ5Map");
 
 export default class CivVMapWriter {
   private map: CivVMap;

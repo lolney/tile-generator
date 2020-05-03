@@ -7,7 +7,7 @@ import fs from "fs";
 import path from "path";
 import Errors from "./Errors";
 
-const TEMPLATE_FILE = path.join(__dirname, "../templates/CustomMap.Civ6Map");
+const TEMPLATE_FILE = path.join(__dirname, "../../templates/CustomMap.Civ6Map");
 const SAVE_DIRECTORY = path.join(__dirname, "../../maps");
 
 export default class Civ6MapWriter {
