@@ -1,5 +1,6 @@
 import * as t from "io-ts";
-import { right } from "fp-ts/lib/Either";
+import * as d from "io-ts";
+import { right, left } from "fp-ts/lib/Either";
 
 const GameStringT = t.keyof({
   "Civ V": null,
@@ -9,7 +10,8 @@ const GameStringT = t.keyof({
 export const MapDimensionT = new t.Type(
   "MapDimenionT",
   (u): u is number => typeof u == "number" && u >= 10 && u <= 120,
-  (u) => right(u),
+  (u, e) =>
+    typeof u == "number" ? right(u) : left([t.getValidationError(u, e)]),
   (u) => u
 );
 

@@ -97,14 +97,14 @@ export const useRiverLayer = (
   riverLines: LineString[]
 ) => {
   const setRivers = useLayer(map);
-  // TODO: when using useMemo, rivers don't show
-  const leafletLayer = (() => {
+
+  const leafletLayer = useMemo(() => {
     if (selectedLayer === "rivers") return drawRivers(riverLines);
     else return undefined;
-  })();
+  }, [selectedLayer, riverLines]);
 
   useEffect(() => {
-    setRivers(leafletLayer);
+    setTimeout(() => setRivers(leafletLayer), 0);
   }, [leafletLayer, setRivers]);
 };
 
