@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { clamp } from "lodash";
 import { Input, SIZE } from "baseui/input";
 import { MapDimensionT } from "@tile-generator/common";
@@ -18,22 +18,26 @@ const TileInput: React.FC<TileSliderProps> = ({ onChange, value, ...rest }) => {
   const numberValue = parseInt(typedValue);
   const isValid = MapDimensionT.is(numberValue);
 
+  const roundToValidNumber = useCallback(() => {
+    setFocused(false);
+    setTypedValue("");
+
+    if (isValid) onChange(numberValue);
+    else if (!Number.isNaN(numberValue)) {
+      let clamped = Math.floor(numberValue / 2) * 2;
+      clamped = clamp(clamped, 10, 120);
+
+      onChange(clamped);
+    }
+  }, [setFocused, setTypedValue, onChange, isValid, numberValue]);
+
   return (
     <Input
       endEnhancer="tiles"
       onChange={(event) => {
         setTypedValue((event.target as any).value.slice(0, 3));
       }}
-      onBlur={() => {
-        setFocused(false);
-        setTypedValue("");
-
-        if (isValid) onChange(numberValue);
-        else if (!Number.isNaN(numberValue)) {
-          const clamped = clamp(numberValue, 10, 120);
-          onChange(clamped);
-        }
-      }}
+      onBlur={roundToValidNumber}
       onFocus={() => setFocused(true)}
       size={SIZE.mini}
       error={!isValid}

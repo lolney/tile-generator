@@ -16,6 +16,7 @@ const TileSlider: React.FC<TileSliderProps> = ({
 }) => (
   <Slider
     value={[value]}
+    step={2}
     onChange={(e) => onChange(e.value[0])}
     {...rest}
     overrides={{

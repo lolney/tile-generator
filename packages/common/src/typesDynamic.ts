@@ -9,7 +9,7 @@ const GameStringT = t.keyof({
 
 export const MapDimensionT = new t.Type(
   "MapDimenionT",
-  (u): u is number => typeof u == "number" && u >= 10 && u <= 120,
+  (u): u is number => typeof u == "number" && u >= 10 && u <= 120 && u % 2 == 0,
   (u, e) =>
     typeof u == "number" ? right(u) : left([t.getValidationError(u, e)]),
   (u) => u
