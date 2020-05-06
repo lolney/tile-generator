@@ -13,17 +13,18 @@ export type State = {
 };
 
 export type MapData = {
+  downloaded: boolean;
+  errorMessage?: string;
   grid: Polygon[];
   layers: LayersType;
   loadingLayer: {
     index: number;
     name?: MapLayerValue;
   };
-  riverLines: LineString[];
   mapId?: string;
   removeSSEListener?: Function;
+  riverLines: LineString[];
   submissionStatus: SubmissionStatus;
-  errorMessage?: string;
   totalLayers?: number;
 };
 

@@ -1,6 +1,6 @@
 import { State } from "../../types";
 import download from "downloadjs";
-import { submitError, submitting } from "./actions";
+import { downloading, submitError, submitting } from "./actions";
 import { selectOptions } from "./selectors";
 import { MapDispatch } from "./types";
 import { receiveLayers } from "./thunkActions";
@@ -26,6 +26,8 @@ export const downloadMap = () => async (
   dispatch: MapDispatch,
   getState: () => State
 ) => {
+  dispatch(downloading());
+
   const { mapId } = getState().mapData;
   const resp = await fetch(`${BACKEND_URL}/api/map/${mapId}`);
 

@@ -14,10 +14,11 @@ import * as colors from "../../constants/colors";
 type MapLoaderProps = DispatchProps & StateProps;
 
 type StateProps = {
-  selectedLayer: MapLayerValue | undefined;
-  receivedLayers: Record<MapLayerValue, boolean>;
+  downloaded: boolean;
   loadingLayer?: string;
   progress: number;
+  receivedLayers: Record<MapLayerValue, boolean>;
+  selectedLayer: MapLayerValue | undefined;
   submissionStatus: SubmissionStatus;
 };
 
@@ -28,10 +29,11 @@ type DispatchProps = {
 };
 
 const mapStateToProps = (state: State) => ({
-  progress: progress(state),
-  selectedLayer: state.leaflet.selectedLayer,
-  receivedLayers: receivedLayersSelector(state),
+  downloaded: state.mapData.downloaded,
   loadingLayer: state.mapData.loadingLayer.name,
+  progress: progress(state),
+  receivedLayers: receivedLayersSelector(state),
+  selectedLayer: state.leaflet.selectedLayer,
   submissionStatus: state.mapData.submissionStatus,
 });
 
@@ -42,15 +44,15 @@ const mapDispatchToProps = {
 };
 
 export const MapLoader: React.FC<MapLoaderProps> = ({
-  progress,
+  downloaded,
   downloadMap,
-  receivedLayers,
-  submissionStatus,
   onLayerSelect,
+  progress,
+  receivedLayers,
   resetMap,
   selectedLayer,
+  submissionStatus,
 }) => {
-  const [downloaded, setDownloaded] = React.useState(false);
   return (
     <>
       <div className={styles.header}>
@@ -96,10 +98,7 @@ export const MapLoader: React.FC<MapLoaderProps> = ({
       <ControlButtons>
         <Button
           primary={!downloaded}
-          onClick={() => {
-            setDownloaded(true);
-            downloadMap();
-          }}
+          onClick={downloadMap}
           disabled={downloaded || submissionStatus !== SubmissionStatus.done}
         >
           Download

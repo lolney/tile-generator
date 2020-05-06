@@ -46,18 +46,20 @@ const OSTabs: React.FC = () => (
   </StatefulTabs>
 );
 
-export const InstructionWindow: React.FC = () => (
+export const BaseInstructionsModal: React.FC<{ closeModal: () => void }> = ({
+  closeModal,
+}) => (
   <>
     <div className={styles.screen}>
       <div className={styles.window}>
         <header className={styles.header}>Install Instructions</header>
         <OSTabs></OSTabs>
         <div className={styles.buttonContainer}>
-          <Button primary>Ok</Button>
+          <Button primary onClick={closeModal}>
+            Ok
+          </Button>
         </div>
       </div>
     </div>
   </>
 );
-
-export default InstructionWindow;

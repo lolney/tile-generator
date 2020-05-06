@@ -2,13 +2,14 @@ import { SubmissionStatus } from "../../types";
 import { LayersType } from "@tile-generator/common";
 import { LineString } from "geojson";
 
-export const SUBMITTING = "SUBMITTING";
-export const RECEIVE_LAYER = "RECEIVE_LAYER";
-export const RECEIVE_GRID = "RECEIVE_GRID";
-export const FINISHED_MAP = "FINISHED_MAP";
 export const CLEAR_ERROR = "CLEAR_ERROR";
+export const DOWNLOADING = "DOWNLOADING";
+export const FINISHED_MAP = "FINISHED_MAP";
+export const RECEIVE_GRID = "RECEIVE_GRID";
+export const RECEIVE_LAYER = "RECEIVE_LAYER";
 export const RECEIVE_LINES = "RECEIVE_LINES";
 export const RESET_MAP = "RESET_MAP";
+export const SUBMITTING = "SUBMITTING";
 
 export const finishedMap = () => ({
   type: FINISHED_MAP,
@@ -45,6 +46,10 @@ export const receiveGrid = (payload: any) => ({
 
 export const resetMap = () => ({
   type: RESET_MAP,
+});
+
+export const downloading = () => ({
+  type: DOWNLOADING as typeof DOWNLOADING,
 });
 
 export const submitting = () => ({

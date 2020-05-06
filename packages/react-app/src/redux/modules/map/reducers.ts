@@ -1,9 +1,10 @@
 import {
-  RECEIVE_LAYER,
+  DOWNLOADING,
   FINISHED_MAP,
+  RECEIVE_LAYER,
   RECEIVE_LINES,
-  SUBMITTING,
   RESET_MAP,
+  SUBMITTING,
 } from "./actions";
 import { MapData, SubmissionStatus } from "../../types";
 import { Action } from "./types";
@@ -38,8 +39,12 @@ export const map = (
         submissionStatus: SubmissionStatus.done,
         removeSSEListener: undefined,
       };
+    case DOWNLOADING:
+      return {
+        ...state,
+        downloaded: true,
+      };
     case RESET_MAP:
-      // TODO: cancel serverside as well
       if (state.removeSSEListener) state.removeSSEListener();
       return initialState;
     default:
@@ -53,6 +58,7 @@ const initialState: MapData = {
   loadingLayer: {
     index: 0,
   },
+  downloaded: false,
   riverLines: [],
   submissionStatus: SubmissionStatus.none,
 };

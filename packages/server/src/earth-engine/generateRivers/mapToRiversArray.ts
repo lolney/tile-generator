@@ -1,16 +1,19 @@
 import { sortBy, zip } from "lodash";
-import { TilesArray } from "@tile-generator/common";
+import { TilesArray, TileUtils } from "@tile-generator/common";
 import { Dimensions, Tile, TerrainType } from "@tile-generator/common";
 
 const MIN_THRESHOLD = 100;
 
-const PERCENTILE = 0.75;
+const PERCENTILE = 0.8;
 
 const INCH_IN_MM = 2.5 * 10;
 export const BASE_RAINFALL = 40 * INCH_IN_MM;
 
 const rainfallFactor = (rainfall: number) =>
   Math.min(BASE_RAINFALL, rainfall + INCH_IN_MM) / BASE_RAINFALL;
+
+const landFraction = (waterLayer: Tile[]) =>
+  waterLayer.map((tile) => !TileUtils.isWater(tile)).length / waterLayer.length;
 
 const mapToTilesArray = (
   rawData: number[],
@@ -20,7 +23,7 @@ const mapToTilesArray = (
 ) => {
   const sorted = sortBy(rawData);
   const cutoffValue = Math.max(
-    sorted[Math.floor(PERCENTILE * sorted.length)],
+    sorted[Math.floor(PERCENTILE * landFraction(waterLayer) * sorted.length)],
     MIN_THRESHOLD
   );
 
