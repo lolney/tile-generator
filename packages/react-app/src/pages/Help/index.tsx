@@ -73,7 +73,7 @@ const FAQ: React.FC = () => (
   <BrowserRouter>
     <div className={styles.intro}>
       <h1 className={styles.landing_header}>FAQ</h1>
-      <div className={styles.body}>
+      <div className={styles.faq_body}>
         <h2 className={styles.questionHeader} id="errorQuestion">
           What does the error <em>"Not enough land tiles..."</em> mean?
           <p className={styles.answerText}>

@@ -55,7 +55,7 @@
 }
 
 .intro {
-  width: 1000px;
+  width: 80vw;
   margin-left: auto;
   margin-right: auto;
   margin-top: 75px;
@@ -88,7 +88,7 @@
   padding-top: 0px;
   padding: 10px;
   padding-top: 0px;
-  --button-width: 149px;
+  --button-width: 139px;
   --button-height: 46px;
   --button-font-size: 16px;
 }
@@ -104,9 +104,9 @@
 
 video {
   display: block;
-  min-width: 500px;
-  min-height: 400px;
-  max-width: 1000px;
+  min-width: 200px;
+  min-height: 00px;
+  max-width: 80vw;
   max-height: 800px;
   background-color: var(--backgroundGrey);
   margin-left: auto;
@@ -117,4 +117,14 @@ video {
   right: 0;
   border-radius: 5px;
   box-shadow: 10px 10px 15px grey;
+}
+
+@media screen and (max-width: 375px) {
+  .btn_container {
+    padding: 0px;
+    padding-top: 0px;
+    --button-width: 119px;
+    --button-height: 46px;
+    --button-font-size: 16px;
+  }
 }
