@@ -4,7 +4,7 @@ import Dock from "../../components/Dock";
 import { BaseWeb } from "../../baseweb";
 import styles from "./styles.module.css";
 import InstructionsModal from "../../components/InstructionsModal";
-import ToastError from "../../v2-components/ToastError";
+import Toasts from "../../components/Toasts";
 
 export const MapPage: React.FC = () => (
   <BaseWeb>
@@ -14,7 +14,7 @@ export const MapPage: React.FC = () => (
         <Dock />
       </div>
       <div className={styles.bottom_bar}></div>
-      <ToastError />
+      <Toasts />
       <InstructionsModal />
     </div>
   </BaseWeb>
