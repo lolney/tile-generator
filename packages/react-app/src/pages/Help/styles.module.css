@@ -137,25 +137,17 @@ h1 {
     flex-direction: column;
   }
   .civ5Instructions {
-    flex: 50%;
     width: 80vw;
     padding: 10px;
-    background-color: rgb(50, 58, 71, 0.33);
     margin-right: auto;
     margin-left: auto;
-    border-radius: 5px;
-    box-shadow: 3px 3px 25px lightgrey;
     margin-bottom: 10px;
   }
 
   .civ6Instructions {
-    flex: 50%;
     width: 80vw;
     padding: 10px;
-    background-color: rgb(174, 165, 140, 0.33);
     margin-right: auto;
     margin-left: auto;
-    border-radius: 5px;
-    box-shadow: 3px 3px 25px lightgrey;
   }
 }
