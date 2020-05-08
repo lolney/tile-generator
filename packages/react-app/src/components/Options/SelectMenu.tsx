@@ -48,11 +48,10 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ format, changeOptions }) => (
       },
       Root: {
         style: () => ({
-          width: "100%",
+          width: "60%",
           height: "10px",
           marginTop: "10px",
-          marginLeft: "6.19px",
-          marginRight: "111.25px",
+          marginLeft: "1px",
           padding: "0px",
           background: colors.textFieldGrey,
           borderRadius: "2px",

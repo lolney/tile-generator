@@ -44,7 +44,7 @@
 }
 
 .intro {
-  width: 1000px;
+  width: 80vw;
   margin-left: auto;
   margin-right: auto;
   margin-top: 75px;
@@ -67,6 +67,7 @@
 .civ5Instructions {
   flex: 50%;
   padding: 50px;
+  width: 40vw;
   background-color: rgb(50, 58, 71, 0.33);
   margin-right: 10px;
   border-radius: 5px;
@@ -75,6 +76,7 @@
 
 .civ6Instructions {
   flex: 50%;
+  width: 40vw;
   padding: 50px;
   background-color: rgb(174, 165, 140, 0.33);
   margin-left: 10px;
@@ -97,6 +99,13 @@ h1 {
   margin-bottom: 100px;
 }
 
+.faq_body {
+  margin-top: 40px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-bottom: 100px;
+}
+
 .questionHeader {
   font: 900 20px Avenir;
 }
@@ -108,4 +117,37 @@ h1 {
 .answerText {
   font: 300 16px Avenir;
   padding-left: 24px;
+}
+
+@media screen and (max-width: 375px) {
+  .intro {
+    width: 100vw;
+  }
+
+  .body {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+  .contentsContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  .civ5Instructions {
+    width: 80vw;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 10px;
+  }
+
+  .civ6Instructions {
+    width: 80vw;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+  }
 }

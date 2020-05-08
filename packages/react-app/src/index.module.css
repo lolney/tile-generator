@@ -31,6 +31,7 @@ a.header {
 
 .logo {
   height: 30px;
+  width: 30px;
   margin-right: 10px;
   display: block;
 }
@@ -40,7 +41,8 @@ a.header {
   align-items: center;
 }
 
-.button_container {
+.about,
+.help {
   line-height: 23px;
   width: 100px;
 }
@@ -56,6 +58,38 @@ a.menu_item {
   line-height: 23px;
   cursor: pointer;
   text-decoration: none;
+}
+
+@media screen and (max-width: 375px) {
+  .about {
+    margin-left: 20px;
+  }
+  .help {
+    margin-right: 10px;
+  }
+  a.header {
+    width: 40px;
+    display: contents;
+  }
+
+  a.header > header {
+    display: none;
+  }
+
+  .header_container {
+    width: 40px;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+  .logo {
+    height: 40px;
+    width: 40px;
+  }
+  .top_bar {
+    padding: 5px 20px;
+    box-sizing: border-box;
+    align-items: center;
+  }
 }
 
 .menu_item_selected {

@@ -53,7 +53,9 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
         />
       ))}
       <div className={styles.horizontal_containers}>
-        <div className={styles.left_headers}>Format</div>
+        <div className={styles.left_header_container}>
+          <div className={styles.left_headers}>Format</div>
+        </div>
         <SelectMenu />
       </div>
       <ControlButtons>
@@ -95,7 +97,9 @@ const InputRow: React.FC<InputRowProps> = ({
   };
   return (
     <div className={styles.horizontal_containers}>
-      <div className={styles.left_headers}>{title}</div>
+      <div className={styles.left_header_container}>
+        <div className={styles.left_headers}>{title}</div>
+      </div>
       <TileSlider {...props} />
       <TileInput {...props} />
     </div>

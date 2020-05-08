@@ -24,7 +24,7 @@ ReactDOM.render(
         </div>
         <div className={styles.space}></div>
         <div className={styles.menu_item_container}>
-          <div className={styles.button_container}>
+          <div className={styles.about}>
             <NavLink
               to="/about"
               className={styles.menu_item}
@@ -33,7 +33,7 @@ ReactDOM.render(
               About
             </NavLink>
           </div>
-          <div className={styles.button_container}>
+          <div className={styles.help}>
             <NavLink
               to="/help"
               className={styles.menu_item}
