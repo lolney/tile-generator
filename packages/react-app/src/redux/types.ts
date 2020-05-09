@@ -4,6 +4,7 @@ import {
   MapOptions,
   Tile,
   MapLayerValue,
+  errorCodes,
 } from "@tile-generator/common";
 
 export type State = {
@@ -14,6 +15,7 @@ export type State = {
 
 export type MapData = {
   downloaded: boolean;
+  errorCodes: Array<keyof typeof errorCodes>;
   errorMessage?: string;
   grid: Polygon[];
   layers: LayersType;

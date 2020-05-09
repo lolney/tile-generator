@@ -1,8 +1,6 @@
 import path from "path";
 import fs from "fs";
-
-const SAVE_DIRECTORY = path.join(__dirname, "../../../maps");
-
+import { SAVE_DIRECTORY } from "../constants";
 export default class FileOverwriter {
   dst: string;
   buffer: Buffer;

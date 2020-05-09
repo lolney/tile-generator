@@ -3,6 +3,7 @@ import {
   finishedMap,
   receiveGrid,
   receiveRiverLines,
+  receiveErrors,
 } from "./actions";
 import { isLastLayer } from "./selectors";
 import { State } from "../../types";
@@ -15,8 +16,12 @@ import { mapRiverToLine } from "@tile-generator/common";
 const createEventSource = (event: string, callback: (e: Event) => any) => {
   let eventSource = new EventSource(event);
   eventSource.addEventListener("layer", callback);
+  eventSource.addEventListener("errors", callback);
 
-  return () => eventSource.removeEventListener("layer", callback);
+  return () => {
+    eventSource.removeEventListener("layer", callback);
+    eventSource.removeEventListener("errors", callback);
+  };
 };
 
 const splitRivers = (layer: LayersType) => (
@@ -45,14 +50,21 @@ const splitRivers = (layer: LayersType) => (
   dispatch(receiveRiverLines(lines));
 };
 
+// todo: Event should be typed
 const receiveLayer = (e: Event) => async (
   dispatch: MapDispatch,
   getState: () => State
 ) => {
   const data = JSON.parse((e as any).data);
-  dispatch(receiveLayerAction(data));
-  dispatch(splitRivers(data.layer));
-  console.log(getState());
+
+  if (data.layer) {
+    dispatch(receiveLayerAction(data));
+    dispatch(splitRivers(data.layer));
+  } else if (data.errors) {
+    console.log("receiving errors:", data);
+    dispatch(receiveErrors(data.errors));
+  }
+
   if (isLastLayer(getState())) {
     dispatch(finishedMap());
   }

@@ -1,24 +1,42 @@
 import React, { useEffect } from "react";
-import { toaster, ToasterContainer, PLACEMENT } from "baseui/toast";
-import { Toast } from "./base";
+import { connect } from "react-redux";
+import { useSet } from "react-use";
+import { ToasterContainer, PLACEMENT } from "baseui/toast";
+import { errorCodes } from "@tile-generator/common";
+import { createToast } from "./utils";
+import { State } from "../../redux/types";
+import { clearError } from "../../redux/modules/map";
 
-const createToast = () => {
-  const close = () => toaster.clear(toastID);
+interface ToastsProps {
+  errors: Array<keyof typeof errorCodes>;
+  clearError: (key: keyof typeof errorCodes) => void;
+}
 
-  var toastID = toaster.negative(<Toast close={close} />, {
-    onClose: () => console.log("Toast closed."),
-    overrides: {
-      InnerContainer: {
-        style: { width: "100%" },
-      },
-    },
-  });
+const mapStateToProps = (state: State) => ({
+  errors: state.mapData.errorCodes,
+});
 
-  return close;
+const mapDispatchToProps = {
+  clearError,
 };
 
-const Toasts: React.FC = () => {
-  useEffect(createToast, []);
+const Toasts: React.FC<ToastsProps> = ({ clearError, errors }) => {
+  const [previousErrors, { remove, has, add, reset }] = useSet<
+    keyof typeof errorCodes
+  >(new Set());
+
+  useEffect(() => {
+    for (const error of errors) {
+      if (!has(error)) {
+        createToast(error, () => {
+          clearError(error);
+          remove(error);
+        });
+      }
+    }
+    reset();
+    for (const elem of errors) add(elem);
+  }, [errors]);
 
   return (
     <ToasterContainer
@@ -36,4 +54,4 @@ const Toasts: React.FC = () => {
   );
 };
 
-export default Toasts;
+export default connect(mapStateToProps, mapDispatchToProps)(Toasts);

@@ -7,7 +7,7 @@ export default async function MapController(req: Request, res: Response) {
   if (!request || !request.complete) {
     res.send(404);
   } else {
-    const buffer = await request.createFile();
+    const buffer = await request.readFile();
     res.setHeader(
       "Content-Disposition",
       `attachment; filename=${request.getFileName()}`

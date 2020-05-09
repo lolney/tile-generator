@@ -8,6 +8,8 @@ import {
 } from "@tile-generator/common";
 import CivVMap, { terrainTypes, featureTypes, CivVMapHeader } from "./CivVMap";
 import FileOverwriter from "./FileOverwriter";
+import Errors from "./Errors";
+import { CivMapWriter } from "types/maps";
 
 type HeaderFormat = [MapDataType, keyof CivVMapHeader];
 
@@ -36,7 +38,7 @@ const headerFormat: Array<HeaderFormat> = [
 
 const TEMPLATE_FILE = path.join(__dirname, "../../templates/template.Civ5Map");
 
-export default class CivVMapWriter {
+export default class CivVMapWriter implements CivMapWriter {
   private map: CivVMap;
 
   constructor(map: CivVMap) {
@@ -58,9 +60,9 @@ export default class CivVMapWriter {
     return length;
   }
 
-  write() {
+  write(): Promise<[Buffer, Errors]> {
     this.map.remapRivers();
-    return this.writeTemplate();
+    return Promise.resolve([this.writeTemplate(), new Errors()]);
   }
 
   writeNew() {
@@ -78,7 +80,7 @@ export default class CivVMapWriter {
   writeTemplate() {
     const length = TILE_SIZE * this.map.tiles.length;
     const mapWriter = new MapWriter(length);
-    const overwriter = new FileOverwriter(TEMPLATE_FILE, "test.Civ5Map");
+    const overwriter = new FileOverwriter(TEMPLATE_FILE, this.map.filename);
 
     for (const tile of this.remapTiles()) {
       this.writeTile(mapWriter, tile);

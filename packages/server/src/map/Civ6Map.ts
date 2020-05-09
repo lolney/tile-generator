@@ -179,6 +179,10 @@ export default class Civ6Map extends TileMap {
   getFeatures = () =>
     this.orderedTiles.map((tile) => Civ6Map.getFeatureType(tile));
 
+  get filename() {
+    return `${this.metadata.ID}.Civ6Map`;
+  }
+
   get orderedTiles() {
     if (this._orderedTiles) return this._orderedTiles;
 

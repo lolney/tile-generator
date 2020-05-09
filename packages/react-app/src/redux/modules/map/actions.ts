@@ -1,5 +1,5 @@
 import { SubmissionStatus } from "../../types";
-import { LayersType } from "@tile-generator/common";
+import { LayersType, errorCodes } from "@tile-generator/common";
 import { LineString } from "geojson";
 
 export const CLEAR_ERROR = "CLEAR_ERROR";
@@ -8,6 +8,7 @@ export const FINISHED_MAP = "FINISHED_MAP";
 export const RECEIVE_GRID = "RECEIVE_GRID";
 export const RECEIVE_LAYER = "RECEIVE_LAYER";
 export const RECEIVE_LINES = "RECEIVE_LINES";
+export const RECEIVE_ERRORS = "RECEIVE_ERRORS";
 export const RESET_MAP = "RESET_MAP";
 export const SUBMITTING = "SUBMITTING";
 
@@ -34,9 +35,9 @@ export const submitError = (errorMessage: string) => ({
   },
 });
 
-export const clearError = () => ({
+export const clearError = (key: keyof typeof errorCodes) => ({
   type: CLEAR_ERROR,
-  payload: { errorMessage: undefined, submissionStatus: SubmissionStatus.none },
+  payload: key,
 });
 
 export const receiveGrid = (payload: any) => ({
@@ -63,6 +64,11 @@ export const submitting = () => ({
 export const receiveLayerAction = (data: { layer: LayersType }) => ({
   payload: { layer: data.layer },
   type: RECEIVE_LAYER as typeof RECEIVE_LAYER,
+});
+
+export const receiveErrors = (codes: Array<keyof typeof errorCodes>) => ({
+  payload: codes,
+  type: RECEIVE_ERRORS,
 });
 
 export const receiveRiverLines = (lines: LineString[]) => ({

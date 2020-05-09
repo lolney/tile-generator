@@ -5,6 +5,8 @@ import {
   RECEIVE_LINES,
   RESET_MAP,
   SUBMITTING,
+  RECEIVE_ERRORS,
+  CLEAR_ERROR,
 } from "./actions";
 import { MapData, SubmissionStatus } from "../../types";
 import { Action } from "./types";
@@ -25,6 +27,16 @@ export const map = (
         ...state,
         riverLines: payload,
       };
+    case RECEIVE_ERRORS:
+      return {
+        ...state,
+        errorCodes: [...state.errorCodes, ...payload],
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        errorCodes: state.errorCodes.filter((elem) => elem !== payload),
+      };
     case SUBMITTING:
       return {
         ...initialState,
@@ -32,7 +44,6 @@ export const map = (
         submissionStatus: SubmissionStatus.submitting,
       };
     case FINISHED_MAP:
-      if (state.removeSSEListener) state.removeSSEListener();
       return {
         ...state,
         ...payload,
@@ -53,6 +64,7 @@ export const map = (
 };
 
 const initialState: MapData = {
+  errorCodes: [],
   grid: [],
   layers: {},
   loadingLayer: {

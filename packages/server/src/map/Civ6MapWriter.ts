@@ -6,11 +6,12 @@ import { Tile } from "@tile-generator/common";
 import fs from "fs";
 import path from "path";
 import Errors from "./Errors";
+import { CivMapWriter } from "../types/maps";
+import { SAVE_DIRECTORY } from "../constants";
 
 const TEMPLATE_FILE = path.join(__dirname, "../../templates/CustomMap.Civ6Map");
-const SAVE_DIRECTORY = path.join(__dirname, "../../maps");
 
-export default class Civ6MapWriter {
+export default class Civ6MapWriter implements CivMapWriter {
   map: Civ6Map;
   db: sqlite3.Database;
   path: string;
@@ -27,8 +28,6 @@ export default class Civ6MapWriter {
       fs.copyFileSync(TEMPLATE_FILE, this.path);
     } else this.path = ":memory:";
 
-    console.log("wrote temp file");
-
     this.db = new sqlite3.Database(
       this.path,
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
@@ -40,14 +39,14 @@ export default class Civ6MapWriter {
     );
   }
 
-  async write(): Promise<Buffer> {
-    await this.writeExistingDb();
+  async write(): Promise<[Buffer, Errors]> {
+    const errors = await this.writeExistingDb();
     return new Promise((resolve, reject) => {
       fs.readFile(this.path, (err, data) => {
         if (err) {
           reject(err);
         } else {
-          resolve(data);
+          resolve([data, errors]);
         }
       });
     });
@@ -59,7 +58,7 @@ export default class Civ6MapWriter {
   async createDb() {
     const headers = this.getMetaDataQueries();
     const body = this.getPlotsQueries();
-    var schema = fs.readFileSync("./src/server/map/Civ6MapScheme.sql", {
+    var schema = fs.readFileSync(path.join(__dirname, "Civ6MapScheme.sql"), {
       encoding: "utf8",
     });
 

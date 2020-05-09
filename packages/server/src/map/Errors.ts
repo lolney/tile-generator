@@ -1,16 +1,17 @@
-import { StartGenerationError } from "./Civ6StartPositions/errors";
+import { SerializableError } from "types/maps";
 
 export default class Errors {
-  nonFatalErrors: Error[];
+  nonFatalErrors: SerializableError[];
 
   constructor() {
     this.nonFatalErrors = [];
   }
 
-  static isNonFatalError = (error: Error) => {
-    if (error instanceof StartGenerationError) return true;
-    return false;
+  static isNonFatalError = (error: Error): error is SerializableError => {
+    return (error as SerializableError).code != null;
   };
+
+  serialize = () => this.nonFatalErrors.map((elem) => elem.code);
 
   async collect<T>(func: () => T, defaultValue: T): Promise<T> {
     try {

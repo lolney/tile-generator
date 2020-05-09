@@ -2,21 +2,18 @@ import React from "react";
 import { Button, SIZE } from "baseui/button";
 import { Block } from "baseui/block";
 import styles from "./styles.module.css";
+import { errorCodes } from "@tile-generator/common";
 
 interface ToastProps {
   close: () => void;
+  error: keyof typeof errorCodes;
 }
 
-export const msg = (
-  <header className={styles.header}>
-    ERROR:{" "}
-    <div className={styles.body}>
-      Not enough land tiles. Map will fail to load in-game.
-    </div>
-  </header>
-);
+interface InfoProps {
+  close: () => void;
+}
 
-export const Info: React.FC<ToastProps> = ({ close }) => (
+export const Info: React.FC<InfoProps> = ({ close }) => (
   <Block marginTop="15px" display="flex" justifyContent="center">
     <a
       href="/help#errorQuestion"
@@ -40,9 +37,11 @@ export const Info: React.FC<ToastProps> = ({ close }) => (
   </Block>
 );
 
-export const Toast: React.FC<ToastProps> = ({ close }) => (
+export const Toast: React.FC<ToastProps> = ({ close, error }) => (
   <>
-    {msg}
+    <header className={styles.header}>
+      ERROR: <div className={styles.body}>{errorCodes[error]}</div>
+    </header>
     <Info close={close} />
   </>
 );

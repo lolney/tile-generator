@@ -1,4 +1,5 @@
 export * from "./createRawHexGrid";
+export * from "./errorCodes";
 export * from "./mercatorProjection";
 export * from "./Tile";
 export * from "./TilesArray";

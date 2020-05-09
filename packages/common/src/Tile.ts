@@ -9,7 +9,7 @@ export class TileUtils {
     tile.elevation !== undefined && tile.elevation !== Elevation.flat;
 
   static isImpassible = (tile: TileType) =>
-    tile.elevation !== Elevation.mountain && tile.feature !== FeatureType.ice;
+    tile.elevation === Elevation.mountain || tile.feature === FeatureType.ice;
 
   static isSettlable = (tile: TileType) =>
     !TileUtils.isWater(tile) &&

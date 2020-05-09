@@ -8,7 +8,6 @@ import {
   MapLayers,
   Options,
 } from "@tile-generator/common";
-import { failure } from "io-ts";
 import uuidv4 from "uuid/v4";
 import { createRawHexGrid } from "@tile-generator/common";
 import CivVMapWriter from "../map/CivVMapWriter";
@@ -18,6 +17,8 @@ import Civ6Map from "../map/Civ6Map";
 import Civ6MapWriter from "../map/Civ6MapWriter";
 import { LatLngBounds } from "leaflet";
 import MapBuilder from "../map/MapBuilder";
+import { CivMapWriter } from "types/maps";
+import MapReader from "../map/MapReader";
 
 export const N_LAYERS = Object.values(MapLayers).filter(
   (val) => typeof val === "string"
@@ -69,7 +70,7 @@ export default class OpenRequest {
       width,
       height,
       nPlayers: 6,
-      name: "map",
+      name: uuidv4(),
       description: "",
     });
 
@@ -84,30 +85,32 @@ export default class OpenRequest {
       MapLayers.rivers,
       MapLayers.marsh,
     ];
-
     for (const layer of layers) {
       console.log("Starting layer", layer);
       let tiles = await this.mapBuilder.createLayer(layer);
       this.map.addLayer(tiles);
       yield { [MapLayers[layer]]: tiles };
     }
+
     console.log(JSON.stringify(this.map.tiles));
+
+    const [_, errors] = await this.createFile();
+
+    yield errors;
     this.complete = true;
   }
 
-  async createFile(): Promise<Buffer> {
+  async createFile() {
     const writer = OpenRequest.getMapWriter(this.map);
     return writer.write();
   }
 
+  async readFile() {
+    return MapReader.readFile(this.getFileName());
+  }
+
   getFileName(): string {
-    if (this.map instanceof Civ6Map) {
-      return `${this.map.metadata.ID}.Civ6Map`;
-    } else if (this.map instanceof CivVMap) {
-      return `${this.map.header.name}.Civ5Map`;
-    } else {
-      throw new Error("Unexpected map type");
-    }
+    return this.map.filename;
   }
 
   static getMapType(format: GameString): MapInterface {
@@ -119,9 +122,9 @@ export default class OpenRequest {
     }
   }
 
-  static getMapWriter(map: Map) {
+  static getMapWriter(map: Map): CivMapWriter {
     if (map instanceof Civ6Map) {
-      return new Civ6MapWriter(map, `./${map.metadata.ID}.Civ6Map`);
+      return new Civ6MapWriter(map, map.filename);
     } else if (map instanceof CivVMap) {
       return new CivVMapWriter(map);
     } else {

@@ -1,4 +1,5 @@
 import findStartPositions from "../findStartPositions";
+import midwestTiles from "../../../fixtures/tiles-midwest-20-20.json";
 import italyTiles from "../../../fixtures/tiles-italy-24-24.json";
 import italyTilesTiny from "../../../fixtures/tiles-italy-35-35.json";
 import tibetTiles from "../../../fixtures/tiles-tibet-80-80.json";
@@ -6,6 +7,13 @@ import { TilesArray } from "@tile-generator/common";
 import { Tile } from "@tile-generator/common";
 
 describe("findStartPositions", () => {
+  const tinyDuelParams = {
+    width: 20,
+    height: 20,
+    minorCount: 3,
+    majorCount: 2,
+  };
+
   const duelParams = {
     width: 24,
     height: 24,
@@ -48,6 +56,13 @@ describe("findStartPositions", () => {
       expect(start.j).toBeLessThan(width);
     }
   };
+
+  it.each([["midwestTiles", midwestTiles]])(
+    "should generate start positions for a small duel map %p",
+    (_, rawTiles: Tile[]) => {
+      checkTiles(rawTiles, tinyDuelParams);
+    }
+  );
 
   it.each([["italyTiles", italyTiles]])(
     "should generate start positions for a duel map %p",

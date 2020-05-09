@@ -137,4 +137,8 @@ export default class CivVMap extends Map {
       ...params,
     };
   }
+
+  get filename() {
+    return `${this.header.name}.Civ5Map`;
+  }
 }

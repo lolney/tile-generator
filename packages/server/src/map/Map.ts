@@ -23,6 +23,10 @@ export default class Map {
     this.configurable = configurable;
   }
 
+  get filename() {
+    return this.configurable.name;
+  }
+
   static remapCoastTiles = (tiles: TilesArray<Tile>) =>
     Array.from(tiles.pairs(), ([i, j]) => {
       const tile = tiles.get(i, j);
