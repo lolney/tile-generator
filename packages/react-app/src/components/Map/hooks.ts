@@ -13,6 +13,9 @@ export const useLeafletMap = () => {
   useEffect(() => {
     const map = L.map("map").setView([38, -122], 4);
 
+    map.setMaxZoom(12);
+    map.setMinZoom(3);
+
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
