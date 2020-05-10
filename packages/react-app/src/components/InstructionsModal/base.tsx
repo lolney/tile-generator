@@ -4,6 +4,7 @@ import Button from "../../components/Button";
 import styles from "./styles.module.css";
 import tabStyle from "../../components/TabStyle";
 import { Civ6InstructionList } from "../../components/InstructionList";
+import Modal from "../../components/Modal";
 
 const OSTabs: React.FC = () => (
   <StatefulTabs
@@ -49,17 +50,7 @@ const OSTabs: React.FC = () => (
 export const BaseInstructionsModal: React.FC<{ closeModal: () => void }> = ({
   closeModal,
 }) => (
-  <>
-    <div className={styles.screen}>
-      <div className={styles.window}>
-        <header className={styles.header}>Install Instructions</header>
-        <OSTabs></OSTabs>
-        <div className={styles.buttonContainer}>
-          <Button primary onClick={closeModal}>
-            Ok
-          </Button>
-        </div>
-      </div>
-    </div>
-  </>
+  <Modal onClose={closeModal} header={"Install Instructions"}>
+    <OSTabs></OSTabs>
+  </Modal>
 );

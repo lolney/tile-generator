@@ -48,13 +48,18 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ format, changeOptions }) => (
       },
       Root: {
         style: () => ({
-          width: "60%",
+          width: "65.55%",
           height: "10px",
           marginTop: "10px",
           marginLeft: "1px",
           padding: "0px",
           background: colors.textFieldGrey,
           borderRadius: "2px",
+          ["@media screen and (max-width: 414px)"]: { width: "54.2%" },
+          ["@media screen and (max-width: 411px)"]: { width: "54.2%" },
+          ["@media screen and (max-width: 375px)"]: { width: "51%" },
+          ["@media screen and (max-width: 360px)"]: { width: "48.7%" },
+          ["@media screen and (max-width: 320px)"]: { width: "42.5%" },
         }),
       },
       ValueContainer: {

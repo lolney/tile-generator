@@ -60,7 +60,7 @@ a.menu_item {
   text-decoration: none;
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 565px) {
   .about {
     margin-left: 20px;
   }
