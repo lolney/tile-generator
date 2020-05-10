@@ -156,7 +156,7 @@ export default class Civ6Map extends TileMap {
   static getTerrainType(tile: Tile) {
     const { elevation, terrain } = tile;
 
-    if (!terrain) return "TERRAIN_GRASS";
+    if (terrain === undefined) return "TERRAIN_GRASS";
 
     const terrainS: string = TerrainType[terrain];
     if (elevation === undefined || elevation === Elevation.flat)
@@ -169,7 +169,7 @@ export default class Civ6Map extends TileMap {
   static getFeatureType(tile: Tile) {
     const { feature } = tile;
 
-    if (!feature) return null;
+    if (feature === undefined) return null;
     else {
       const featureS: string = FeatureType[feature];
       return `FEATURE_${featureS.toUpperCase()}`;
@@ -218,7 +218,7 @@ export default class Civ6Map extends TileMap {
       SEFlowDirection: -1,
     };
 
-    if (!riverType) return plotRivers;
+    if (riverType === undefined) return plotRivers;
 
     if (riverType.east) {
       plotRivers.IsWOfRiver = true;
