@@ -2,7 +2,7 @@ import L from "leaflet";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDebounce } from "react-use";
 import { MapOptions, MapLayerValue, Tile } from "@tile-generator/common";
-import { createPreviewGrid, drawLayer, drawRivers } from "./utils";
+import { createPreviewGrid, drawLayer, drawRivers, drawGrid } from "./utils";
 import { LineString, Polygon } from "geojson";
 import { mapFeatureToStyle } from "../../redux/modules/leaflet/selectors";
 import { SubmissionStatus } from "../../redux/types";
@@ -71,7 +71,7 @@ export const useAreaSelect = (
     const areaSelect = L.areaSelect({
       width: 300,
       height: 300 * (10 / (10 + 0.5)),
-      keepAspectRatio: true,
+      keepAspectRatio: false,
     });
     areaSelect.addTo(map);
 
@@ -135,12 +135,11 @@ export const usePreviewLayer = (
 ) => {
   const grid = useMemo(() => {
     if (!map || !areaSelect) return;
-    return drawLayer(
+    return drawGrid(
       // todo: change on bounds changing as well
       // todo: if bounds have changed but not dimensions, just transform the previous layer
       // https://github.com/w8r/Leaflet.Path.Transform
       createPreviewGrid(areaSelect.getBounds(), settings.dimensions),
-      [],
       () => ({
         opacity: 0.2,
         color: "black",

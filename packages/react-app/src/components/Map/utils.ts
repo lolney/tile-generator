@@ -1,4 +1,4 @@
-import L from "leaflet";
+import L, { LatLngTuple } from "leaflet";
 import { createRawHexGrid } from "@tile-generator/common";
 import { Dimensions, Tile } from "@tile-generator/common";
 import { LineString, Polygon } from "geojson";
@@ -34,6 +34,14 @@ export const drawLayer = (
       })),
     },
     { style }
+  );
+
+export const drawGrid = (grid: Polygon[], style: L.StyleFunction) =>
+  L.polygon(
+    grid.map((poly) =>
+      poly.coordinates[0].map(([lng, lat]) => [lat, lng] as LatLngTuple)
+    ),
+    { ...style() }
   );
 
 export const drawRivers = (riverLines: LineString[]) =>
