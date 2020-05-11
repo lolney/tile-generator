@@ -10,6 +10,13 @@
   flex-direction: column;
 }
 
+<<<<<<< Updated upstream
+=======
+.help_link {
+  text-decoration: none;
+}
+
+>>>>>>> Stashed changes
 .inner_container {
   flex-direction: row;
   display: flex;
