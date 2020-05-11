@@ -1,0 +1,37 @@
+@import "../../constants/colors.css";
+
+.outer_container {
+  left: 0;
+  display: flex;
+  margin-left: 20px;
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  flex-direction: column;
+}
+
+.help_link {
+  text-decoration: none;
+}
+
+.inner_container {
+  flex-direction: row;
+  display: flex;
+}
+
+.text_front,
+.text {
+  color: var(--textColorWhite);
+  font-family: Avenir;
+  font-size: 12px;
+  margin: 3px;
+}
+
+@media screen and (max-width: 675px) {
+  .text_front {
+    display: none;
+  }
+  .outer_container {
+    margin-left: 18px;
+  }
+}

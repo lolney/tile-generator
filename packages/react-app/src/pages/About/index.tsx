@@ -33,6 +33,20 @@ export const About: React.FC = () => (
         <video controls>
           <source src="/about-video.mp4" type="video/mp4"></source>
         </video>
+        <p className={styles.landing_subtitle}>
+          If you'd like to help keep the servers running, feel free to donate by
+          clicking the button below:
+        </p>
+        <a
+          href="https://www.buymeacoffee.com/tilegenerator"
+          style={{ textDecoration: "none", color: "var(--backgroundGrey)" }}
+        >
+          <img
+            className={styles.donate_button}
+            src="/bmc-button.png"
+            alt="donate"
+          ></img>
+        </a>
       </div>
     </div>
   </BaseWeb>
