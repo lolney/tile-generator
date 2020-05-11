@@ -1,7 +1,11 @@
 import L, { LatLngTuple } from "leaflet";
-import { createRawHexGrid } from "@tile-generator/common";
+import {
+  createRawHexGrid,
+  TerrainType,
+  TileUtils,
+} from "@tile-generator/common";
 import { Dimensions, Tile } from "@tile-generator/common";
-import { LineString, Polygon } from "geojson";
+import { LineString, Polygon, Feature } from "geojson";
 
 export const createPreviewGrid = (
   bounds: L.LatLngBounds,
@@ -35,6 +39,21 @@ export const drawLayer = (
     },
     { style }
   );
+
+export const createTooltip = (layer: L.Layer) => {
+  const tile = ((layer as L.FeatureGroup)?.feature as Feature)?.properties as
+    | Tile
+    | undefined;
+  if (!tile) return "None";
+
+  const displayValues = (Object.entries(tile) as Array<
+    [keyof Tile, Tile[keyof Tile]]
+  >)
+    .filter(([_, value]) => value !== undefined)
+    .map(([key, value]) => TileUtils.displayValue(key, value!));
+
+  return displayValues.length ? displayValues[0] : "None";
+};
 
 export const drawGrid = (grid: Polygon[], style: L.StyleFunction) =>
   L.polygon(

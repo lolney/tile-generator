@@ -2,7 +2,13 @@ import L from "leaflet";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDebounce } from "react-use";
 import { MapOptions, MapLayerValue, Tile } from "@tile-generator/common";
-import { createPreviewGrid, drawLayer, drawRivers, drawGrid } from "./utils";
+import {
+  createPreviewGrid,
+  drawLayer,
+  drawRivers,
+  drawGrid,
+  createTooltip,
+} from "./utils";
 import { LineString, Polygon } from "geojson";
 import { mapFeatureToStyle } from "../../redux/modules/leaflet/selectors";
 import { SubmissionStatus } from "../../redux/types";
@@ -118,7 +124,7 @@ export const useTileLayer = (
 ) => {
   const setLayer = useLayer(map);
   const leafletLayer = useMemo(
-    () => drawLayer(grid, layer, mapFeatureToStyle),
+    () => drawLayer(grid, layer, mapFeatureToStyle).bindTooltip(createTooltip),
     [grid, layer]
   );
 
@@ -167,6 +173,6 @@ export const usePreviewLayer = (
       setPreview(grid);
     },
     200,
-    [grid, settings] //todo: setpreview
+    [grid, settings, setPreview]
   );
 };
