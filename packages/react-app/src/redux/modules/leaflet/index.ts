@@ -32,6 +32,7 @@ export const leaflet = (state = initialState, action: Action) => {
           selectedLayer: Object.keys(action.payload.layer)[0] as MapLayerValue,
         };
       }
+      return state;
     default:
       return state;
   }

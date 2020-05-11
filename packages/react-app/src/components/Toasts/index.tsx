@@ -36,7 +36,7 @@ const Toasts: React.FC<ToastsProps> = ({ clearError, errors }) => {
     }
     reset();
     for (const elem of errors) add(elem);
-  }, [errors]);
+  }, [errors, clearError, remove, has, add, reset]);
 
   return (
     <ToasterContainer

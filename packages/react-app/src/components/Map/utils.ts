@@ -1,9 +1,5 @@
 import L, { LatLngTuple } from "leaflet";
-import {
-  createRawHexGrid,
-  TerrainType,
-  TileUtils,
-} from "@tile-generator/common";
+import { createRawHexGrid, TileUtils } from "@tile-generator/common";
 import { Dimensions, Tile } from "@tile-generator/common";
 import { LineString, Polygon, Feature } from "geojson";
 

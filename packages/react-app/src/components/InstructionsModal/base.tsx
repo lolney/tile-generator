@@ -1,7 +1,5 @@
 import React from "react";
 import { StatefulTabs, Tab } from "baseui/tabs";
-import Button from "../../components/Button";
-import styles from "./styles.module.css";
 import tabStyle from "../../components/TabStyle";
 import { Civ6InstructionList } from "../../components/InstructionList";
 import Modal from "../../components/Modal";

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, NavLink } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { StatefulTabs, Tab } from "baseui/tabs";
 import { BaseWeb } from "../../baseweb";
 import styles from "./styles.module.css";

@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./styles.module.css";
-import Modal from "../../components/Modal";
 
 const QuotaCounter = () => (
   <div className={styles.outer_container}>
