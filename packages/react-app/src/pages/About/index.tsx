@@ -33,16 +33,9 @@ export const About: React.FC = () => (
         <video controls>
           <source src="/about-video.mp4" type="video/mp4"></source>
         </video>
-<<<<<<< Updated upstream
-        <p className={styles.landing_subtitle}>
-          Feel free to donate by clicking the button below:
-=======
-<<<<<<< Updated upstream
-=======
         <p className={styles.landing_subtitle}>
           If you'd like to help keep the servers running, feel free to donate by
           clicking the button below:
->>>>>>> Stashed changes
         </p>
         <a
           href="https://www.buymeacoffee.com/tilegenerator"
@@ -54,10 +47,6 @@ export const About: React.FC = () => (
             alt="donate"
           ></img>
         </a>
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
       </div>
     </div>
   </BaseWeb>

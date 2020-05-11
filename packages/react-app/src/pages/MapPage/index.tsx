@@ -15,19 +15,9 @@ export const MapPage: React.FC = () => (
         <Map />
         <Dock />
       </div>
-<<<<<<< Updated upstream
-      <div className={styles.bottom_bar}>
-        <QuotaCounter></QuotaCounter>
-      </div>
-=======
-<<<<<<< Updated upstream
-      <div className={styles.bottom_bar}></div>
-=======
       <div className={styles.bottom_bar}>
         <QuotaCounter />
       </div>
->>>>>>> Stashed changes
->>>>>>> Stashed changes
       <Toasts />
       <InstructionsModal />
     </div>
