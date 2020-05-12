@@ -103,6 +103,17 @@ const FAQ: React.FC = () => (
             </a>
           </p>
         </h2>
+        <h2 className={styles.questionHeader}>
+          Why do I get an error message when I try to load my map in
+          Civilization VI?
+        </h2>
+        <p className={styles.answerText}>
+          You may be experiencing a novel issue, but it is also likely that you
+          have added too many city states to your game. Currently the maps
+          generated here support only 1.5x the maximum number of civilizations
+          for a given map size. For example, a small map can support up to 6
+          civilizations, so the maximum number of cities states would be 9.
+        </p>
         <h2 className={styles.questionHeader}>Where can I report issues?</h2>
         <p className={styles.answerText}>
           You can report issues here:{" "}
@@ -127,6 +138,7 @@ export const Help: React.FC = () => (
         </div>
         <FAQ></FAQ>
       </div>
+      <div className={styles.bottom_bar}></div>
     </div>
   </BaseWeb>
 );
