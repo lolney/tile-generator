@@ -153,11 +153,8 @@ export default class CivVMapWriter implements CivMapWriter {
     if (!river) return bitmask;
 
     if (river.east) bitmask |= 0x1;
-    if (river.northEast) bitmask |= 0x2;
-    if (river.northWest) bitmask |= 0x4;
-    if (river.southEast) bitmask |= 0x8;
-    if (river.southWest) bitmask |= 0x10;
-    if (river.west) bitmask |= 0x20;
+    if (river.southEast) bitmask |= 0x2;
+    if (river.southWest) bitmask |= 0x4;
     return bitmask;
   }
 

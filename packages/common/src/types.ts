@@ -66,25 +66,34 @@ export type RiverType = {
   southWest?: boolean;
 };
 
+export type RiverFlow = {
+  northEast?: boolean; // north
+  northWest?: boolean; // north
+  east?: boolean; // south
+  west?: boolean; // south
+  southEast?: boolean; // north
+  southWest?: boolean; // north
+};
+
 export enum TerrainType {
-  grass,
-  plains,
-  tundra,
-  desert,
-  ice,
-  coast,
-  ocean,
+  grass = 0,
+  plains = 1,
+  desert = 2,
+  tundra = 3,
+  ice = 4,
+  coast = 5,
+  ocean = 6,
 }
 
 export enum FeatureType {
-  ice,
-  marsh,
-  forest,
-  jungle,
-  oasis,
-  floodplains,
-  atoll,
-  fallout,
+  ice = 0,
+  jungle = 1,
+  marsh = 2,
+  oasis = 3,
+  floodplains = 4,
+  forest = 5,
+  atoll = 6,
+  fallout = 7,
 }
 
 export enum Elevation {
