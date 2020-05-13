@@ -110,9 +110,11 @@ const FAQ: React.FC = () => (
         <p className={styles.answerText}>
           This is likely related to a known bug in Civilization VI involving
           starting positions on custom maps (you can read more about it{" "}
-          <a href="https://github.com/lolney/tile-generator/issues">here</a>).
-          As a result, Civilization Tile Generator imposes a limit on the number
-          of city states per game, which is 1.5x the maximum number of
+          <a href="https://forums.civfanatics.com/threads/1-0-0-341-when-a-civilization-is-not-given-a-starting-plot-the-game-crashes-to-main-menu.648359/">
+            here
+          </a>
+          ). As a result, Civilization Tile Generator imposes a limit on the
+          number of city states per game, which is 1.5x the maximum number of
           civilizations on a given map size. For example, a small map can
           support up to 6 civilizations, so the maximum number of cities states
           would be 9. Adding more than 9 city states in this case will generate
