@@ -103,6 +103,25 @@ const FAQ: React.FC = () => (
             </a>
           </p>
         </h2>
+        <h2 className={styles.questionHeader}>
+          Why do I get an error message when I try to load my map in
+          Civilization VI?
+        </h2>
+        <p className={styles.answerText}>
+          This is likely related to a known bug in Civilization VI involving
+          starting positions on custom maps (you can read more about it{" "}
+          <a href="https://forums.civfanatics.com/threads/1-0-0-341-when-a-civilization-is-not-given-a-starting-plot-the-game-crashes-to-main-menu.648359/">
+            here
+          </a>
+          ). As a result, Civilization Tile Generator imposes a limit on the
+          number of city states per game, which is 1.5x the maximum number of
+          civilizations on a given map size. For example, a small map can
+          support up to 6 civilizations, so the maximum number of cities states
+          would be 9. Adding more than 9 city states in this case will generate
+          and error and the game will fail to load. Until Civilization VI is
+          patched or Civilization Tile Generator devises a better way to handle
+          the bug, this problem will persist.
+        </p>
         <h2 className={styles.questionHeader}>Where can I report issues?</h2>
         <p className={styles.answerText}>
           You can report issues here:{" "}
@@ -127,6 +146,7 @@ export const Help: React.FC = () => (
         </div>
         <FAQ></FAQ>
       </div>
+      <div className={styles.bottom_bar}></div>
     </div>
   </BaseWeb>
 );

@@ -24,7 +24,7 @@ export const About: React.FC = () => (
             </NavLink>
             <a
               href="https://github.com/lolney/tile-generator"
-              style={{ textDecoration: "none", color: "var(--backgroundGrey)" }}
+              className={styles.link}
             >
               <Button>Github</Button>
             </a>
@@ -39,7 +39,7 @@ export const About: React.FC = () => (
         </p>
         <a
           href="https://www.buymeacoffee.com/tilegenerator"
-          style={{ textDecoration: "none", color: "var(--backgroundGrey)" }}
+          className={styles.link}
         >
           <img
             className={styles.donate_button}
@@ -47,6 +47,54 @@ export const About: React.FC = () => (
             alt="donate"
           ></img>
         </a>
+      </div>
+      <div className={styles.bottom_bar}>
+        <div className={styles.outro}>
+          <h1 className={styles.lower_landing_header}>Attribution</h1>
+          <p className={styles.attribution_header}>Climate data</p>
+          <p className={styles.paragraph}>
+            Beck, H., Zimmermann, N., McVicar, T. et al. Present and future
+            Köppen-Geiger climate classification maps at 1-km resolution. Sci
+            Data 5, 180214 (2018). https://doi.org/10.1038/sdata.2018.214
+          </p>
+          <p className={styles.attribution_header}>
+            Water (lake, coast, ocean) data
+          </p>
+          <p className={styles.paragraph}>
+            Carroll, M.L., DiMiceli, C.M., Wooten, M.R., Hubbard, A.B.,
+            Sohlberg, R.A., Townshend, J.R.G (2017). MOD44W MODIS/Terra Land
+            Water Mask Derived from MODIS and SRTM L3 Global 250m SIN Grid V006
+            [Data set]. NASA EOSDIS Land Processes DAAC. Accessed 2020-05-11
+            from https://doi.org/10.5067/MODIS/MOD44W.006
+          </p>
+          <p className={styles.attribution_header}>Marsh/wetlands data</p>
+          <p className={styles.paragraph}>
+            Friedl, M., Sulla-Menashe, D. (2019). MCD12Q1 MODIS/Terra+Aqua Land
+            Cover Type Yearly L3 Global 500m SIN Grid V006 [Data set]. NASA
+            EOSDIS Land Processes DAAC. Accessed 2020-05-11 from
+            https://doi.org/10.5067/MODIS/MCD12Q1.006
+          </p>
+          <p className={styles.attribution_header}>Elevation data</p>
+          <p className={styles.paragraph}>
+            Jarvis, A., H.I. Reuter, A. Nelson, E. Guevara. 2008. Hole-filled
+            SRTM for the globe Version 4, available from the CGIAR-CSI SRTM 90m
+            Database: http://srtm.csi.cgiar.org.
+          </p>
+          <p className={styles.attribution_header}>River data</p>
+          <p className={styles.paragraph}>
+            Lehner, B., Verdin, K., Jarvis, A. (2008): New global hydrography
+            derived from spaceborne elevation data. Eos, Transactions, AGU,
+            89(10): 93-94.
+          </p>
+          <p className={styles.attribution_header}>Forest data</p>
+          <p className={styles.paragraph}>
+            Masanobu Shimada, Takuya Itoh, Takeshi Motooka, Manabu Watanabe,
+            Shiraishi Tomohiro, Rajesh Thapa, and Richard Lucas, "New Global
+            Forest/Non-forest Maps from ALOS PALSAR Data (2007-2010)", Remote
+            Sensing of Environment, 155, pp. 13-31, December 2014.
+            doi:10.1016/j.rse.2014.04.014.
+          </p>
+        </div>
       </div>
     </div>
   </BaseWeb>
