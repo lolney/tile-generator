@@ -80,6 +80,7 @@
 .lower_landing_header {
   color: var(--textColorWhite);
   margin-top: 0px;
+  margin-bottom: 50px;
 }
 
 .landing_subtitle,
@@ -92,15 +93,16 @@
 }
 
 .lower_landing_subtitle {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   color: var(--textColorWhite);
 }
 
 .paragraph {
-  font-size: 14px;
-  text-align: left;
-  margin-bottom: 20px;
+  font-size: 16px;
   color: var(--textColorWhite);
+  text-align: left;
+  margin-bottom: 30px;
+  padding-left: 24px;
 }
 
 .btn_container {
@@ -154,6 +156,12 @@ video {
 .link {
   text-decoration: none;
   color: var(--backgroundGrey);
+}
+
+.attribution_header {
+  font: 900 18px Avenir;
+  color: var(--textColorWhite);
+  margin-top: 20px;
 }
 
 @media screen and (max-width: 375px) {
