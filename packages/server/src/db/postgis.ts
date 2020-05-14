@@ -50,8 +50,11 @@ const generateInsert = (tiles: Polygon[]) => {
 };
 
 /**
- * Note: can use ST_SummaryStatsAgg for this as in `findMax`,
- * but perfroms significantly worse
+ * Notes on optimizing this:
+ * - An index like CREATE INDEX srtm_tiled_rast_gist_idx ON forest_500 USING GIST (ST_ConvexHull(rast)); doesn't make much difference
+ * - Using ST_SummaryStatsAgg dramatically slows things down
+ * - Nonetheless, EXPLAIN ANALYZE shows a nested loop with 27000 rows
+ * - Combining this into a single query is hard (how do you group sampled points by hex???)
  */
 export async function sampleRaster(table: string, geom: Polygon, n: number) {
   const points = sampleRows(geom, n);
@@ -89,9 +92,18 @@ export async function findMode(table: string, geom: Polygon, n: number) {
   return value;
 }
 
+/**
+ * Notes on performance:
+ * - Vast majority of time is spent on the HashAggregate stage
+ * - There's a nested loop that uses an index scan on the raster
+ * - Surprisingly, changing the sample percent (last arg) doesn't have a noticeable effect
+ * - Removing the ST_CLIP while keeping the sample percent low actually can improve performance by about 2x,
+ * but this makes rivers pretty inaccurate (presumably because it's selecting raster tiles that are much bigger than the polys?)
+ * - Decreasing tile size to 80x80 does seem to improve performance somewhat, but not noticeably
+ */
 export async function findMax(table: string, tiles: Polygon[]) {
   let query = `
-    SELECT temp_geoms.id, (ST_SummaryStatsAgg(ST_Clip(raster.rast,temp_geoms.geom), 1, false, 0.05)).max
+    SELECT temp_geoms.id, (ST_SummaryStatsAgg(ST_Clip(raster.rast,temp_geoms.geom), 1, true, 0.5)).max
     FROM temp_geoms, ${table} AS raster
     WHERE ST_Intersects(raster.rast, temp_geoms.geom)
     GROUP BY temp_geoms.id

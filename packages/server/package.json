@@ -60,8 +60,6 @@
     "start": "node dist/main.js",
     "profile": "node --inspect dist/main.js",
     "test": "jest --watch",
-    "db:create": "sh ./scripts/create_db.sh",
-    "db:seed": "sh ./scripts/load_all.sh",
     "build": "tsc",
     "watch": "tsc -p tsconfig.json --watch"
   },

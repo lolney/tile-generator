@@ -15,6 +15,7 @@
     "build": "lerna run build",
     "build-client-prod": "npm install && npm run build-common && npm install && npm run build-client",
     "clean": "lerna run clean",
+    "db:create": "sh ./scripts/create_db.sh",
     "postinstall": "npm run bootstrap",
     "pub": "lerna publish",
     "reinstall-common": "./scripts/reinstall_common.sh"
