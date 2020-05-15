@@ -33,17 +33,15 @@ export default function () {
 
   console.log(samples.getInfo());
 
-  /* viz
   // Can do this in Node api in another way:
   // https://github.com/google/earthengine-api/blob/master/demos/map-layer/static/script.js
   var elevationVis = {
     min: -10.0,
     max: 8000.0,
-    gamma: 1.6
+    gamma: 1.6,
   };
-  
+
   Map.setCenter(0, 0, 4);
   Map.addLayer(samples, null, "Elevation");
   Map.addLayer(polygon, null, "Poly");
-  */
 }

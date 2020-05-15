@@ -1,27 +1,26 @@
 import { Polygon } from "geojson";
 import * as turf from "@turf/turf";
-import createHexGrid from "../earth-engine/createHexGrid";
 import { LatLngBounds } from "leaflet";
 import {
-  Tile,
-  TerrainType,
   Elevation,
+  FeatureType,
+  Koppen,
   LatLngBounds as LatLngBoundsT,
   MapLayers,
-  FeatureType,
   Options,
-  Koppen,
+  TerrainType,
+  Tile,
   TilesArray,
 } from "@tile-generator/common";
-import { getForestType, getTerrainType } from "../earth-engine/koppen";
-import generateRivers from "../earth-engine/generateRivers";
+import { getForestType, getTerrainType } from "../rasters/koppen";
+import generateRivers from "../rasters/generateRivers";
 import {
   isLandLocal,
   findSlopeLocal,
   isMarshLocal,
   isForestLocal,
   findClimateLocal,
-} from "../earth-engine/rasterLocal";
+} from "../rasters/rasterLocal";
 import Map from "./Map";
 import { logperformance } from "../logging";
 import zip from "lodash/zip";
@@ -169,28 +168,6 @@ export default class MapBuilder {
       if (!isMarsh) return {};
       return { feature: FeatureType.marsh };
     });
-  }
-
-  createEETiles(
-    analysis: Function,
-    process: (properties: any, geometry: Polygon) => Promise<Tile> | Tile
-  ) {
-    const earthGrid = createHexGrid(this.grid);
-    const featureCollection = analysis(earthGrid);
-
-    // Note: with large tile sizes, there's a problem with this stage
-    // Can try first exporting to drive, then loading from there
-    // Or, actually seems to be a problem with sending too much?
-    const local = featureCollection.getInfo();
-
-    return local.features.map((feature: any) => {
-      return process(feature.properties, feature.geometry);
-    });
-
-    /* need cloud storage
-        ee.batch.Export.table.toAsset(featureCollection);
-        return [{}];
-        */
   }
 
   async createClimateTiles(): Promise<Array<Tile>> {
