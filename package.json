@@ -8,6 +8,7 @@
     "add-client": "lerna add --scope=@tile-generator/react-app",
     "add-common": "lerna add --scope=@tile-generator/common",
     "add-server": "lerna add --scope=@tile-generator/server",
+    "add-app-engine": "lerna add --scope=@tile-generator/app-engine",
     "bootstrap": "lerna bootstrap",
     "build-client": "lerna run build --scope=@tile-generator/react-app",
     "build-server": "lerna run build --scope=@tile-generator/server",

@@ -79,7 +79,6 @@ export default class TraceRivers {
       end = predecessor;
     }
 
-    console.debug("path does lead to source");
     new GraphDebuger(this.weightsGraph).print(
       new RiverNode(source),
       new RiverNode(end)
