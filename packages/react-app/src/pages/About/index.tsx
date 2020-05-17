@@ -55,7 +55,7 @@ export const About: React.FC = () => (
             </div>
             <img
               className={styles.showcase_image_2}
-              src="/show3.png"
+              src="/show2.png"
               alt="zoomed climate chile"
             ></img>
           </div>
