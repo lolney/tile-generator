@@ -12,6 +12,9 @@
 
 .help_link {
   text-decoration: none;
+  outline: none;
+  color: var(--textColorWhite);
+  font-weight: 800;
 }
 
 .inner_container {

@@ -33,6 +33,34 @@ export const About: React.FC = () => (
         <video controls>
           <source src="/about-video.mp4" type="video/mp4"></source>
         </video>
+        <div className={styles.showcase_container}>
+          <div className={styles.showcase_row}>
+            <img
+              className={styles.showcase_image_1}
+              src="/show1.png"
+              alt="climate chile"
+            ></img>
+            <div className={styles.showcase_text_container}>
+              <h1 className={styles.showcase_text}>
+                Generate maps from anywhere in the world, at nearly any level of
+                detail
+              </h1>
+            </div>
+          </div>
+          <div className={styles.showcase_row}>
+            <div className={styles.showcase_text_container}>
+              <h1 className={styles.showcase_text}>
+                Toggle through different layers to preview geographic features{" "}
+              </h1>
+            </div>
+            <img
+              className={styles.showcase_image_2}
+              src="/show2.png"
+              alt="zoomed climate chile"
+            ></img>
+          </div>
+        </div>
+
         <p className={styles.landing_subtitle}>
           If you'd like to help keep the servers running, feel free to donate by
           clicking the button below:
