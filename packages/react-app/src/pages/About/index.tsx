@@ -36,26 +36,27 @@ export const About: React.FC = () => (
         <div className={styles.showcase_container}>
           <div className={styles.showcase_row}>
             <img
-              className={styles.showcase_image}
+              className={styles.showcase_image_1}
               src="/show1.png"
-              alt="image1"
+              alt="climate chile"
             ></img>
             <div className={styles.showcase_text_container}>
               <h1 className={styles.showcase_text}>
-                Toggle through different layers to preview geographic features{" "}
+                Generate maps from anywhere in the world, at nearly any level of
+                detail
               </h1>
             </div>
           </div>
           <div className={styles.showcase_row}>
             <div className={styles.showcase_text_container}>
               <h1 className={styles.showcase_text}>
-                Zoom into your map to get a detailed perspective{" "}
+                Toggle through different layers to preview geographic features{" "}
               </h1>
             </div>
             <img
-              className={styles.showcase_image}
+              className={styles.showcase_image_2}
               src="/show3.png"
-              alt="image3"
+              alt="zoomed climate chile"
             ></img>
           </div>
         </div>

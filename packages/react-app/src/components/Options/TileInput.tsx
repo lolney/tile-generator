@@ -76,13 +76,13 @@ const TileInput: React.FC<TileSliderProps> = ({ onChange, value, ...rest }) => {
             fontSize: "12px",
             backgroundColor: colors.textFieldGrey,
             color: colors.textColorWhite,
-            caretColor: "colors.textColorWhite",
+            caretColor: colors.textColorWhite,
           },
         },
         InputContainer: {
           style: {
             backgroundColor: colors.textFieldGrey,
-            borderWidth: "0px",
+            border: "none",
           },
         },
       }}

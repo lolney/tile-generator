@@ -36,7 +36,6 @@
   vertical-align: middle;
   line-height: 23px;
   padding-bottom: 5px;
-
   cursor: pointer;
 }
 
@@ -157,26 +156,42 @@ video {
   display: flex;
   flex-direction: row;
   margin-bottom: 100px;
+  width: fit-content;
 }
 
-.showcase_image {
-  width: 40%;
-  margin-left: 5%;
+.showcase_image,
+.showcase_image_1,
+.showcase_image_2 {
+  width: 44%;
+  margin-left: 1%;
+  margin-right: 1%;
+  border-radius: 5px;
+  box-shadow: 10px 10px 15px grey;
+}
+
+.showcase_image_1 {
+  flex: 36%;
+  margin-left: 0%;
   margin-right: 5%;
+}
+
+.showcase_image_2 {
+  flex: 36%;
+  margin-left: 5%;
+  margin-right: 0%;
 }
 
 .showcase_text_container {
   display: flex;
-  width: 40%;
-  margin-left: 5%;
-  margin-right: 5%;
+  flex: 44%;
   justify-content: center;
   align-items: center;
 }
 
 .showcase_text {
-  text-align: left;
-  font-weight: 500;
+  font-size: 30px;
+  text-align: center;
+  font-weight: 200;
   margin-top: 0px;
 }
 
