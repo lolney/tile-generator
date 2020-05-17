@@ -8,9 +8,7 @@
   },
   "scripts": {
     "prepare": "npm run gcp-build",
-    "pretest": "npm run gcp-build",
-    "test": "mocha test/*.test.js --exit",
-    "posttest": "npm run lint",
+    "test": "jest --watch",
     "lint": "tslint -p .",
     "start": "node dist/index.js",
     "gcp-build": "tsc -p .",
@@ -19,11 +17,15 @@
   "dependencies": {
     "@types/express": "^4.16.0",
     "@types/jest": "^25.2.1",
+    "@types/luxon": "^1.24.0",
+    "@types/supertest": "^2.0.9",
     "express": "^4.16.3",
     "jest": "^25.5.3",
+    "luxon": "^1.24.1",
+    "supertest": "^4.0.2",
+    "ts-jest": "^26.0.0",
     "tslint": "^6.0.0",
     "typescript": "^3.8.3",
     "wait-port": "^0.2.7"
-  },
-  "devDependencies": {}
+  }
 }
