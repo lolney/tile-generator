@@ -1,8 +1,11 @@
 import React, { useCallback } from "react";
 import { clamp } from "lodash";
-import { Input, SIZE } from "baseui/input";
+import { Input, SIZE, StyledInputContainer } from "baseui/input";
 import { MapDimensionT } from "@tile-generator/common";
 import * as colors from "../../constants/colors";
+import { createDarkTheme } from "baseui";
+import { ThemeProvider } from "baseui";
+import { withStyle } from "baseui";
 
 interface TileSliderProps {
   value: number;
@@ -73,11 +76,13 @@ const TileInput: React.FC<TileSliderProps> = ({ onChange, value, ...rest }) => {
             fontSize: "12px",
             backgroundColor: colors.textFieldGrey,
             color: colors.textColorWhite,
+            caretColor: "colors.textColorWhite",
           },
         },
         InputContainer: {
           style: {
-            borderColor: colors.textFieldGrey,
+            backgroundColor: colors.textFieldGrey,
+            borderWidth: "0px",
           },
         },
       }}
