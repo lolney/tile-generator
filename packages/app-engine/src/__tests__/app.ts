@@ -1,25 +1,38 @@
-import waitPort from "wait-port";
+import express from "express";
 import request from "supertest";
 import http from "http";
+import { AddressInfo } from "net";
 import createServer, { limits } from "../server";
 
-const PORT = parseInt(process.env.PORT, 10) || 8888;
-
 let server: http.Server;
+let proxiedServer: http.Server;
 
-beforeEach(() => {
-  server = createServer(["trust proxy"]);
+const createProxiedServer = () => {
+  const proxiedApp = express();
+
+  proxiedApp.get("/", (req, res) => res.send("Hello"));
+  proxiedApp.get("/world", (req, res) => res.send("World"));
+
+  return new Promise<http.Server>((resolve) => {
+    const newServer = proxiedApp.listen(0, () => {
+      resolve(newServer);
+    });
+  });
+};
+
+beforeEach(async () => {
+  proxiedServer = await createProxiedServer();
+  const { port } = proxiedServer.address() as AddressInfo;
+  server = createServer({
+    settings: ["trust proxy"],
+    port: 0,
+    proxyHost: `http://localhost:${port}`,
+  });
 });
 
 afterEach(() => {
+  proxiedServer.close();
   server.close();
-});
-
-describe("server listening", () => {
-  it("should be listening", async () => {
-    const isOpen = await waitPort({ port: PORT });
-    expect(isOpen).toBe(true);
-  });
 });
 
 describe("/", () => {
@@ -41,5 +54,14 @@ describe("/", () => {
     }
 
     await request(server).get("/").expect(429);
+  });
+
+  it("should proxy requests to proxiedServer, including rate limit headers", async () => {
+    const response = await request(server)
+      .get("/")
+      .expect(200)
+      .expect("X-RateLimit-Limit", String(limits.maxPerIP))
+      .expect("X-RateLimit-Remaining", String(limits.maxPerIP - 1));
+    expect(response.text).toEqual("Hello");
   });
 });

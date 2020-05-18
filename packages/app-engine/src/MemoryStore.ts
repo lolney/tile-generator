@@ -36,11 +36,6 @@ export class MemoryStore {
     } else {
       this.hits[key] = 1;
     }
-
-    return {
-      global: this.globalHits,
-      ip: this.hits[key],
-    };
   }
 
   getGlobalRemaining() {

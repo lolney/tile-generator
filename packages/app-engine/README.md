@@ -1,6 +1,6 @@
 # Tile Generator Rate Limiter
 
-This is the front-end server for Tile Generator, used primarily for rate limiting.
+This is the proxy server for Tile Generator, used primarily for rate limiting.
 It's meant to be deployed on GCP App Engine.
 
 The `gcp-build` NPM script is used to trigger the TypeScript compilation
