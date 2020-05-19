@@ -80,6 +80,13 @@ River centerlines, downloaded from https://www.naturalearthdata.com/downloads/10
 shp2pgsql -I -s 4326 ~/Downloads/river_centerlines/ne_10m_rivers_lake_centerlines_scale_rank.shp | psql -h localhost -d tilegenerator -U postgres
 ```
 
+GeoJSON data:
+
+```
+cd ~/Downloads
+ogr2ogr -f "PostgreSQL" PG:"dbname=tilegenerator user=postgres" "rivers.geojson"
+```
+
 ###### Water mask and other Google Earth Engine Sources:
 
 - Run the script [](https://code.earthengine.google.com/67d5310441e9d02d8e630167d87f5070), exporting to Google Drive

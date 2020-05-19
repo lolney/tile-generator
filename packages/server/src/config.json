@@ -1,5 +1,12 @@
 {
   "port": 8080,
   "bodyLimit": "100kb",
-  "corsHeaders": ["Link", "Content-Disposition"]
+  "corsHeaders": [
+    "Link",
+    "Content-Disposition",
+    "X-RateLimit-Limit",
+    "X-RateLimit-Remaining",
+    "Date",
+    "X-RateLimit-Reset"
+  ]
 }

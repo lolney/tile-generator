@@ -1,6 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
 import { StatefulTooltip } from "baseui/tooltip";
-import { useStyletron, DarkTheme, ThemeProvider } from "baseui";
+import { DarkTheme, ThemeProvider } from "baseui";
+import { State, ToolbarState } from "../../redux/types";
 import styles from "./styles.module.css";
 
 const quotaTooltip = () => (
@@ -12,20 +14,38 @@ const quotaTooltip = () => (
   </ThemeProvider>
 );
 
-const QuotaCounter = () => (
+const mapStateToProps = ({
+  toolbar: { ipCount, ipTotal, globalCount, globalTotal },
+}: State) => ({
+  ipCount,
+  ipTotal,
+  globalCount,
+  globalTotal,
+});
+
+const QuotaCounter: React.FC<ToolbarState> = ({
+  ipCount,
+  ipTotal,
+  globalCount,
+  globalTotal,
+}) => (
   <div className={styles.outer_container}>
     <StatefulTooltip accessibilityType={"tooltip"} content={quotaTooltip}>
       <div>
         <div className={styles.inner_container}>
           <p className={styles.text_front}>Maps you’ve generated today :</p>
           <p className={styles.text}>
-            <b>3 / 10</b>
+            <b>
+              {ipCount} / {ipTotal}
+            </b>
           </p>
         </div>
         <div className={styles.inner_container}>
           <p className={styles.text_front}>Total maps generated today :</p>
           <p className={styles.text}>
-            <b>234 / 500</b>
+            <b>
+              {globalCount} / {globalTotal}
+            </b>
           </p>
         </div>
       </div>
@@ -33,4 +53,4 @@ const QuotaCounter = () => (
   </div>
 );
 
-export default QuotaCounter;
+export default connect(mapStateToProps)(QuotaCounter);

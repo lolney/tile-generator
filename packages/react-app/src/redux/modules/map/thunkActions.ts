@@ -5,6 +5,7 @@ import {
   receiveRiverLines,
   receiveErrors,
 } from "./actions";
+import { setIpRequestsTotal, setIpRequestsCount } from "../toolbar";
 import { isLastLayer } from "./selectors";
 import { State } from "../../types";
 import { MapDispatch } from "./types";
@@ -68,6 +69,24 @@ const receiveLayer = (e: Event) => async (
   if (isLastLayer(getState())) {
     dispatch(finishedMap());
   }
+};
+
+export const parseRemainingMaps = (resp: Response) => (
+  dispatch: MapDispatch
+) => {
+  const remainingHeader = resp.headers.get("X-RateLimit-Remaining");
+  const totalHeader = resp.headers.get("X-RateLimit-Limit");
+
+  if (!totalHeader || !remainingHeader) return dispatch(receiveErrors([0]));
+
+  const remaining = parseInt(remainingHeader, 10);
+  const total = parseInt(totalHeader, 10);
+
+  if (Number.isNaN(remaining) || Number.isNaN(total))
+    return dispatch(receiveErrors([0]));
+
+  dispatch(setIpRequestsCount(total - remaining));
+  dispatch(setIpRequestsTotal(total));
 };
 
 export const receiveLayers = (resp: Response) => async (

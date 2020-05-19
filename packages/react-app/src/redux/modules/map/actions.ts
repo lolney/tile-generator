@@ -5,10 +5,10 @@ import { LineString } from "geojson";
 export const CLEAR_ERROR = "CLEAR_ERROR";
 export const DOWNLOADING = "DOWNLOADING";
 export const FINISHED_MAP = "FINISHED_MAP";
+export const RECEIVE_ERRORS = "RECEIVE_ERRORS";
 export const RECEIVE_GRID = "RECEIVE_GRID";
 export const RECEIVE_LAYER = "RECEIVE_LAYER";
 export const RECEIVE_LINES = "RECEIVE_LINES";
-export const RECEIVE_ERRORS = "RECEIVE_ERRORS";
 export const RESET_MAP = "RESET_MAP";
 export const SUBMITTING = "SUBMITTING";
 

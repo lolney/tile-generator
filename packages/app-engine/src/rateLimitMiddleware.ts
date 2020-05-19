@@ -1,12 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import { MemoryStore } from "./MemoryStore";
 
+const whitelistedMethods = ["Options"];
+
 export const rateLimitMiddleware = (store: MemoryStore) => (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const key = req.ip;
+
+  if (whitelistedMethods.includes(req.method)) return next();
 
   store.incr(key);
 

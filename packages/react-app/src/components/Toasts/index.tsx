@@ -26,6 +26,7 @@ const Toasts: React.FC<ToastsProps> = ({ clearError, errors }) => {
   >(new Set());
 
   useEffect(() => {
+    debugger;
     for (const error of errors) {
       if (!has(error)) {
         createToast(error, () => {
@@ -36,7 +37,7 @@ const Toasts: React.FC<ToastsProps> = ({ clearError, errors }) => {
     }
     reset();
     for (const elem of errors) add(elem);
-  }, [errors, clearError, remove, has, add, reset]);
+  }, [errors, clearError]);
 
   return (
     <ToasterContainer

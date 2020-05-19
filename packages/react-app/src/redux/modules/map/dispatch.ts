@@ -3,7 +3,7 @@ import download from "downloadjs";
 import { downloading, submitError, submitting } from "./actions";
 import { selectOptions } from "./selectors";
 import { MapDispatch } from "./types";
-import { receiveLayers } from "./thunkActions";
+import { receiveLayers, parseRemainingMaps } from "./thunkActions";
 import { BACKEND_URL } from "../../../constants/values";
 
 export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
@@ -17,7 +17,10 @@ export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
     },
     body: JSON.stringify(options),
   }).then(
-    (resp) => dispatch(receiveLayers(resp)),
+    (resp) => {
+      dispatch(receiveLayers(resp));
+      dispatch(parseRemainingMaps(resp));
+    },
     (error) => dispatch(submitError(error))
   );
 };

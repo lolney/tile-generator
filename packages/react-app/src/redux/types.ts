@@ -11,6 +11,7 @@ export type State = {
   settings: MapOptions;
   mapData: MapData;
   leaflet: LeafletState;
+  toolbar: ToolbarState;
 };
 
 export type MapData = {
@@ -32,6 +33,13 @@ export type MapData = {
 
 export type LeafletState = {
   selectedLayer: MapLayerValue | undefined;
+};
+
+export type ToolbarState = {
+  ipCount: number;
+  ipTotal: number;
+  globalCount: number;
+  globalTotal: number;
 };
 
 export enum SubmissionStatus {
