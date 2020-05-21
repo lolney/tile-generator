@@ -6,6 +6,7 @@ import "normalize.css";
 import { MapPage } from "./pages/MapPage";
 import { About } from "./pages/About";
 import { Help } from "./pages/Help";
+import "focus-visible/dist/focus-visible.min.js";
 
 import * as serviceWorker from "./serviceWorker";
 
