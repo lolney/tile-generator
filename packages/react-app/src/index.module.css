@@ -115,3 +115,7 @@ a.menu_item {
   transition-duration: 0.2s;
   transition-timing-function: ease;
 }
+
+[data-js-focus-visible] :focus:not([data-focus-visible-added]) {
+  outline: none;
+}
