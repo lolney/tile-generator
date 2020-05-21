@@ -58,7 +58,8 @@
 
 .button_selected {
   box-shadow: inset 0px 0px 5px black;
-  outline: -webkit-focus-ring-color auto 5px;
+  border: 2px solid;
+  border-color: var(--textColorWhite);
 }
 
 .button_selected:focus,
