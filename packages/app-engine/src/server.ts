@@ -1,6 +1,7 @@
 import express from "express";
 import proxy from "express-http-proxy";
 import morgan from "morgan";
+import cors from "cors";
 import { AddressInfo } from "net";
 import { MemoryStore } from "./MemoryStore";
 import { rateLimitMiddleware } from "./rateLimitMiddleware";
@@ -21,6 +22,23 @@ export const createServer = ({ settings, proxyHost, port }: Options) => {
   const store = new MemoryStore(limits);
 
   app.use(morgan("dev"));
+
+  app.use(cors());
+
+  app.get("/limits/global", (req, res) => {
+    res.send({
+      limit: limits.maxGlobal,
+      remaining: store.getGlobalRemaining(),
+    });
+  });
+
+  app.get("/limits/ip", (req, res) => {
+    res.send({
+      remaining: store.getIPRemaining(req.ip) || limits.maxPerIP,
+      limit: limits.maxPerIP,
+    });
+  });
+
   app.use("/", rateLimitMiddleware(store));
   app.use("/", proxy(proxyHost));
 

@@ -1,18 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { StatefulTooltip } from "baseui/tooltip";
-import { DarkTheme, ThemeProvider } from "baseui";
+import { BaseQuotaCounter } from "./base";
 import { State, ToolbarState } from "../../redux/types";
-import styles from "./styles.module.css";
-
-const quotaTooltip = () => (
-  <ThemeProvider theme={DarkTheme}>
-    Daily map quota.{` `}
-    <a className={styles.help_link} href="/help#quotaQuestion" target="_blank">
-      Learn More
-    </a>
-  </ThemeProvider>
-);
+import { fetchGlobalLimits, fetchIpLimits } from "../../redux/modules/toolbar";
 
 const mapStateToProps = ({
   toolbar: { ipCount, ipTotal, globalCount, globalTotal },
@@ -23,34 +13,37 @@ const mapStateToProps = ({
   globalTotal,
 });
 
-const QuotaCounter: React.FC<ToolbarState> = ({
+const mapDispatchToProps = {
+  fetchGlobalLimits,
+  fetchIpLimits,
+};
+
+type QuotaCounterProps = ToolbarState & {
+  fetchGlobalLimits: () => void;
+  fetchIpLimits: () => void;
+};
+
+const QuotaCounter: React.FC<QuotaCounterProps> = ({
   ipCount,
   ipTotal,
   globalCount,
   globalTotal,
-}) => (
-  <div className={styles.outer_container}>
-    <StatefulTooltip accessibilityType={"tooltip"} content={quotaTooltip}>
-      <div>
-        <div className={styles.inner_container}>
-          <p className={styles.text_front}>Maps you’ve generated today :</p>
-          <p className={styles.text}>
-            <b>
-              {ipCount} / {ipTotal}
-            </b>
-          </p>
-        </div>
-        <div className={styles.inner_container}>
-          <p className={styles.text_front}>Total maps generated today :</p>
-          <p className={styles.text}>
-            <b>
-              {globalCount} / {globalTotal}
-            </b>
-          </p>
-        </div>
-      </div>
-    </StatefulTooltip>
-  </div>
-);
+  fetchGlobalLimits,
+  fetchIpLimits,
+}) => {
+  useEffect(() => {
+    fetchGlobalLimits();
+    fetchIpLimits();
+  }, []);
 
-export default connect(mapStateToProps)(QuotaCounter);
+  const baseProps = {
+    ipCount,
+    ipTotal,
+    globalCount,
+    globalTotal,
+  };
+
+  return <BaseQuotaCounter {...baseProps} />;
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuotaCounter);

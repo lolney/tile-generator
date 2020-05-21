@@ -35,6 +35,24 @@ afterEach(() => {
   server.close();
 });
 
+describe.each(["/limits/global", "/limits/ip"])("%p", (endpoint) => {
+  it("should not be rate limited", async () => {
+    for (const _ of Array(limits.maxPerIP + 1))
+      await request(server).get(endpoint).expect(200);
+  });
+
+  it("should return a decreasing remaining and constant limit", async () => {
+    const { limit, remaining } = (
+      await request(server).get(endpoint).expect(200)
+    ).body;
+    await request(server).get("/").expect(200);
+    const next = (await request(server).get(endpoint).expect(200)).body;
+
+    expect(next.limit).toEqual(limit);
+    expect(next.remaining).toEqual(remaining - 1);
+  });
+});
+
 describe("/", () => {
   it("should rate limit after x requests", async () => {
     for (const _ of Array(limits.maxPerIP - 1))
