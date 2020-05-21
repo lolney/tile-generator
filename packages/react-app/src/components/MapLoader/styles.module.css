@@ -58,6 +58,12 @@
 
 .button_selected {
   box-shadow: inset 0px 0px 5px black;
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
+.button_selected:focus,
+.button_selected:active {
+  outline: -webkit-focus-ring-color auto 5px;
 }
 
 .button:disabled {
