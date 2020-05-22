@@ -10,9 +10,9 @@ import { combineReducers } from "redux";
 
 const initialState: ToolbarState = {
   ipCount: 0,
-  ipTotal: 0,
+  ipTotal: 20,
   globalCount: 0,
-  globalTotal: 0,
+  globalTotal: 1000,
 };
 
 export const ipCount = (

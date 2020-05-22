@@ -68,6 +68,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-with-proxy": "REACT_APP_BACKEND_URL=\"http://localhost:8888\" npm start",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

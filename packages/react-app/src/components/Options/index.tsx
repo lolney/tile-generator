@@ -4,18 +4,19 @@ import { submit } from "../../redux/modules/map";
 import { changeOptions, resetOptions } from "../../redux/modules/settings";
 import { connect } from "react-redux";
 import { State } from "../../redux/types";
-import TileSlider from "./TileSlider";
-import TileInput from "./TileInput";
+import InputRow from "./InputRow";
 import SelectMenu from "./SelectMenu";
 import { ControlButtons } from "../ControlButtons";
 import styles from "./styles.module.css";
 import Button from "../Button";
+import { reachedLimit } from "../../redux/modules/toolbar";
 
 const widthParams = { min: 10, max: 120 };
 
 interface OptionsProps {
   onSubmit: () => void;
   selectedOptions: Options;
+  limitReached: boolean;
   onChange: (options: Options) => void;
   resetOptions: () => void;
 }
@@ -25,6 +26,7 @@ const mapStateToProps = (state: State) => ({
     format: state.settings.format,
     dimensions: state.settings.dimensions,
   },
+  limitReached: reachedLimit(state),
 });
 
 const mapDispatchToProps = {
@@ -34,6 +36,7 @@ const mapDispatchToProps = {
 };
 
 export const OptionsComponent: React.FC<OptionsProps> = ({
+  limitReached,
   onChange,
   onSubmit,
   selectedOptions,
@@ -59,50 +62,12 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
         <SelectMenu />
       </div>
       <ControlButtons>
-        <Button primary onClick={onSubmit}>
+        <Button primary disabled={limitReached} onClick={onSubmit}>
           Generate
         </Button>
         <Button onClick={resetOptions}>Reset</Button>
       </ControlButtons>
     </>
-  );
-};
-
-interface InputRowProps {
-  title: string;
-  min: number;
-  max: number;
-  selectedOptions: Options;
-  onChange: (options: Options) => void;
-  field: "width" | "height";
-}
-
-const InputRow: React.FC<InputRowProps> = ({
-  selectedOptions,
-  min,
-  max,
-  title,
-  field,
-  onChange,
-}) => {
-  const props = {
-    value: selectedOptions.dimensions[field],
-    min,
-    max,
-    onChange: (value: number) =>
-      onChange({
-        ...selectedOptions,
-        dimensions: { ...selectedOptions.dimensions, [field]: value },
-      }),
-  };
-  return (
-    <div className={styles.horizontal_containers}>
-      <div className={styles.left_header_container}>
-        <div className={styles.left_headers}>{title}</div>
-      </div>
-      <TileSlider {...props} />
-      <TileInput {...props} />
-    </div>
   );
 };
 
