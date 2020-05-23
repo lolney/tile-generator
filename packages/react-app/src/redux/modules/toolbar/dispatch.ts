@@ -8,7 +8,7 @@ import {
 } from "./actions";
 
 export const fetchGlobalLimits = () => (dispatch: MapDispatch) =>
-  fetch(`${BACKEND_URL}/limits/global`)
+  fetch(`${BACKEND_URL}/limits/global/${encodeURIComponent("/api/map")}`)
     .then((resp) => resp.json())
     .then((json) => {
       dispatch(setGlobalRequestsTotal(json.limit));
@@ -16,7 +16,7 @@ export const fetchGlobalLimits = () => (dispatch: MapDispatch) =>
     });
 
 export const fetchIpLimits = () => (dispatch: MapDispatch) =>
-  fetch(`${BACKEND_URL}/limits/ip`)
+  fetch(`${BACKEND_URL}/limits/ip/${encodeURIComponent("/api/map")}`)
     .then((resp) => resp.json())
     .then((json) => {
       dispatch(setIpRequestsTotal(json.limit));

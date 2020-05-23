@@ -4,7 +4,7 @@ Web app for generating tile maps from Google Earth Engine climate/terrain data. 
 
 ### Lerna
 
-This project uses Lerna to manage its packages: `server`, `react-app`, and `common`.
+This project uses Lerna to manage its packages: `server`, `react-app`, `app-engine`, and `common`.
 
 To get started, run these commands in the top-level directory:
 
@@ -38,9 +38,15 @@ npm start
 ```
 
 ```sh
+# Start the proxy server (used for rate limiting)
+cd packages/app-engine
+npm gcp-build && npm start
+```
+
+```sh
 # Start the client
 cd packages/react-app
-npm run dev
+npm run start-with-proxy
 ```
 
 ### Database setup

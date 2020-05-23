@@ -8,19 +8,19 @@ export const rateLimitMiddleware = (store: MemoryStore) => (
   res: Response,
   next: NextFunction
 ) => {
-  const key = req.ip;
+  const { ip, path } = req;
 
   if (whitelistedMethods.includes(req.method)) return next();
 
-  store.incr(key);
+  store.incr(ip, path);
 
   const resetTime = Math.ceil(MemoryStore.nextReset() / 1000);
-  const ipRemaining = store.getIPRemaining(key);
-  const globalRemaining = store.getGlobalRemaining();
+  const ipRemaining = store.getIPRemaining(ip, path);
+  const globalRemaining = store.getGlobalRemaining(path);
 
   if (!res.headersSent) {
     res.setHeader("X-RateLimit-Limit", store.options.maxPerIP);
-    res.setHeader("X-RateLimit-Remaining", store.getIPRemaining(key));
+    res.setHeader("X-RateLimit-Remaining", store.getIPRemaining(ip, path));
     res.setHeader("Date", new Date().toUTCString());
     res.setHeader("X-RateLimit-Reset", resetTime);
   }

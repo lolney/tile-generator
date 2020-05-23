@@ -25,16 +25,17 @@ export const createServer = ({ settings, proxyHost, port }: Options) => {
 
   app.use(cors());
 
-  app.get("/limits/global", (req, res) => {
+  app.get("/limits/global/:route", (req, res) => {
     res.send({
       limit: limits.maxGlobal,
-      remaining: store.getGlobalRemaining(),
+      remaining: store.getGlobalRemaining(req.params.route),
     });
   });
 
-  app.get("/limits/ip", (req, res) => {
+  app.get("/limits/ip/:route", (req, res) => {
     res.send({
-      remaining: store.getIPRemaining(req.ip) || limits.maxPerIP,
+      remaining:
+        store.getIPRemaining(req.ip, req.params.route) || limits.maxPerIP,
       limit: limits.maxPerIP,
     });
   });
