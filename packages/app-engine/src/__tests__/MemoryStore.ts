@@ -51,9 +51,9 @@ describe("MemoryStore", () => {
 
 describe("matchRoute", () => {
   const equivalenceClasses = [
-    ["/asdf/sdfsdf?adfsd", "/asdf/sdfsdf?adfsd"],
+    ["/asdf/sdfsdf?adfsd", "/asdf/sdfsdf?adfsd", "/asdf/sdfsdf/12323"],
     ["/", "/"],
-    ["//", "//"],
+    ["//", "//", "///", "///aaaa"],
     ["/sdf/#sdf", "/sdf/", "/sdf", "/sdf/#sdf"],
     ["/mm/sdfsdf-sad-fs--------#sdf", "/mm/sdfsdf-sad-fs--------"],
     ["/abc/123?q=%2F%2F%2F%2F%26%26", "/abc/123"],

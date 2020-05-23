@@ -67,8 +67,8 @@ export class MemoryStore {
     DateTime.utc().endOf("day").diff(DateTime.utc()).milliseconds;
 
   // prettier-ignore
-  static matchRoute = (path: string) =>
-    /(^\/+$)|((\/[-a-zA-Z0-9@:%._\+~]*)+((\/(?![#?])(?!$))|[-a-zA-Z0-9@:%._\+~]))/g.exec(path)?.[0];
+  static matchRoute = (path: string) => 
+    /(^\/$)|(^\/\/)|(^\/[-a-zA-Z0-9@:%._\+~]+(\/[-a-zA-Z0-9@:%._\+~]+)?)/g.exec(path)?.[0];
 
   static createKey = (ip: string, path: string) => {
     const route = MemoryStore.matchRoute(path);
