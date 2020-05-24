@@ -13,7 +13,7 @@
 .help_link {
   text-decoration: none;
   outline: none;
-  color: var(--textColorWhite);
+  color: var(--backgroundGrey);
   font-weight: 800;
 }
 

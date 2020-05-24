@@ -6,13 +6,19 @@ type ButtonProps = React.DetailedHTMLProps<
   HTMLButtonElement
 > & { primary?: boolean; children?: React.ReactNode };
 
-const Button: React.FC<ButtonProps> = ({ primary, children, ...props }) => (
-  <button
-    className={primary ? styles.primary_button : styles.button}
-    {...props}
-  >
-    {children}
-  </button>
+const Button = React.forwardRef(
+  (
+    { primary, children, ...props }: ButtonProps,
+    ref?: React.Ref<HTMLButtonElement>
+  ) => (
+    <button
+      className={primary ? styles.primary_button : styles.button}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </button>
+  )
 );
 
 export default Button;

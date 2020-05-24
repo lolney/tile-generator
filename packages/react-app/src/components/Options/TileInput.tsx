@@ -3,7 +3,6 @@ import { clamp } from "lodash";
 import { Input, SIZE, StyledInputContainer } from "baseui/input";
 import { MapDimensionT } from "@tile-generator/common";
 import * as colors from "../../constants/colors";
-import { createDarkTheme } from "baseui";
 import { ThemeProvider } from "baseui";
 import { withStyle } from "baseui";
 

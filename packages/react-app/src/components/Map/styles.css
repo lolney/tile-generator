@@ -11,17 +11,3 @@
 .layer-display {
   flex: 1;
 }
-
-.leaflet-tooltip {
-  background-color: var(--backgroundGrey);
-  color: var(--textColorWhite);
-  border-color: var(--backgroundGrey);
-}
-
-.leaflet-tooltip-right:before {
-  border-right-color: var(--backgroundGrey);
-}
-
-.leaflet-tooltip-left:before {
-  border-left-color: var(--backgroundGrey);
-}

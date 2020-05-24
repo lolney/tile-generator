@@ -29,7 +29,7 @@ To best way to remove a dependency (pending an addition to Lerna like this [PR](
 ```sh
 # Compile on watch mode
 cd packages/server
-npm run watch-server
+npm run watch
 ```
 
 ```sh
@@ -40,7 +40,7 @@ npm start
 ```sh
 # Start the proxy server (used for rate limiting)
 cd packages/app-engine
-npm gcp-build && npm start
+npm run gcp-build && npm start
 ```
 
 ```sh
