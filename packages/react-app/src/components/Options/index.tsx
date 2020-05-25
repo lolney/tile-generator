@@ -2,6 +2,8 @@ import React from "react";
 import { Options } from "@tile-generator/common";
 import { submit } from "../../redux/modules/map";
 import { changeOptions, resetOptions } from "../../redux/modules/settings";
+import { LightTheme, ThemeProvider } from "baseui";
+import { StatefulTooltip } from "baseui/tooltip";
 import { connect } from "react-redux";
 import { State } from "../../redux/types";
 import InputRow from "./InputRow";
@@ -35,6 +37,15 @@ const mapDispatchToProps = {
   resetOptions,
 };
 
+const quotaTooltip = () => (
+  <ThemeProvider theme={LightTheme}>
+    You've reached your daily map quota.{` `}
+    <a className={styles.help_link} href="/help#quotaQuestion" target="_blank">
+      Learn More
+    </a>
+  </ThemeProvider>
+);
+
 export const OptionsComponent: React.FC<OptionsProps> = ({
   limitReached,
   onChange,
@@ -62,9 +73,34 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
         <SelectMenu />
       </div>
       <ControlButtons>
-        <Button primary disabled={limitReached} onClick={onSubmit}>
-          Generate
-        </Button>
+        {limitReached ? (
+          <StatefulTooltip
+            accessibilityType={"tooltip"}
+            content={quotaTooltip}
+            overrides={{
+              Inner: {
+                style: ({ $theme }) => {
+                  return {
+                    color: "var(--backgroundGrey)",
+                    backgroundColor: "var(--textColorWhite)",
+                  };
+                },
+              },
+            }}
+          >
+            <div>
+              <Button primary disabled={limitReached} onClick={onSubmit}>
+                Generate
+              </Button>
+            </div>
+          </StatefulTooltip>
+        ) : (
+          <div>
+            <Button primary onClick={onSubmit}>
+              Generate
+            </Button>
+          </div>
+        )}
         <Button onClick={resetOptions}>Reset</Button>
       </ControlButtons>
     </>

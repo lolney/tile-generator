@@ -28,3 +28,10 @@
   font-weight: 900;
   text-transform: capitalize;
 }
+
+.help_link {
+  text-decoration: none;
+  outline: none;
+  color: var(--backgroundGrey);
+  font-weight: 800;
+}

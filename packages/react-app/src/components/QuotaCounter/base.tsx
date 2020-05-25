@@ -1,16 +1,16 @@
 import React from "react";
 import { StatefulTooltip } from "baseui/tooltip";
-import { DarkTheme, ThemeProvider } from "baseui";
+import { ThemeProvider } from "baseui";
 import { State, ToolbarState } from "../../redux/types";
 import styles from "./styles.module.css";
 
 const quotaTooltip = () => (
-  <ThemeProvider theme={DarkTheme}>
+  <div>
     Daily map quota.{` `}
     <a className={styles.help_link} href="/help#quotaQuestion" target="_blank">
       Learn More
     </a>
-  </ThemeProvider>
+  </div>
 );
 
 export const BaseQuotaCounter: React.FC<ToolbarState> = ({
@@ -20,7 +20,18 @@ export const BaseQuotaCounter: React.FC<ToolbarState> = ({
   globalTotal,
 }) => (
   <div className={styles.outer_container}>
-    <StatefulTooltip accessibilityType={"tooltip"} content={quotaTooltip}>
+    <StatefulTooltip
+      accessibilityType={"tooltip"}
+      content={quotaTooltip}
+      overrides={{
+        Inner: {
+          style: {
+            color: "var(--backgroundGrey)",
+            backgroundColor: "var(--textColorWhite)",
+          },
+        },
+      }}
+    >
       <div>
         <div className={styles.inner_container}>
           <p className={styles.text_front}>Maps you’ve generated today :</p>
