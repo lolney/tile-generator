@@ -1,10 +1,8 @@
 import React, { useCallback } from "react";
 import { clamp } from "lodash";
-import { Input, SIZE, StyledInputContainer } from "baseui/input";
+import { Input, SIZE } from "baseui/input";
 import { MapDimensionT } from "@tile-generator/common";
 import * as colors from "../../constants/colors";
-import { ThemeProvider } from "baseui";
-import { withStyle } from "baseui";
 
 interface TileSliderProps {
   value: number;

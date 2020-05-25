@@ -59,7 +59,7 @@ describe.each(
 
 describe("/", () => {
   it("should rate limit after x requests", async () => {
-    for (const _ of Array(limits.maxPerIP - 1))
+    for (const _ of Array(limits.maxPerIP))
       await request(server).get("/").expect(200);
 
     await request(server).get("/").expect(429);
@@ -67,7 +67,7 @@ describe("/", () => {
 
   it("should rate limit after x requests on a particular endpoint (with different urls)", async () => {
     await request(server).get("/?xyz").expect(200);
-    for (const _ of Array(limits.maxPerIP - 2))
+    for (const _ of Array(limits.maxPerIP - 1))
       await request(server).get("/").expect(200);
 
     await request(server).get("/").expect(429);
@@ -76,14 +76,14 @@ describe("/", () => {
   it("should rate limit after x requests on a particular endpoint", async () => {
     for (const _ of Array(limits.maxPerIP / 2))
       await request(server).get("/world").expect(200);
-    for (const _ of Array(limits.maxPerIP - 1))
+    for (const _ of Array(limits.maxPerIP))
       await request(server).get("/").expect(200);
 
     await request(server).get("/").expect(429);
   });
 
   it("should rate limit globally after x requests", async () => {
-    for (const i of Array(limits.maxGlobal - 1)
+    for (const i of Array(limits.maxGlobal)
       .fill(0)
       .map((_, j) => j)) {
       await request(server)

@@ -1,7 +1,6 @@
 import React from "react";
 import { StatefulTooltip } from "baseui/tooltip";
-import { ThemeProvider } from "baseui";
-import { State, ToolbarState } from "../../redux/types";
+import { ToolbarState } from "../../redux/types";
 import styles from "./styles.module.css";
 
 const quotaTooltip = () => (

@@ -17,9 +17,10 @@ export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
     },
     body: JSON.stringify(options),
   }).then(
-    (resp) => {
-      dispatch(receiveLayers(resp));
-      dispatch(parseRemainingMaps(resp));
+    async (resp) => {
+      const json = await resp.json();
+      dispatch(receiveLayers(json));
+      dispatch(parseRemainingMaps(resp, json));
     },
     (error) => dispatch(submitError(error))
   );

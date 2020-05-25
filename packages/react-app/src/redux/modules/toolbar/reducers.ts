@@ -16,7 +16,7 @@ const initialState: ToolbarState = {
 };
 
 export const ipCount = (
-  state = initialState.ipTotal,
+  state = initialState.ipCount,
   { type, payload }: Action
 ): number => {
   switch (type) {
@@ -40,7 +40,7 @@ export const ipTotal = (
 };
 
 export const globalCount = (
-  state = initialState.ipTotal,
+  state = initialState.globalCount,
   { type, payload }: Action
 ): number => {
   switch (type) {
@@ -52,7 +52,7 @@ export const globalCount = (
 };
 
 export const globalTotal = (
-  state = initialState.ipTotal,
+  state = initialState.globalTotal,
   { type, payload }: Action
 ): number => {
   switch (type) {
