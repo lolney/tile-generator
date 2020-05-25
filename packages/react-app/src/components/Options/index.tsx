@@ -39,7 +39,7 @@ const mapDispatchToProps = {
 
 const quotaTooltip = () => (
   <ThemeProvider theme={LightTheme}>
-    Youv'e reached your daily map quota.{` `}
+    You've reached your daily map quota.{` `}
     <a className={styles.help_link} href="/help#quotaQuestion" target="_blank">
       Learn More
     </a>
@@ -96,7 +96,7 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
           </StatefulTooltip>
         ) : (
           <div>
-            <Button primary disabled={limitReached} onClick={onSubmit}>
+            <Button primary onClick={onSubmit}>
               Generate
             </Button>
           </div>
