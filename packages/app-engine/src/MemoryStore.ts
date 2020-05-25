@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { EventEmitter } from "events";
 
 interface StoreOptions {
   maxPerIP: number;
@@ -11,6 +12,7 @@ export class MemoryStore {
   lastReset: Date;
   interval: NodeJS.Timeout;
   options: StoreOptions;
+  globalHitsEmitter: EventEmitter;
 
   constructor(options: StoreOptions) {
     this.options = options;
@@ -37,6 +39,8 @@ export class MemoryStore {
     };
 
     timeout();
+
+    this.globalHitsEmitter = new EventEmitter();
   }
 
   incr(ip: string, route: string) {
@@ -44,6 +48,8 @@ export class MemoryStore {
 
     this.globalHits[route]++;
     this.hits[key]++;
+
+    this.globalHitsEmitter.emit(route, this.globalHits[route]);
   }
 
   getGlobalRemaining(route: string) {

@@ -2,6 +2,8 @@ import express from "express";
 import proxy from "express-http-proxy";
 import morgan from "morgan";
 import cors from "cors";
+import sse, { ISseResponse } from "@toverux/expresse";
+
 import { AddressInfo } from "net";
 import { MemoryStore } from "./MemoryStore";
 import { rateLimitMiddleware } from "./rateLimitMiddleware";
@@ -35,8 +37,18 @@ export const createServer = ({ settings, proxyHost, port }: Options) => {
   app.get("/limits/ip/:route", (req, res) => {
     res.send({
       remaining:
-        store.getIPRemaining(req.ip, req.params.route) || limits.maxPerIP,
+        store.getIPRemaining(req.ip, req.params.route) ?? limits.maxPerIP,
       limit: limits.maxPerIP,
+    });
+  });
+
+  app.get("/maps-generated", sse(), (req, res: ISseResponse) => {
+    const onMapGenerated = (count: number) => {
+      res.sse.event("count", { count });
+    };
+    store.globalHitsEmitter.addListener("/api/map", onMapGenerated);
+    req.on("close", () => {
+      store.globalHitsEmitter.off("/api/map", onMapGenerated);
     });
   });
 

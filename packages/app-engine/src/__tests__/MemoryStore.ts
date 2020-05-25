@@ -42,6 +42,26 @@ describe("MemoryStore", () => {
     expect(store.exceededGlobalLimit("/")).toBe(true);
   });
 
+  it("should emit an event for the given route", async () => {
+    const store = new MemoryStore(options);
+
+    const foo = new Promise((resolve) =>
+      store.globalHitsEmitter.addListener("/foo", (event) => {
+        resolve(event);
+      })
+    );
+    const bar = new Promise((resolve) =>
+      store.globalHitsEmitter.addListener("/bar", (event) => {
+        resolve(event);
+      })
+    );
+
+    store.incr("a", "/bar");
+    expect(await bar).toEqual(1);
+    store.incr("a", "/foo");
+    expect(await foo).toEqual(1);
+  });
+
   it("nextReset should return the time to the beginning of the next (UTC) day", () => {
     Settings.now = () => Date.UTC(2020, 1, 1, 23, 0, 0, 0);
     const next = MemoryStore.nextReset();
