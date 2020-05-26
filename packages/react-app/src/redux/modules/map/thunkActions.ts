@@ -22,6 +22,7 @@ const createEventSource = (event: string, callback: (e: Event) => any) => {
   return () => {
     eventSource.removeEventListener("layer", callback);
     eventSource.removeEventListener("errors", callback);
+    eventSource.close();
   };
 };
 

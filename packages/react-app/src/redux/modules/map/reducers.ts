@@ -28,9 +28,11 @@ export const map = (
         riverLines: payload,
       };
     case RECEIVE_ERRORS:
+      if (state.removeSSEListener) state.removeSSEListener();
       return {
         ...state,
         errorCodes: [...state.errorCodes, ...payload],
+        removeSSEListener: undefined,
       };
     case CLEAR_ERROR:
       return {
@@ -48,7 +50,6 @@ export const map = (
         ...state,
         ...payload,
         submissionStatus: SubmissionStatus.done,
-        removeSSEListener: undefined,
       };
     case DOWNLOADING:
       return {
