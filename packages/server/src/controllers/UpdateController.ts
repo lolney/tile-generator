@@ -1,7 +1,6 @@
 import requests from "../db/openRequest";
 import { Request, Response } from "express";
 import { ISseResponse } from "@toverux/expresse";
-import Errors from "../map/Errors";
 
 export default async function UpdateController(
   req: Request,
@@ -16,20 +15,12 @@ export default async function UpdateController(
   });
 
   if (request) {
-    for await (const layer of request.completeJobs()) {
+    for await (const result of request.completeJobs()) {
       if (!requests.has(id)) {
         console.log(`Request ${id} no longer exists. Aborting.`);
         break;
       }
-      if (layer instanceof Errors) {
-        res.sse.event("errors", {
-          errors: layer.serialize(),
-        });
-      } else {
-        res.sse.event("layer", {
-          layer,
-        });
-      }
+      result.createEvent(res.sse);
     }
   } else {
     throw new Error(`Requested map ID that does not exist: ${req.params.id}`);

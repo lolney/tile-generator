@@ -19,6 +19,9 @@ import { LatLngBounds } from "leaflet";
 import MapBuilder from "../map/MapBuilder";
 import { CivMapWriter } from "types/maps";
 import MapReader from "../map/MapReader";
+import { uploadFile } from "../services/cloudStorage";
+import { ISseFunctions } from "@toverux/expresse";
+import Errors from "../map/Errors";
 
 export const N_LAYERS = Object.values(MapLayers).filter(
   (val) => typeof val === "string"
@@ -26,6 +29,40 @@ export const N_LAYERS = Object.values(MapLayers).filter(
 
 interface MapInterface {
   new (tiles: number | Tile[], params: MapConfigurable): Map;
+}
+
+interface OpenRequestResult {
+  createEvent: (sse: ISseFunctions) => void;
+}
+
+class LayerResult implements OpenRequestResult {
+  constructor(public layer: { [x: number]: Tile[] }) {}
+
+  createEvent = (sse: ISseFunctions) => {
+    sse.event("layer", {
+      layer: this.layer,
+    });
+  };
+}
+
+class ErrorResult implements OpenRequestResult {
+  constructor(public errors: Errors) {}
+
+  createEvent = (sse: ISseFunctions) => {
+    sse.event("errors", {
+      errors: this.errors.serialize(),
+    });
+  };
+}
+
+class DownloadResult implements OpenRequestResult {
+  constructor(public url: string) {}
+
+  createEvent = (sse: ISseFunctions) => {
+    sse.event("errors", {
+      url: this.url,
+    });
+  };
 }
 
 export default class OpenRequest {
@@ -47,7 +84,7 @@ export default class OpenRequest {
   }
 
   static parseRequest(req: MapOptions) {
-    const options = MapOptionsT.decode(req).getOrElseL((errors) => {
+    const options = MapOptionsT.decode(req).getOrElseL((errors: any[]) => {
       console.error(errors);
       throw new Error(errors.map((val) => val.message).join("\n"));
     });
@@ -89,14 +126,17 @@ export default class OpenRequest {
       console.log("Starting layer", layer);
       let tiles = await this.mapBuilder.createLayer(layer);
       this.map.addLayer(tiles);
-      yield { [MapLayers[layer]]: tiles };
+      yield new LayerResult({ [MapLayers[layer]]: tiles });
     }
 
     console.log(JSON.stringify(this.map.tiles));
 
-    const [_, errors] = await this.createFile();
+    const [buffer, errors] = await this.createFile();
+    const url = await uploadFile(this.getFileName(), buffer);
 
-    yield errors;
+    yield new ErrorResult(errors);
+    if (url?.[0]) yield new DownloadResult(url?.[0]);
+
     this.complete = true;
   }
 
