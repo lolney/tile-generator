@@ -1,5 +1,5 @@
 import React from "react";
-import { Instruction } from "./types";
+import { Instruction, OsString, InstructionListProps } from "./types";
 import PathInstruction from "./PathInstruction";
 import BaseInstructionList from "./Base";
 
@@ -8,7 +8,7 @@ export const paths = {
   Windows: `Program Files (x86)/Steam/SteamApps/Common/Sid Meier’s Civilization V/Assets/Maps`,
 };
 
-const civVHelpText = (os: "Mac" | "Windows", path: string): Instruction => ({
+const civVHelpText = (os: OsString, path: string): Instruction => ({
   title: "Civilization V",
   steps: [
     {
@@ -31,13 +31,7 @@ const civVHelpText = (os: "Mac" | "Windows", path: string): Instruction => ({
   ],
 });
 
-export default ({
-  os,
-  hideTitle,
-}: {
-  os: keyof typeof paths;
-  hideTitle?: boolean;
-}) => (
+export default ({ os, hideTitle }: InstructionListProps) => (
   <BaseInstructionList
     hideTitle={hideTitle}
     instruction={civVHelpText(os, paths[os])}

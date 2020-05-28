@@ -7,6 +7,11 @@ import {
   Civ5InstructionList,
   Civ6InstructionList,
 } from "../../components/InstructionList";
+import { OsString } from "../../components/InstructionList/types";
+
+interface TabsProps {
+  os: OsString;
+}
 
 const tabStyle = {
   borderBottomColor: "#4d90e6",
@@ -14,9 +19,9 @@ const tabStyle = {
   fontFamily: "Avenir",
 };
 
-const OSTabs: React.FC = () => (
+const OSTabs: React.FC<TabsProps> = ({ os }) => (
   <StatefulTabs
-    initialState={{ activeKey: "0" }}
+    initialState={{ activeKey: os }}
     overrides={{
       TabBar: {
         style: () => ({
@@ -38,6 +43,7 @@ const OSTabs: React.FC = () => (
   >
     <Tab
       title={"MacOS"}
+      key="Mac"
       overrides={{
         Tab: { style: tabStyle },
       }}
@@ -53,6 +59,7 @@ const OSTabs: React.FC = () => (
     </Tab>
     <Tab
       title={"Windows"}
+      key="Windows"
       overrides={{
         Tab: { style: tabStyle },
       }}
@@ -134,19 +141,24 @@ const FAQ: React.FC = () => (
   </BrowserRouter>
 );
 
-export const Help: React.FC = () => (
-  <BaseWeb>
-    <div className={styles.page}>
-      <div className={styles.body}>
-        <div className={styles.intro}>
-          <h1 className={styles.landing_header}>
-            Map Installation Instructions
-          </h1>
-          <OSTabs></OSTabs>
+export const Help: React.FC = () => {
+  const os: OsString = window.navigator.platform.includes("Mac")
+    ? "Mac"
+    : "Windows";
+  return (
+    <BaseWeb>
+      <div className={styles.page}>
+        <div className={styles.body}>
+          <div className={styles.intro}>
+            <h1 className={styles.landing_header}>
+              Map Installation Instructions
+            </h1>
+            <OSTabs os={os}></OSTabs>
+          </div>
+          <FAQ></FAQ>
         </div>
-        <FAQ></FAQ>
+        <div className={styles.bottom_bar}></div>
       </div>
-      <div className={styles.bottom_bar}></div>
-    </div>
-  </BaseWeb>
-);
+    </BaseWeb>
+  );
+};

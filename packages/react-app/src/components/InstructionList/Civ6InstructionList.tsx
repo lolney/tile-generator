@@ -1,6 +1,6 @@
 import React from "react";
 import PathInstruction from "./PathInstruction";
-import { Instruction } from "./types";
+import { Instruction, OsString, InstructionListProps } from "./types";
 import BaseInstructionList from "./Base";
 
 export const paths = {
@@ -9,7 +9,7 @@ export const paths = {
   Windows: `Documents/My Games/Sid Meier's CivilizationVI/Saves/WorldBuilder`,
 };
 
-const civ6HelpText = (os: "Mac" | "Windows", path: string): Instruction => ({
+const civ6HelpText = (os: OsString, path: string): Instruction => ({
   title: "Civilization VI",
   steps: [
     {
@@ -30,13 +30,7 @@ const civ6HelpText = (os: "Mac" | "Windows", path: string): Instruction => ({
   ],
 });
 
-export default ({
-  os,
-  hideTitle,
-}: {
-  os: keyof typeof paths;
-  hideTitle?: boolean;
-}) => (
+export default ({ os, hideTitle }: InstructionListProps) => (
   <BaseInstructionList
     hideTitle={hideTitle}
     instruction={civ6HelpText(os, paths[os])}

@@ -1,10 +1,18 @@
 import React from "react";
 import { StatefulTabs, Tab } from "baseui/tabs";
 import tabStyle from "../../components/TabStyle";
-import { Civ6InstructionList } from "../../components/InstructionList";
 import Modal from "../../components/Modal";
+import {
+  OsString,
+  InstructionList as IInstructionList,
+} from "../InstructionList/types";
 
-const OSTabs: React.FC = () => (
+interface TabsProps {
+  InstructionList: IInstructionList;
+  os: OsString;
+}
+
+const OSTabs: React.FC<TabsProps> = ({ InstructionList, os }) => (
   <StatefulTabs
     initialState={{ activeKey: "0" }}
     overrides={{
@@ -32,7 +40,7 @@ const OSTabs: React.FC = () => (
         Tab: { style: tabStyle },
       }}
     >
-      <Civ6InstructionList hideTitle os="Mac" />
+      <InstructionList hideTitle os="Mac" />
     </Tab>
     <Tab
       title={"Windows"}
@@ -40,15 +48,15 @@ const OSTabs: React.FC = () => (
         Tab: { style: tabStyle },
       }}
     >
-      <Civ6InstructionList hideTitle os="Windows" />
+      <InstructionList hideTitle os="Windows" />
     </Tab>
   </StatefulTabs>
 );
 
-export const BaseInstructionsModal: React.FC<{ closeModal: () => void }> = ({
-  closeModal,
-}) => (
+export const BaseInstructionsModal: React.FC<
+  { closeModal: () => void } & TabsProps
+> = ({ closeModal, InstructionList, os }) => (
   <Modal onClose={closeModal} header={"Install Instructions"}>
-    <OSTabs></OSTabs>
+    <OSTabs {...{ InstructionList, os }}></OSTabs>
   </Modal>
 );
