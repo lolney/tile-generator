@@ -59,7 +59,7 @@ class DownloadResult implements OpenRequestResult {
   constructor(public url: string) {}
 
   createEvent = (sse: ISseFunctions) => {
-    sse.event("errors", {
+    sse.event("downloadUrl", {
       url: this.url,
     });
   };

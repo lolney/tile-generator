@@ -16,6 +16,7 @@ export type State = {
 
 export type MapData = {
   downloaded: boolean;
+  downloadUrl?: string;
   errorCodes: Array<keyof typeof errorCodes>;
   errorMessage?: string;
   grid: Polygon[];

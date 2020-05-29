@@ -32,11 +32,16 @@ export const downloadMap = () => async (
 ) => {
   dispatch(downloading());
 
-  const { mapId } = getState().mapData;
-  const resp = await fetch(`${BACKEND_URL}/api/map/${mapId}`);
+  const { downloadUrl } = getState().mapData;
 
-  if (resp.status === 404)
-    dispatch(submitError(`Map file '${mapId}' does not exist`));
+  if (!downloadUrl) {
+    console.error("downloadUrl not set");
+    return;
+  }
+
+  const resp = await fetch(downloadUrl);
+
+  if (!resp.ok) dispatch(submitError(await resp.text()));
   else {
     const filename =
       resp.headers?.get("Content-Disposition")?.split("filename=")[1] ||

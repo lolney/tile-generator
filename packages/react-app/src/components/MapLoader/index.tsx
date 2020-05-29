@@ -15,6 +15,7 @@ type MapLoaderProps = DispatchProps & StateProps;
 
 type StateProps = {
   downloaded: boolean;
+  downloadUrl?: string;
   loadingLayer?: string;
   progress: number;
   receivedLayers: Record<MapLayerValue, boolean>;
@@ -30,6 +31,7 @@ type DispatchProps = {
 
 const mapStateToProps = (state: State) => ({
   downloaded: state.mapData.downloaded,
+  downloadUrl: state.mapData.downloadUrl,
   loadingLayer: state.mapData.loadingLayer.name,
   progress: progress(state),
   receivedLayers: receivedLayersSelector(state),
@@ -46,6 +48,7 @@ const mapDispatchToProps = {
 export const MapLoader: React.FC<MapLoaderProps> = ({
   downloaded,
   downloadMap,
+  downloadUrl,
   onLayerSelect,
   progress,
   receivedLayers,
@@ -99,7 +102,11 @@ export const MapLoader: React.FC<MapLoaderProps> = ({
         <Button
           primary={!downloaded}
           onClick={downloadMap}
-          disabled={downloaded || submissionStatus !== SubmissionStatus.done}
+          disabled={
+            downloaded ||
+            submissionStatus !== SubmissionStatus.done ||
+            !downloadUrl
+          }
         >
           Download
         </Button>

@@ -4,6 +4,7 @@ import {
   receiveGrid,
   receiveRiverLines,
   receiveErrors,
+  receiveDownloadUrl,
 } from "./actions";
 import { setIpRequestsTotal, setIpRequestsCount } from "../toolbar";
 import { isLastLayer } from "./selectors";
@@ -18,10 +19,12 @@ const createEventSource = (event: string, callback: (e: Event) => any) => {
   let eventSource = new EventSource(event);
   eventSource.addEventListener("layer", callback);
   eventSource.addEventListener("errors", callback);
+  eventSource.addEventListener("downloadUrl", callback);
 
   return () => {
     eventSource.removeEventListener("layer", callback);
     eventSource.removeEventListener("errors", callback);
+    eventSource.addEventListener("downloadUrl", callback);
     eventSource.close();
   };
 };
@@ -62,9 +65,12 @@ const receiveLayer = (e: Event) => async (
   if (data.layer) {
     dispatch(receiveLayerAction(data));
     dispatch(splitRivers(data.layer));
-  } else if (data.errors) {
-    console.log("receiving errors:", data);
+  }
+  if (data.errors) {
     dispatch(receiveErrors(data.errors));
+  }
+  if (data.url) {
+    dispatch(receiveDownloadUrl(data.url));
   }
 
   if (isLastLayer(getState())) {

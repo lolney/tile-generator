@@ -5,6 +5,7 @@ import { LineString } from "geojson";
 export const CLEAR_ERROR = "CLEAR_ERROR";
 export const DOWNLOADING = "DOWNLOADING";
 export const FINISHED_MAP = "FINISHED_MAP";
+export const RECEIVE_DOWNLOAD_URL = "RECEIVE_DOWNLOAD_URL";
 export const RECEIVE_ERRORS = "RECEIVE_ERRORS";
 export const RECEIVE_GRID = "RECEIVE_GRID";
 export const RECEIVE_LAYER = "RECEIVE_LAYER";
@@ -69,6 +70,11 @@ export const receiveLayerAction = (data: { layer: LayersType }) => ({
 export const receiveErrors = (codes: Array<keyof typeof errorCodes>) => ({
   payload: codes,
   type: RECEIVE_ERRORS,
+});
+
+export const receiveDownloadUrl = (url: string) => ({
+  payload: url,
+  type: RECEIVE_DOWNLOAD_URL,
 });
 
 export const receiveRiverLines = (lines: LineString[]) => ({

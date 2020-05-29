@@ -7,6 +7,7 @@ import {
   SUBMITTING,
   RECEIVE_ERRORS,
   CLEAR_ERROR,
+  RECEIVE_DOWNLOAD_URL,
 } from "./actions";
 import { MapData, SubmissionStatus } from "../../types";
 import { Action } from "./types";
@@ -48,6 +49,13 @@ export const map = (
         ...state,
         ...payload,
         submissionStatus: SubmissionStatus.done,
+      };
+    case RECEIVE_DOWNLOAD_URL:
+      if (state.removeSSEListener) state.removeSSEListener();
+      return {
+        ...state,
+        downloadUrl: payload,
+        removeSSEListener: undefined,
       };
     case DOWNLOADING:
       return {

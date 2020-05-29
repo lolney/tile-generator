@@ -1,5 +1,6 @@
 import { Storage } from "@google-cloud/storage";
 import stream from "stream";
+import config from "../config.json";
 
 const storage = new Storage();
 const bucketName = "civ-maps";
@@ -7,7 +8,7 @@ const bucketName = "civ-maps";
 export const uploadFile = async (filename: string, buffer: Buffer) => {
   if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
     console.warn("GOOGLE_APPLICATION_CREDENTIALS not set; skipping upload");
-    return;
+    return `http://localhost:${config.port}`;
   }
 
   const file = storage.bucket(bucketName).file(filename);
