@@ -65,6 +65,7 @@ export const MapLoader: React.FC<MapLoaderProps> = ({
         {(Object.entries(receivedLayers) as [MapLayerValue, boolean][]).map(
           ([layer, enabled]) => (
             <button
+              key={layer}
               onClick={() => onLayerSelect(layer)}
               className={
                 selectedLayer === layer ? styles.button_selected : styles.button
