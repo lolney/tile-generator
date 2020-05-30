@@ -19,7 +19,7 @@ export default class MapWriter {
   buffer: Buffer;
 
   constructor(n: number) {
-    this.buffer = new Buffer(n);
+    this.buffer = Buffer.alloc(n);
     this.index = 0;
   }
 

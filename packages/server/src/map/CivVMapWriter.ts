@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import MapWriter, { MapDataType, TILE_SIZE } from "./MapWriter";
 import {
   Tile,
@@ -10,6 +11,7 @@ import CivVMap, { terrainTypes, featureTypes, CivVMapHeader } from "./CivVMap";
 import FileOverwriter from "./FileOverwriter";
 import Errors from "./Errors";
 import { CivMapWriter } from "types/maps";
+import { SAVE_DIRECTORY } from "../constants";
 
 type HeaderFormat = [MapDataType, keyof CivVMapHeader];
 
@@ -39,11 +41,7 @@ const headerFormat: Array<HeaderFormat> = [
 const TEMPLATE_FILE = path.join(__dirname, "../../templates/template.Civ5Map");
 
 export default class CivVMapWriter implements CivMapWriter {
-  private map: CivVMap;
-
-  constructor(map: CivVMap) {
-    this.map = map;
-  }
+  constructor(private map: CivVMap, private filename?: string) {}
 
   static calcMapLength(map: CivVMap) {
     let length = TILE_SIZE * map.tiles.length;
@@ -62,7 +60,10 @@ export default class CivVMapWriter implements CivMapWriter {
 
   write(): Promise<[Buffer, Errors]> {
     this.map.remapRivers();
-    return Promise.resolve([this.writeTemplate(), new Errors()]);
+    const template = this.writeTemplate();
+    if (this.filename)
+      fs.writeFileSync(path.join(SAVE_DIRECTORY, this.filename), template);
+    return Promise.resolve([template, new Errors()]);
   }
 
   writeNew() {
@@ -80,7 +81,7 @@ export default class CivVMapWriter implements CivMapWriter {
   writeTemplate() {
     const length = TILE_SIZE * this.map.tiles.length;
     const mapWriter = new MapWriter(length);
-    const overwriter = new FileOverwriter(TEMPLATE_FILE, this.map.filename);
+    const overwriter = new FileOverwriter(TEMPLATE_FILE);
 
     for (const tile of this.remapTiles()) {
       this.writeTile(mapWriter, tile);
@@ -89,7 +90,6 @@ export default class CivVMapWriter implements CivMapWriter {
     overwriter.overwrite(1, Buffer.from([this.map.configurable.width]));
     overwriter.overwrite(5, Buffer.from([this.map.configurable.height]));
     overwriter.insert(1314, mapWriter.buffer);
-    overwriter.writeToFIle();
 
     return overwriter.buffer;
   }

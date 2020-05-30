@@ -42,7 +42,8 @@ app.use(
 // API
 app.post("/api/map", TilesController);
 app.get("/updates/:id", UpdateExistsMiddleware, sse(), UpdateController);
-app.get("/api/map/:id", MapController);
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS)
+  app.get("/api/map/:id", MapController);
 
 server.listen(process.env.PORT || config.port, () => {
   const address = server.address();

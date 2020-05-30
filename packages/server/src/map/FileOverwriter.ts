@@ -2,11 +2,9 @@ import path from "path";
 import fs from "fs";
 import { SAVE_DIRECTORY } from "../constants";
 export default class FileOverwriter {
-  dst: string;
   buffer: Buffer;
 
-  constructor(template: string, newFilename: string) {
-    this.dst = path.join(SAVE_DIRECTORY, newFilename);
+  constructor(template: string) {
     this.buffer = fs.readFileSync(template);
   }
 
@@ -20,9 +18,5 @@ export default class FileOverwriter {
 
   async overwrite(index: number, buffer: Buffer) {
     buffer.copy(this.buffer, index);
-  }
-
-  async writeToFIle() {
-    return fs.writeFileSync(this.dst, this.buffer);
   }
 }

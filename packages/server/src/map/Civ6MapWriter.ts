@@ -8,6 +8,7 @@ import path from "path";
 import Errors from "./Errors";
 import { CivMapWriter } from "../types/maps";
 import { SAVE_DIRECTORY } from "../constants";
+const temp = require("temp").track();
 
 const TEMPLATE_FILE = path.join(__dirname, "../../templates/CustomMap.Civ6Map");
 
@@ -19,14 +20,19 @@ export default class Civ6MapWriter implements CivMapWriter {
   constructor(map: Civ6Map, filename?: string) {
     this.map = map;
 
-    if (filename !== undefined) {
-      // Copy template file to save directory
-      this.path = path.join(SAVE_DIRECTORY, filename);
-      if (!fs.existsSync(SAVE_DIRECTORY)) {
-        fs.mkdirSync(SAVE_DIRECTORY);
-      }
+    if (filename == ":memory:") {
+      this.path = filename;
+    } else {
+      if (filename !== undefined) {
+        // Copy template file to save directory
+        this.path = path.join(SAVE_DIRECTORY, filename);
+        if (!fs.existsSync(SAVE_DIRECTORY)) {
+          fs.mkdirSync(SAVE_DIRECTORY);
+        }
+      } else this.path = temp.openSync().path;
+
       fs.copyFileSync(TEMPLATE_FILE, this.path);
-    } else this.path = ":memory:";
+    }
 
     this.db = new sqlite3.Database(
       this.path,

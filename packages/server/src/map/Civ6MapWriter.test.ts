@@ -20,7 +20,7 @@ const testMap = new Civ6Map(
 
 describe("Civ6", () => {
   it("MapWriter correctly writes tiles", async () => {
-    const writer = new Civ6MapWriter(testMap);
+    const writer = new Civ6MapWriter(testMap, ":memory:");
 
     await writer.createDb();
 
@@ -32,7 +32,7 @@ describe("Civ6", () => {
   });
 
   it("getQueryFromEntries", async () => {
-    const writer = new Civ6MapWriter(testMap);
+    const writer = new Civ6MapWriter(testMap, ":memory:");
 
     console.log(writer.getQueryFromEntries("Map", [writer.map.map]));
   });

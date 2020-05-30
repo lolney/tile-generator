@@ -129,8 +129,6 @@ export default class OpenRequest {
       yield new LayerResult({ [MapLayers[layer]]: tiles });
     }
 
-    console.log(JSON.stringify(this.map.tiles));
-
     const [buffer, errors] = await this.createFile();
     const url = await uploadFile(this.getFileName(), buffer);
 
@@ -163,10 +161,14 @@ export default class OpenRequest {
   }
 
   static getMapWriter(map: Map): CivMapWriter {
+    const filename = process.env.GOOGLE_APPLICATION_CREDENTIALS
+      ? undefined
+      : map.filename;
+
     if (map instanceof Civ6Map) {
-      return new Civ6MapWriter(map, map.filename);
+      return new Civ6MapWriter(map, filename);
     } else if (map instanceof CivVMap) {
-      return new CivVMapWriter(map);
+      return new CivVMapWriter(map, filename);
     } else {
       throw new Error("Unexpected map type");
     }

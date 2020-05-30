@@ -32,7 +32,9 @@ export const downloadMap = () => async (
 ) => {
   dispatch(downloading());
 
-  const { downloadUrl } = getState().mapData;
+  const state = getState();
+  const { downloadUrl } = state.mapData;
+  const { format } = state.settings;
 
   if (!downloadUrl) {
     console.error("downloadUrl not set");
@@ -43,9 +45,17 @@ export const downloadMap = () => async (
 
   if (!resp.ok) dispatch(submitError(await resp.text()));
   else {
+    const defaultFilename = (() => {
+      switch (format) {
+        case "Civ V":
+          return "generated-map.Civ5Map";
+        case "Civ VI":
+          return "generated-map.Civ6Map";
+      }
+    })();
     const filename =
       resp.headers?.get("Content-Disposition")?.split("filename=")[1] ||
-      "generated-map.Civ6Map";
+      defaultFilename;
     const blob = await resp.blob();
 
     download(blob, filename);
