@@ -127,7 +127,7 @@ export default class MapBuilder {
 
       if (!meanSlope || meanSlope < 4) {
         elevation = Elevation.flat;
-      } else if (meanSlope < 10) {
+      } else if (meanSlope < 11) {
         elevation = Elevation.hills;
       } else {
         elevation = Elevation.mountain;

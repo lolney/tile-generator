@@ -93,7 +93,7 @@ export const mapFeatureToStyle: L.StyleFunction = (
       ) {
         return {};
       } else {
-        return { fillColor: "blue" };
+        return { fillColor: "DarkBlue" };
       }
     })();
 

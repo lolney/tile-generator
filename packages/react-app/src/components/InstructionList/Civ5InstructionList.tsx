@@ -21,7 +21,7 @@ const civVHelpText = (os: OsString, path: string): Instruction => ({
     {
       title: "Play your map",
       steps: [
-        `From the main menu, create a game via "Single Player" -> "Set Up
+        `Create a game via "Single Player" -> "Set Up
           Game"`,
         `Select "Map Type" -> "Additional Maps"`,
         `Select the map with the name of the file you downloaded, by

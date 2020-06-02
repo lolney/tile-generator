@@ -69,7 +69,8 @@ export const drawRivers = (riverLines: LineString[]) =>
     {
       style: () => ({
         color: "blue",
-        opacity: 0.5,
+        opacity: 1,
+        weight: 5,
       }),
     }
   );

@@ -14,10 +14,10 @@ export function getForestType(koppen: Koppen): FeatureType {
 export function getTerrainType(koppen: Koppen): TerrainType {
   switch (koppen) {
     case Koppen.Dfc: // might sometimes want grass/plains
-    case Koppen.Dfd:
-    case Koppen.Dsc: // might sometimes want grass/plains
-    case Koppen.Dsd:
     case Koppen.Dwc: // might sometimes want grass/plains
+    case Koppen.Dsc: // might sometimes want grass/plains
+    case Koppen.Dfd:
+    case Koppen.Dsd:
     case Koppen.Dwd:
     case Koppen.ET: // might sometimes want ice
       return TerrainType.tundra;
@@ -28,8 +28,8 @@ export function getTerrainType(koppen: Koppen): TerrainType {
     case Koppen.Csa:
     case Koppen.Csc:
       return TerrainType.plains;
-    case Koppen.BWh:
     case Koppen.BWk: // might sometimes want plains
+    case Koppen.BWh:
       return TerrainType.desert;
     case Koppen.Af:
     case Koppen.Am:
