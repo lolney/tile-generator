@@ -18,6 +18,7 @@ import {
   usePreviewLayer,
   useTileLayer,
   useRiverLayer,
+  useZoom,
 } from "./hooks";
 
 type MapProps = DispatchProps & StateProps;
@@ -59,9 +60,10 @@ const Map: React.FC<MapProps> = ({
 }) => {
   const map = useLeafletMap();
   const areaSelect = useAreaSelect(map, onBoundsChange, submissionStatus);
+  const zoom = useZoom(map);
 
   usePreviewLayer(map, areaSelect, onBoundsChange, settings);
-  useRiverLayer(map, selectedLayer, riverLines);
+  useRiverLayer(map, selectedLayer, riverLines, zoom);
   useTileLayer(map, grid, layer);
 
   return <div id="map" />;

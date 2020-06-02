@@ -17,7 +17,7 @@ export const useLeafletMap = () => {
   const [map, setMap] = useState<L.Map>();
 
   useEffect(() => {
-    const map = L.map("map").setView([38, -122], 4);
+    const map = L.map("map").setView([38, -122], 5);
 
     map.setMaxZoom(12);
     map.setMinZoom(3);
@@ -105,14 +105,15 @@ export const useAreaSelect = (
 export const useRiverLayer = (
   map: L.Map | undefined,
   selectedLayer: MapLayerValue | undefined,
-  riverLines: LineString[]
+  riverLines: LineString[],
+  zoomLevel: number
 ) => {
   const setRivers = useLayer(map);
 
   const leafletLayer = useMemo(() => {
-    if (selectedLayer === "rivers") return drawRivers(riverLines);
+    if (selectedLayer === "rivers") return drawRivers(riverLines, zoomLevel);
     else return undefined;
-  }, [selectedLayer, riverLines]);
+  }, [selectedLayer, riverLines, zoomLevel]);
 
   useEffect(() => {
     setTimeout(() => setRivers(leafletLayer), 0);
@@ -177,4 +178,21 @@ export const usePreviewLayer = (
     200,
     [grid, settings, setPreview]
   );
+};
+
+export const useZoom = (map: L.Map | undefined) => {
+  const [zoom, setZoom] = useState(5);
+
+  useEffect(() => {
+    const handler = () => {
+      setZoom(map?.getZoom() || 5);
+    };
+    map?.addEventListener("zoom", handler);
+
+    return () => {
+      map?.removeEventListener("zoom", handler);
+    };
+  }, [map]);
+
+  return zoom;
 };
