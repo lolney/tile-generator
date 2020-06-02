@@ -5,8 +5,8 @@ import cors from "cors";
 import sse, { ISseResponse } from "@toverux/expresse";
 
 import { AddressInfo } from "net";
-import { MemoryStore } from "./MemoryStore";
-import { rateLimitMiddleware } from "./rateLimitMiddleware";
+import { MemoryStore } from "./services/MemoryStore";
+import { rateLimitMiddleware } from "./middleware/rateLimitMiddleware";
 
 export const limits = {
   maxGlobal: 1000,

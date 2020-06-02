@@ -11,23 +11,8 @@ import { isLastLayer } from "./selectors";
 import { State } from "../../types";
 import { MapDispatch } from "./types";
 import { LayersType, RiverType, Tile } from "@tile-generator/common";
-import { BACKEND_URL } from "../../../constants/values";
 import { LineString } from "geojson";
 import { mapRiverToLine } from "@tile-generator/common";
-
-const createEventSource = (event: string, callback: (e: Event) => any) => {
-  let eventSource = new EventSource(event);
-  eventSource.addEventListener("layer", callback);
-  eventSource.addEventListener("errors", callback);
-  eventSource.addEventListener("downloadUrl", callback);
-
-  return () => {
-    eventSource.removeEventListener("layer", callback);
-    eventSource.removeEventListener("errors", callback);
-    eventSource.addEventListener("downloadUrl", callback);
-    eventSource.close();
-  };
-};
 
 const splitRivers = (layer: LayersType) => (
   dispatch: MapDispatch,
@@ -55,34 +40,11 @@ const splitRivers = (layer: LayersType) => (
   dispatch(receiveRiverLines(lines));
 };
 
-// todo: Event should be typed
-const receiveLayer = (e: Event) => async (
-  dispatch: MapDispatch,
-  getState: () => State
-) => {
-  const data = JSON.parse((e as any).data);
-
-  if (data.layer) {
-    dispatch(receiveLayerAction(data));
-    dispatch(splitRivers(data.layer));
-  }
-  if (data.errors) {
-    dispatch(receiveErrors(data.errors));
-  }
-  if (data.url) {
-    dispatch(receiveDownloadUrl(data.url));
-  }
-
-  if (isLastLayer(getState())) {
-    dispatch(finishedMap());
-  }
-};
-
-export const parseRemainingMaps = (resp: Response, json: any) => async (
+export const parseRemainingMaps = (headers: Headers) => async (
   dispatch: MapDispatch
 ) => {
-  const remainingHeader = resp.headers.get("X-RateLimit-Remaining");
-  const totalHeader = resp.headers.get("X-RateLimit-Limit");
+  const remainingHeader = headers.get("X-RateLimit-Remaining");
+  const totalHeader = headers.get("X-RateLimit-Limit");
 
   if (!totalHeader || !remainingHeader) return dispatch(receiveErrors([10]));
 
@@ -94,27 +56,62 @@ export const parseRemainingMaps = (resp: Response, json: any) => async (
 
   dispatch(setIpRequestsCount(total - remaining));
   dispatch(setIpRequestsTotal(total));
+};
 
-  if (json?.errors) {
-    receiveErrors(json.errors);
+// todo: Event should be typed
+export const receiveLayer = (data: any) => async (
+  dispatch: MapDispatch,
+  getState: () => State
+) => {
+  if (data.layer) {
+    dispatch(receiveLayerAction(data));
+    dispatch(splitRivers(data.layer));
+  }
+  if (data.errors) {
+    dispatch(receiveErrors(data.errors));
+  }
+  if (data.url) {
+    dispatch(receiveDownloadUrl(data.url));
+  }
+  if (data.grid) {
+    dispatch(
+      receiveGrid({
+        grid: data.grid,
+        totalLayers: data.nLayers,
+        layers: {},
+        mapId: data.id,
+      })
+    );
+  }
+
+  if (isLastLayer(getState())) {
+    dispatch(finishedMap());
   }
 };
 
-export const receiveLayers = (res: any) => async (dispatch: MapDispatch) => {
-  if (!res.grid) return;
+export const readEventStream = (
+  reader: ReadableStreamDefaultReader<Uint8Array>
+) => async (dispatch: MapDispatch) => {
+  let unfinishedEvent = "";
+  while (true) {
+    const result = await reader.read();
+    if (result.done) break;
 
-  const removeSSEListener = createEventSource(
-    `${BACKEND_URL}/updates/${res.id}`,
-    (e: Event) => dispatch(receiveLayer(e))
-  );
+    let text = new TextDecoder("utf-8").decode(result.value).split("\n");
 
-  dispatch(
-    receiveGrid({
-      grid: res.grid,
-      totalLayers: res.nLayers,
-      layers: {},
-      mapId: res.id,
-      removeSSEListener,
-    })
-  );
+    if (!unfinishedEvent) {
+      text = [unfinishedEvent + text[0], ...text.slice(1)];
+      if (text.length > 1) {
+        unfinishedEvent = text[1];
+      }
+    }
+    if (text.length === 1) {
+      continue;
+    }
+    for (const str of text) {
+      if (!str) continue;
+      const event = JSON.parse(str);
+      dispatch(receiveLayer(event));
+    }
+  }
 };

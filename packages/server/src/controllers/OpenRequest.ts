@@ -20,7 +20,6 @@ import MapBuilder from "../map/MapBuilder";
 import { CivMapWriter } from "types/maps";
 import MapReader from "../map/MapReader";
 import { uploadFile } from "../services/cloudStorage";
-import { ISseFunctions } from "@toverux/expresse";
 import Errors from "../map/Errors";
 
 export const N_LAYERS = Object.values(MapLayers).filter(
@@ -32,37 +31,36 @@ interface MapInterface {
 }
 
 interface OpenRequestResult {
-  createEvent: (sse: ISseFunctions) => void;
+  createEvent: () => any;
+}
+
+class TilesResult implements OpenRequestResult {
+  constructor(public request: OpenRequest) {}
+
+  createEvent = () => ({
+    event: "tiles",
+    grid: this.request.mapBuilder.originalGrid,
+    id: this.request.id,
+    nLayers: N_LAYERS,
+  });
 }
 
 class LayerResult implements OpenRequestResult {
   constructor(public layer: { [x: number]: Tile[] }) {}
 
-  createEvent = (sse: ISseFunctions) => {
-    sse.event("layer", {
-      layer: this.layer,
-    });
-  };
+  createEvent = () => ({ event: "layer", layer: this.layer });
 }
 
 class ErrorResult implements OpenRequestResult {
   constructor(public errors: Errors) {}
 
-  createEvent = (sse: ISseFunctions) => {
-    sse.event("errors", {
-      errors: this.errors.serialize(),
-    });
-  };
+  createEvent = () => ({ event: "errors", errors: this.errors.serialize() });
 }
 
 class DownloadResult implements OpenRequestResult {
   constructor(public url: string) {}
 
-  createEvent = (sse: ISseFunctions) => {
-    sse.event("downloadUrl", {
-      url: this.url,
-    });
-  };
+  createEvent = () => ({ event: "downloadUrl", url: this.url });
 }
 
 export default class OpenRequest {
@@ -122,6 +120,9 @@ export default class OpenRequest {
       MapLayers.rivers,
       MapLayers.marsh,
     ];
+
+    yield new TilesResult(this);
+
     for (const layer of layers) {
       console.log("Starting layer", layer);
       let tiles = await this.mapBuilder.createLayer(layer);

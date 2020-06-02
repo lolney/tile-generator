@@ -3,24 +3,25 @@ import download from "downloadjs";
 import { downloading, submitError, submitting } from "./actions";
 import { selectOptions } from "./selectors";
 import { MapDispatch } from "./types";
-import { receiveLayers, parseRemainingMaps } from "./thunkActions";
+import { parseRemainingMaps, readEventStream } from "./thunkActions";
 import { BACKEND_URL } from "../../../constants/values";
 
 export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
   dispatch(submitting());
   const options = selectOptions(getState());
 
-  return fetch(`${BACKEND_URL}/api/map`, {
+  fetch(`${BACKEND_URL}/api/map`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(options),
   }).then(
     async (resp) => {
-      const json = await resp.json();
-      dispatch(receiveLayers(json));
-      dispatch(parseRemainingMaps(resp, json));
+      const reader = resp.body?.getReader();
+      dispatch(parseRemainingMaps(resp.headers));
+
+      if (reader) {
+        dispatch(readEventStream(reader));
+      }
     },
     (error) => dispatch(submitError(error))
   );

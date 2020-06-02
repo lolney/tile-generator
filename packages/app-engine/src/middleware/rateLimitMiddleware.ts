@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { MemoryStore } from "./MemoryStore";
+import { MemoryStore } from "../services/MemoryStore";
 
 const whitelistedMethods = ["Options"];
 

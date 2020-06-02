@@ -1,6 +1,6 @@
 import { DateTime, Settings } from "luxon";
 import { isEqual } from "lodash";
-import { MemoryStore } from "../MemoryStore";
+import { MemoryStore } from "../services/MemoryStore";
 
 jest.useFakeTimers();
 
