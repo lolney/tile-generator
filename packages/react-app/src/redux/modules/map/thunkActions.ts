@@ -99,17 +99,20 @@ export const readEventStream = (
 
     let text = new TextDecoder("utf-8").decode(result.value).split("\n");
 
-    if (!unfinishedEvent) {
-      text = [unfinishedEvent + text[0], ...text.slice(1)];
-      if (text.length > 1) {
-        unfinishedEvent = text[1];
-      }
+    if (text.length < 2 || unfinishedEvent) {
+      unfinishedEvent = unfinishedEvent + text[0];
+      text = [unfinishedEvent, ...text.slice(1)];
     }
-    if (text.length === 1) {
+
+    if (text.length < 2) {
       continue;
+    } else {
+      unfinishedEvent = "";
     }
+
     for (const str of text) {
       if (!str) continue;
+      console.log(str);
       const event = JSON.parse(str);
       dispatch(receiveLayer(event));
     }

@@ -71,7 +71,7 @@
     "start-with-proxy": "REACT_APP_BACKEND_URL=\"http://localhost:8888\" npm start",
     "dev": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=./config/node-test-env.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
