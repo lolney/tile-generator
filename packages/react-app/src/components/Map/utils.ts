@@ -59,7 +59,7 @@ export const drawGrid = (grid: Polygon[], style: L.StyleFunction) =>
     { ...style() }
   );
 
-export const drawRivers = (riverLines: LineString[]) =>
+export const drawRivers = (riverLines: LineString[], zoomLevel: number) =>
   L.geoJSON(
     {
       type: "GeometryCollection",
@@ -70,7 +70,7 @@ export const drawRivers = (riverLines: LineString[]) =>
       style: () => ({
         color: "blue",
         opacity: 1,
-        weight: 5,
+        weight: 0.75 * zoomLevel,
       }),
     }
   );
