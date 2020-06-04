@@ -1,6 +1,7 @@
 // @ts-ignore: noImplicitAny
 import ee from "@google/earthengine";
-import privateKey from "../tile-generator-private-key.json";
+
+const privateKey = require("../tile-generator-private-key.json");
 
 export default class EarthEngine {
   static async init() {

@@ -6,7 +6,15 @@ export class DB {
   client: Pool;
 
   constructor() {
-    this.client = new Pool();
+    const config = {
+      host: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
+    };
+    this.client = Object.values(config).every((e) => e)
+      ? new Pool(config)
+      : new Pool();
   }
 
   async connect() {

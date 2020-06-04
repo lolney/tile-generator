@@ -10,10 +10,10 @@ COPY packages/common ./packages/common
 
 COPY package*.json ./
 COPY lerna.json .
-RUN lerna bootstrap
 
+RUN lerna bootstrap
 RUN npm install
-RUN npm --prefix packages/server run build
+RUN npm run build
 
 # Run the web service on container startup.
 CMD [ "npm", "--prefix", "packages/server", "start" ]
