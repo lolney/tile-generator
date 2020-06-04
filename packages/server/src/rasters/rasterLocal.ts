@@ -24,7 +24,7 @@ export async function isLandLocal(tiles: Polygon[], width: number) {
   const dbResults = await sampleRasterTiles(tiles, WATERMASK_DB_NAME, 50);
   const valuesArray = new TilesArray<number>(dbResults, width);
   const waterArray = new TilesArray<boolean>(
-    dbResults.map((val) => val > waterThresholdByNWaterTilesNeighbors[4]),
+    dbResults.map((val) => val < waterThresholdByNWaterTilesNeighbors[4]),
     width
   );
 

@@ -70,6 +70,22 @@ npm run db:create
 npm run db:seed
 ```
 
+## Deployment
+
+Build the docker image for the main process and submit to Cloud Run:
+
+```
+gcloud builds submit --tag gcr.io/tile-generator/tile-generator
+gcloud run deploy --image gcr.io/tile-generator/tile-generator --platform managed
+```
+
+Deploying the proxy server to App Engine:
+
+```
+cd packages/app-engine
+npm run deploy
+```
+
 ### More information on the data sources
 
 #### Downloading and adding data sources

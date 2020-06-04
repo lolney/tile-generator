@@ -1,7 +1,5 @@
 import request from "supertest";
 import express, { Express } from "express";
-// @ts-ignore
-import sse from "@toverux/expresse";
 import UpdateController from "./UpdateController";
 
 describe("UpdateController", () => {
@@ -20,7 +18,7 @@ describe("UpdateController", () => {
     UpdateController = require("./UpdateController");*/
 
     app = express();
-    app.get("/updates/:id", sse, UpdateController);
+    app.get("/updates/:id", UpdateController);
   });
 
   it("Sends 404 if an invalid map id is requested", (done) => {

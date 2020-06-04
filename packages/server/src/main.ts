@@ -48,4 +48,4 @@ if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   });
 }
 
-export default app;
+exports.map = app;
