@@ -5,7 +5,7 @@ import cors from "cors";
 import sse, { ISseResponse } from "@toverux/expresse";
 
 import { AddressInfo } from "net";
-import { MemoryStore } from "./services/MemoryStore";
+import { MemoryStore, TokenService } from "./services";
 import { rateLimitMiddleware } from "./middleware/rateLimitMiddleware";
 
 export const limits = {
@@ -22,6 +22,7 @@ interface Options {
 export const createServer = ({ settings, proxyHost, port }: Options) => {
   const app = express();
   const store = new MemoryStore(limits);
+  const tokenService = new TokenService(proxyHost);
 
   app.use(morgan("dev"));
 
@@ -53,6 +54,12 @@ export const createServer = ({ settings, proxyHost, port }: Options) => {
   });
 
   app.use("/", rateLimitMiddleware(store));
+  if (process.env.NODE_ENV === "production")
+    app.use("/", async (req, res, next) => {
+      const token = await tokenService.getToken();
+      req.headers.authorization = `Bearer ${token}`;
+      next();
+    });
   app.use("/", proxy(proxyHost));
 
   for (const setting of settings || []) {
