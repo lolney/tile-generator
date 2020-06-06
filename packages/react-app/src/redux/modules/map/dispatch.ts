@@ -16,6 +16,8 @@ export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
     body: JSON.stringify(options),
   }).then(
     async (resp) => {
+      if (!resp.ok) return console.error(resp.status);
+
       const reader = resp.body?.getReader();
       dispatch(parseRemainingMaps(resp.headers));
 

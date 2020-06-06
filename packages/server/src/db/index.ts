@@ -12,9 +12,21 @@ export class DB {
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
     };
-    this.client = Object.values(config).every((e) => e)
-      ? new Pool(config)
-      : new Pool();
+    const useConfig = Object.values(config).every((e) => e);
+
+    if (useConfig) console.info(`Connecting to host ${config.host}`);
+    else {
+      const unsetKeys = Object.entries(config)
+        .filter(([key, value]) => !value)
+        .map(([key, value]) => key);
+      console.info(`Unset keys: ${unsetKeys}`);
+      console.info(
+        `Instance connection name is: ${process.env.INSTANCE_CONNECTION_NAME}`
+      );
+      console.info(`Connecting to default host`);
+    }
+
+    this.client = useConfig ? new Pool(config) : new Pool();
   }
 
   async connect() {
