@@ -6,7 +6,6 @@ import styles from "./styles.module.css";
 import InstructionsModal from "../../components/InstructionsModal";
 import Toasts from "../../components/Toasts";
 import QuotaCounter from "../../components/QuotaCounter";
-import { BACKEND_URL } from "../../constants/values";
 
 export const MapPage: React.FC = () => {
   return (

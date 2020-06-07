@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React from "react";
 import { Button, SIZE } from "baseui/button";
 import { Block } from "baseui/block";

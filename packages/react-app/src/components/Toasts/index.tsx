@@ -21,9 +21,9 @@ const mapDispatchToProps = {
 };
 
 const Toasts: React.FC<ToastsProps> = ({ clearError, errors }) => {
-  const [previousErrors, { remove, has, add, reset }] = useSet<
-    keyof typeof errorCodes
-  >(new Set());
+  const [, { remove, has, add, reset }] = useSet<keyof typeof errorCodes>(
+    new Set()
+  );
 
   useEffect(() => {
     for (const error of errors) {
@@ -36,6 +36,8 @@ const Toasts: React.FC<ToastsProps> = ({ clearError, errors }) => {
     }
     reset();
     for (const elem of errors) add(elem);
+    // (triggers an infinite loop if these methods added as deps)
+    // eslint-disable-next-line
   }, [errors, clearError]);
 
   return (

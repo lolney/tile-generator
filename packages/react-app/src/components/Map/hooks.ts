@@ -82,11 +82,11 @@ export const useAreaSelect = (
     areaSelect.addTo(map);
 
     return areaSelect;
-  }, [map, onBoundsChange, submissionStatus]);
+  }, [map, submissionStatus]);
 
   useEffect(() => {
     areaSelect && onBoundsChange(areaSelect.getBounds());
-  }, [areaSelect]);
+  }, [areaSelect, onBoundsChange]);
 
   useEffect(() => {
     if (areaSelect) setPrevious(areaSelect);

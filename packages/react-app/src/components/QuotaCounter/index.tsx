@@ -50,7 +50,7 @@ const QuotaCounter: React.FC<QuotaCounterProps> = ({
   useEffect(() => {
     fetchGlobalLimits();
     fetchIpLimits();
-  }, []);
+  }, [fetchGlobalLimits, fetchIpLimits]);
 
   useEffect(
     () =>
