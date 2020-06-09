@@ -2,16 +2,16 @@ import express from "express";
 import proxy from "express-http-proxy";
 import morgan from "morgan";
 import cors from "cors";
-import sse, { ISseResponse } from "@toverux/expresse";
+import sse from "@toverux/expresse";
 
 import { AddressInfo } from "net";
+import { limits } from "./constants";
 import { MemoryStore, TokenService } from "./services";
 import { rateLimitMiddleware } from "./middleware/rateLimitMiddleware";
+import { gcpTokenMiddleware } from "./middleware/gcpTokenMiddleware";
 
-export const limits = {
-  maxGlobal: 1000,
-  maxPerIP: 20,
-};
+import * as limitsController from "./controllers/limits";
+import * as mapsGenerated from "./controllers/mapsGenerated";
 
 interface Options {
   settings?: string[];
@@ -28,38 +28,15 @@ export const createServer = ({ settings, proxyHost, port }: Options) => {
 
   app.use(cors());
 
-  app.get("/limits/global/:route", (req, res) => {
-    res.send({
-      limit: limits.maxGlobal,
-      remaining: store.getGlobalRemaining(req.params.route),
-    });
-  });
+  app.get("/limits/global/:route", limitsController.getGlobal(store));
 
-  app.get("/limits/ip/:route", (req, res) => {
-    res.send({
-      remaining:
-        store.getIPRemaining(req.ip, req.params.route) ?? limits.maxPerIP,
-      limit: limits.maxPerIP,
-    });
-  });
+  app.get("/limits/ip/:route", limitsController.getIp(store));
 
-  app.get("/maps-generated", sse(), (req, res: ISseResponse) => {
-    const onMapGenerated = (count: number) => {
-      res.sse.event("count", { count });
-    };
-    store.globalHitsEmitter.addListener("/api/map", onMapGenerated);
-    req.on("close", () => {
-      store.globalHitsEmitter.off("/api/map", onMapGenerated);
-    });
-  });
+  app.get("/maps-generated", sse(), mapsGenerated.getUpdates(store));
 
   app.use("/", rateLimitMiddleware(store));
   if (process.env.NODE_ENV === "production")
-    app.use("/", async (req, res, next) => {
-      const token = await tokenService.getToken();
-      req.headers.authorization = `Bearer ${token}`;
-      next();
-    });
+    app.use("/", gcpTokenMiddleware(tokenService));
   app.use("/", proxy(proxyHost));
 
   for (const setting of settings || []) {

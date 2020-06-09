@@ -3,6 +3,11 @@
   "description": "App engine server for tilegenerator.",
   "version": "0.0.1",
   "private": true,
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=12.0.0"
   },
@@ -10,7 +15,8 @@
     "prepare": "npm run gcp-build",
     "test": "jest --watch",
     "lint": "tslint -p .",
-    "start": "node dist/index.js",
+    "build": "npm run gcp-build",
+    "start": "node dist/main.js",
     "gcp-build": "tsc -p .",
     "deploy": "gcloud app deploy"
   },

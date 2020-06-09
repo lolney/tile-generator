@@ -2,7 +2,8 @@ import express from "express";
 import request from "supertest";
 import http from "http";
 import { AddressInfo } from "net";
-import createServer, { limits } from "../server";
+import createServer from "../server";
+import { limits } from "../constants";
 
 let server: http.Server;
 let proxiedServer: http.Server;
