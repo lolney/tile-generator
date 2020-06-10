@@ -5,7 +5,9 @@
   "dependencies": {
     "@google-cloud/storage": "^5.0.1",
     "@google/earthengine": "^0.1.171",
+    "@tile-generator/app-engine": "^0.0.1",
     "@tile-generator/common": "^0.1.0",
+    "@toverux/expresse": "^2.4.0",
     "@turf/nearest-point-to-line": "^6.0.0",
     "@turf/point-to-line-distance": "^6.0.0",
     "@turf/turf": "^5.1.6",
@@ -68,8 +70,8 @@
     "babel-cli": "^6.26.0",
     "babel-jest": "^25.5.1",
     "eslint-plugin-baseui": "^9.67.2",
-    "jest-matcher-deep-close-to": "^1.3.0",
     "jest": "^25.5.3",
+    "jest-matcher-deep-close-to": "^1.3.0",
     "lerna": "^3.20.2",
     "supertest": "^4.0.2"
   }

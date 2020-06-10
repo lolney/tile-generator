@@ -4,6 +4,14 @@ import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import path from "path";
+import { sse } from "@toverux/expresse";
+
+import {
+  constants,
+  controllers,
+  services,
+  middleware,
+} from "@tile-generator/app-engine";
 
 import "./config/polyfills";
 import config from "./config.json";
@@ -33,6 +41,17 @@ app.use(
   })
 );
 
+// Rate limiting
+const store = new services.MemoryStore(constants.limits);
+
+app.get("/limits/global/:route", controllers.limitsController.getGlobal(store));
+
+app.get("/limits/ip/:route", controllers.limitsController.getIp(store));
+
+app.get("/maps-generated", sse(), controllers.mapsGenerated.getUpdates(store));
+
+app.use("/", middleware.rateLimitMiddleware(store));
+
 // API
 app.post("/api/map", UpdateController);
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS)
@@ -47,5 +66,3 @@ if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
     );
   });
 }
-
-exports.map = app;

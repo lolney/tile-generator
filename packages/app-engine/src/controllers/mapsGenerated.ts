@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { MemoryStore } from "services";
+import { MemoryStore } from "../services";
 import { ISseResponse } from "@toverux/expresse";
 
 export const getUpdates = (store: MemoryStore) => (
