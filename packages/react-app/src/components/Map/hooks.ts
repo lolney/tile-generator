@@ -20,7 +20,7 @@ export const useLeafletMap = () => {
     const map = L.map("map").setView([38, -122], 5);
 
     map.setMaxZoom(12);
-    map.setMinZoom(3);
+    map.setMinZoom(2);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
