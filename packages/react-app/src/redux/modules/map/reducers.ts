@@ -8,6 +8,7 @@ import {
   RECEIVE_ERRORS,
   CLEAR_ERROR,
   RECEIVE_DOWNLOAD_URL,
+  RECEIVE_GRID,
 } from "./actions";
 import { MapData, SubmissionStatus } from "../../types";
 import { Action } from "./types";
@@ -51,11 +52,9 @@ export const map = (
         submissionStatus: SubmissionStatus.done,
       };
     case RECEIVE_DOWNLOAD_URL:
-      if (state.removeSSEListener) state.removeSSEListener();
       return {
         ...state,
         downloadUrl: payload,
-        removeSSEListener: undefined,
       };
     case DOWNLOADING:
       return {
@@ -63,7 +62,6 @@ export const map = (
         downloaded: true,
       };
     case RESET_MAP:
-      if (state.removeSSEListener) state.removeSSEListener();
       return initialState;
     default:
       return { ...state, ...payload };

@@ -1,4 +1,5 @@
 import { readEventStream } from "../thunkActions";
+import { State } from "../../../types";
 
 describe("readEventStream", () => {
   const lines = [
@@ -41,7 +42,9 @@ describe("readEventStream", () => {
     const spy = jest.spyOn(JSON, "parse");
     await readEventStream(
       (reader as unknown) as ReadableStreamDefaultReader<Uint8Array>
-    )(jest.fn());
+    )(jest.fn(), () => {
+      return ({ mapData: { requestId: "xyz" } } as unknown) as State;
+    });
 
     expect(spy.mock.results.map((result) => result.value)).toEqual(
       expectedResults

@@ -91,10 +91,20 @@ export const receiveLayer = (data: any) => async (
 
 export const readEventStream = (
   reader: ReadableStreamDefaultReader<Uint8Array>
-) => async (dispatch: MapDispatch) => {
+) => async (dispatch: MapDispatch, getState: () => State) => {
   let unfinishedEvent = "";
+  const requestId = getState().mapData.requestId;
+
   while (true) {
     const result = await reader.read();
+    const latestId = getState().mapData.requestId;
+
+    if (!latestId || latestId != requestId) {
+      reader.cancel();
+      console.log("cancelling");
+      break;
+    }
+
     if (result.done) break;
 
     let text = new TextDecoder("utf-8").decode(result.value).split("\n");

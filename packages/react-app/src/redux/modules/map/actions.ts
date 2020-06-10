@@ -58,6 +58,7 @@ export const submitting = () => ({
   type: SUBMITTING as typeof SUBMITTING,
   payload: {
     errorMessage: undefined,
+    requestId: `${Math.random()}`,
     submissionStatus: SubmissionStatus.submitting,
   },
 });

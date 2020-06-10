@@ -26,6 +26,7 @@ export type MapData = {
     name?: MapLayerValue;
   };
   mapId?: string;
+  requestId?: string;
   removeSSEListener?: Function;
   riverLines: LineString[];
   submissionStatus: SubmissionStatus;
