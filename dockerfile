@@ -7,6 +7,7 @@ RUN npm i lerna -g --loglevel notice
 
 COPY packages/server ./packages/server
 COPY packages/common ./packages/common
+COPY packages/app-engine ./packages/app-engine
 
 COPY package*.json ./
 COPY lerna.json .

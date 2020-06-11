@@ -38,12 +38,6 @@ npm start
 ```
 
 ```sh
-# Start the proxy server (used for rate limiting)
-cd packages/app-engine
-npm run gcp-build && npm start
-```
-
-```sh
 # Start the client
 cd packages/react-app
 npm run start-with-proxy
@@ -72,18 +66,10 @@ npm run db:seed
 
 ## Deployment
 
-Build the docker image for the main process and submit to Cloud Run:
+Deploy to GCP App Engine using the root dockerfile:
 
 ```
-gcloud builds submit --tag gcr.io/tile-generator/tile-generator
-gcloud run deploy --image gcr.io/tile-generator/tile-generator --platform managed
-```
-
-Deploying the proxy server to App Engine:
-
-```
-cd packages/app-engine
-npm run deploy
+gcloud app deploy
 ```
 
 ### More information on the data sources

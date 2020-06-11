@@ -10,9 +10,10 @@ const MARSH_DB_NAME = "marsh_500";
 const FLOW_DB_NAME = "flow_500";
 const PRECIPITATION_DB_NAME = "precipitation_500";
 
-// the number is the percentage of water in the tile
-// With more water neighbors, we want more land - hence it has to be at least x% water to count as water
-
+/**
+ * The number is the percentage of water in the tile.
+ * With more water neighbors, we want more land - hence it has to be at least x% water to count as water.
+ */
 const waterThresholdByNWaterTilesNeighbors: { [a: number]: number } = {
   0: 0.2,
   1: 0.4,

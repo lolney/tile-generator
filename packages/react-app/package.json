@@ -69,6 +69,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-with-proxy": "REACT_APP_BACKEND_URL=\"http://localhost:8888\" npm start",
+    "start-production": "REACT_APP_BACKEND_URL=\"https://tile-generator.uc.r.appspot.com\" npm start",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=./config/node-test-env.js",

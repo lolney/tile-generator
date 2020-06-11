@@ -7,6 +7,8 @@ The `gcp-build` NPM script is used to trigger the TypeScript compilation
 process. This step happens automatically when deploying to App Engine, but must
 be performed manually when developing locally.
 
+This can be run as a separate server, but is now included in @tile-generator/server.
+
 ## Setup
 
 Install dependencies:
