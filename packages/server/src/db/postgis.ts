@@ -65,8 +65,7 @@ export async function sampleRaster(table: string, geom: Polygon, n: number) {
       FROM (${points}) AS points, ${table} AS raster
       WHERE ST_Intersects(raster.rast, points.geom)
     ) as values 
-    WHERE values.value != double precision 'NaN';
-  `;
+    WHERE values.value != double precision 'NaN';  `;
 
   const rows = await db.doQuery(query);
   const value = rows[0]["avg"];
@@ -83,8 +82,8 @@ export async function findMode(table: string, geom: Polygon, n: number) {
       FROM (${points}) AS points, ${table} AS raster
       WHERE ST_Intersects(raster.rast, points.geom)
     ) as values 
-    WHERE values.value != double precision 'NaN';
-  `;
+    WHERE values.value != double precision 'NaN' AND values.value != 0;
+    `;
 
   const rows = await db.doQuery(query);
   const value = rows[0]["mode"];
