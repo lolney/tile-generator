@@ -24,7 +24,7 @@ yarn-debug.log*
 yarn-error.log*
 
 tile-generator-private-key\.json
-
+env.yaml
 
 \.env
 
