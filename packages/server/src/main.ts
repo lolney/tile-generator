@@ -54,15 +54,13 @@ app.use("/", middleware.rateLimitMiddleware(store));
 
 // API
 app.post("/api/map", UpdateController);
-if (!process.env.GOOGLE_APPLICATION_CREDENTIALS)
+if (process.env.NODE_ENV !== "production")
   app.get("/api/map/:id", MapController);
 
-if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-  const server = http.createServer(app);
-  server.listen(process.env.PORT || config.port, () => {
-    const address = server.address();
-    console.log(
-      `Started on port ${address ? (address as AddressInfo).port : "null"}`
-    );
-  });
-}
+const server = http.createServer(app);
+server.listen(process.env.PORT || config.port, () => {
+  const address = server.address();
+  console.log(
+    `Started on port ${address ? (address as AddressInfo).port : "null"}`
+  );
+});

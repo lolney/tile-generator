@@ -6,8 +6,8 @@ const storage = new Storage();
 const bucketName = "civ-maps";
 
 export const uploadFile = async (filename: string, buffer: Buffer) => {
-  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    console.warn("GOOGLE_APPLICATION_CREDENTIALS not set; skipping upload");
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(`NODE_ENV is ${process.env.NODE_ENV}; skipping upload`);
     return `http://localhost:${config.port}`;
   }
 
