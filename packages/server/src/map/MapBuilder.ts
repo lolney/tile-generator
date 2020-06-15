@@ -1,6 +1,7 @@
 import { Polygon } from "geojson";
 import * as turf from "@turf/turf";
 import { LatLngBounds } from "leaflet";
+import zip from "lodash/zip";
 import {
   Elevation,
   FeatureType,
@@ -20,10 +21,11 @@ import {
   isMarshLocal,
   isForestLocal,
   findClimateLocal,
+  landcoverLocal,
 } from "../rasters/rasterLocal";
+import { LC_Type1 } from "../types/rasters";
 import Map from "./Map";
 import { logperformance } from "../logging";
-import zip from "lodash/zip";
 
 export default class MapBuilder {
   grid: Polygon[];
@@ -85,6 +87,21 @@ export default class MapBuilder {
     return this.climateTypes;
   }
 
+  landcoverMountainSlopeThreshold = (landcover: number) => {
+    switch (landcover) {
+      case LC_Type1.Snow:
+        return 5;
+      case LC_Type1.Barren:
+      case LC_Type1.Grasslands:
+      case LC_Type1.Savannas:
+      case LC_Type1.WoodySavannas:
+      case LC_Type1.OpenShrublands:
+        return 10;
+      default:
+        return 13;
+    }
+  };
+
   createLayer = logperformance(
     async (layer: MapLayers): Promise<Tile[]> => {
       switch (layer) {
@@ -121,13 +138,15 @@ export default class MapBuilder {
 
   async createElevationTiles(): Promise<Array<Tile>> {
     const results = await findSlopeLocal(this.grid);
+    const landcover = await landcoverLocal(this.grid);
 
-    return results.map((meanSlope: number | undefined) => {
+    return zip(results, landcover).map(([meanSlope, landcover]) => {
+      const mountainThreshold = this.landcoverMountainSlopeThreshold(landcover);
       let elevation;
 
       if (!meanSlope || meanSlope < 4) {
         elevation = Elevation.flat;
-      } else if (meanSlope < 11) {
+      } else if (meanSlope < mountainThreshold) {
         elevation = Elevation.hills;
       } else {
         elevation = Elevation.mountain;

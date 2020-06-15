@@ -40,7 +40,7 @@ npm start
 ```sh
 # Start the client
 cd packages/react-app
-npm run start-with-proxy
+npm start
 ```
 
 ### Database setup
