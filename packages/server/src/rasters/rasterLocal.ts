@@ -1,7 +1,13 @@
-import { sampleRasterTiles, findTileMax, findTileMode } from "../db/postgis";
+import {
+  sampleRasterTiles,
+  findTileMax,
+  findTileMode,
+  findTileStddev,
+} from "../db/postgis";
 import { Polygon } from "geojson";
 import { TilesArray } from "@tile-generator/common";
 
+const ELEVATION_DB_NAME = "elevation_500";
 const FLOW_DB_NAME = "flow_500";
 const FOREST_DB_NAME = "forest_500";
 const KOPPEN_DB_NAME = "beck_kg_v1_present_0p0083";
@@ -45,6 +51,10 @@ export async function isLandLocal(tiles: Polygon[], width: number) {
 
 export async function findSlopeLocal(tiles: Polygon[]) {
   return sampleRasterTiles(tiles, SLOPE_DB_NAME);
+}
+
+export async function findElevationLocal(tiles: Polygon[]) {
+  return findTileStddev(tiles, ELEVATION_DB_NAME);
 }
 
 export async function findClimateLocal(tiles: Polygon[]) {

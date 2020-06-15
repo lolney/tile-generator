@@ -22,10 +22,12 @@ import {
   isForestLocal,
   findClimateLocal,
   landcoverLocal,
+  findElevationLocal,
 } from "../rasters/rasterLocal";
 import { LC_Type1 } from "../types/rasters";
 import Map from "./Map";
 import { logperformance } from "../logging";
+import { resampleMissing } from "../rasters/resampleMissing";
 
 export default class MapBuilder {
   grid: Polygon[];
@@ -137,10 +139,17 @@ export default class MapBuilder {
   }
 
   async createElevationTiles(): Promise<Array<Tile>> {
+    const stdToSlopeFactor = 40;
+
     const results = await findSlopeLocal(this.grid);
+    const slope = await resampleMissing(this.grid, results, () =>
+      findElevationLocal(this.grid).then((elevation: number[]) =>
+        elevation.map((e) => e / stdToSlopeFactor)
+      )
+    );
     const landcover = await landcoverLocal(this.grid);
 
-    return zip(results, landcover).map(([meanSlope, landcover]) => {
+    return zip(slope, landcover).map(([meanSlope, landcover]) => {
       const mountainThreshold = this.landcoverMountainSlopeThreshold(landcover);
       let elevation;
 
