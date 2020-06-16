@@ -142,8 +142,8 @@ export default class MapBuilder {
     const stdToSlopeFactor = 40;
 
     const results = await findSlopeLocal(this.grid);
-    const slope = await resampleMissing(this.grid, results, () =>
-      findElevationLocal(this.grid).then((elevation: number[]) =>
+    const slope = await resampleMissing(this.grid, results, (tiles) =>
+      findElevationLocal(tiles).then((elevation: number[]) =>
         elevation.map((e) => e / stdToSlopeFactor)
       )
     );
