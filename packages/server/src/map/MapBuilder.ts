@@ -13,6 +13,10 @@ import {
   Tile,
   TilesArray,
 } from "@tile-generator/common";
+import {
+  ElevationParams,
+  LayerWeightParams,
+} from "../rasters/LayerWeightParams";
 import { getForestType, getTerrainType } from "../rasters/koppen";
 import generateRivers from "../rasters/generateRivers";
 import {
@@ -24,7 +28,6 @@ import {
   landcoverLocal,
   findElevationLocal,
 } from "../rasters/rasterLocal";
-import { LC_Type1 } from "../types/rasters";
 import Map from "./Map";
 import { logperformance } from "../logging";
 import { resampleMissing } from "../rasters/resampleMissing";
@@ -33,15 +36,17 @@ export default class MapBuilder {
   grid: Polygon[];
   originalGrid: Polygon[];
   bounds: LatLngBounds;
+  climateTypes: Koppen[] | undefined;
+  layerWeights: LayerWeightParams;
   options: Options;
   waterLayer: Tile[] | undefined;
-  climateTypes: Koppen[] | undefined;
 
   constructor(grid: Polygon[], bounds: LatLngBounds, options: Options) {
     this.originalGrid = grid;
     this.grid = MapBuilder.wrapLongitude(grid);
     this.bounds = bounds;
     this.options = options;
+    this.layerWeights = new LayerWeightParams(options.layerWeights);
   }
 
   static wrapLongitude = (grid: Polygon[]): Polygon[] =>
@@ -89,21 +94,6 @@ export default class MapBuilder {
     return this.climateTypes;
   }
 
-  landcoverMountainSlopeThreshold = (landcover: number) => {
-    switch (landcover) {
-      case LC_Type1.Snow:
-        return 5;
-      case LC_Type1.Barren:
-      case LC_Type1.Grasslands:
-      case LC_Type1.Savannas:
-      case LC_Type1.WoodySavannas:
-      case LC_Type1.OpenShrublands:
-        return 10;
-      default:
-        return 13;
-    }
-  };
-
   createLayer = logperformance(
     async (layer: MapLayers): Promise<Tile[]> => {
       switch (layer) {
@@ -131,7 +121,11 @@ export default class MapBuilder {
   );
 
   async createLandTiles(): Promise<Array<Tile>> {
-    const results = await isLandLocal(this.grid, this.options.dimensions.width);
+    const results = await isLandLocal(
+      this.grid,
+      this.options.dimensions.width,
+      this.layerWeights
+    );
 
     return results.map((isLand: boolean) => ({
       terrain: isLand ? TerrainType.grass : TerrainType.coast,
@@ -150,10 +144,15 @@ export default class MapBuilder {
     const landcover = await landcoverLocal(this.grid);
 
     return zip(slope, landcover).map(([meanSlope, landcover]) => {
-      const mountainThreshold = this.landcoverMountainSlopeThreshold(landcover);
+      const mountainThreshold = ElevationParams.mountainThreshold(
+        this.layerWeights,
+        landcover
+      );
+      const hillsThreshold = ElevationParams.hillsThreshold(this.layerWeights);
+
       let elevation;
 
-      if (!meanSlope || meanSlope < 4) {
+      if (!meanSlope || meanSlope < hillsThreshold) {
         elevation = Elevation.flat;
       } else if (meanSlope < mountainThreshold) {
         elevation = Elevation.hills;
@@ -166,7 +165,7 @@ export default class MapBuilder {
   }
 
   async createForestTiles(): Promise<Array<Tile>> {
-    const FOREST_THRESHOLD = 0.75;
+    const FOREST_THRESHOLD = this.layerWeights.weights.forest;
     const results = await isForestLocal(this.grid);
 
     const tilePromises = results.map(async (forestIndex, i) => {
@@ -187,7 +186,7 @@ export default class MapBuilder {
   }
 
   async createMarshTiles(): Promise<Array<Tile>> {
-    const MARSH_THRESHOLD = 0.25;
+    const MARSH_THRESHOLD = this.layerWeights.weights.marsh;
     const results = await isMarshLocal(this.grid);
 
     return results.map((mean: number) => {

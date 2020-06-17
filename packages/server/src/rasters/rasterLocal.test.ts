@@ -7,6 +7,7 @@ import {
 } from "./rasterLocal";
 import { Polygon } from "geojson";
 import { Koppen } from "@tile-generator/common";
+import { LayerWeightParams } from "./LayerWeightParams";
 
 const fixtures: { [key: string]: Polygon } = {
   isLand: {
@@ -87,13 +88,21 @@ const fixtures: { [key: string]: Polygon } = {
 
 describe("isLandLocal", () => {
   it("returns true for land tiles", async () => {
-    const [result] = await isLandLocal([fixtures.isLand], 1);
+    const [result] = await isLandLocal(
+      [fixtures.isLand],
+      1,
+      new LayerWeightParams({})
+    );
 
     expect(result).toBe(true);
   });
 
   it("returns false for water tiles", async () => {
-    const [result] = await isLandLocal([fixtures.isWater], 1);
+    const [result] = await isLandLocal(
+      [fixtures.isWater],
+      1,
+      new LayerWeightParams({})
+    );
 
     expect(result).toBe(false);
   });

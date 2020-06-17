@@ -6,6 +6,7 @@ import {
 } from "../db/postgis";
 import { Polygon } from "geojson";
 import { TilesArray } from "@tile-generator/common";
+import { WaterParams, LayerWeightParams } from "./LayerWeightParams";
 
 const ELEVATION_DB_NAME = "elevation_500";
 const FLOW_DB_NAME = "flow_500";
@@ -17,21 +18,11 @@ const PRECIPITATION_DB_NAME = "precipitation_500";
 const SLOPE_DB_NAME = "slope_500";
 const WATERMASK_DB_NAME = "watermask_500";
 
-/**
- * The number is the percentage of water in the tile.
- * With more water neighbors, we want more land - hence it has to be at least x% water to count as water.
- */
-const waterThresholdByNWaterTilesNeighbors: { [a: number]: number } = {
-  0: 0.2,
-  1: 0.4,
-  2: 0.5,
-  3: 0.5,
-  4: 0.5,
-  5: 0.6,
-  6: 0.9,
-};
-
-export async function isLandLocal(tiles: Polygon[], width: number) {
+export async function isLandLocal(
+  tiles: Polygon[],
+  width: number,
+  params: LayerWeightParams
+) {
   const dbResults = await sampleRasterTiles(tiles, WATERMASK_DB_NAME, 50);
   const valuesArray = new TilesArray<number>(dbResults, width);
   const waterArray = new TilesArray<boolean>(
@@ -44,7 +35,7 @@ export async function isLandLocal(tiles: Polygon[], width: number) {
     const waterNeighborCount = Array.from(
       waterArray.neighbors(row, col)
     ).filter(([ii, jj]) => waterArray.get(ii, jj)).length;
-    const threshold = waterThresholdByNWaterTilesNeighbors[waterNeighborCount];
+    const threshold = WaterParams.waterThreshold(params, waterNeighborCount);
     return val < threshold;
   });
 }

@@ -10,6 +10,15 @@ export const gameStrings: Array<GameString> = ["Civ V", "Civ VI"];
 export interface Options {
   dimensions: Dimensions;
   format: GameString;
+  layerWeights?: LayerWeights;
+}
+
+export interface LayerWeights {
+  elevation?: number;
+  forest?: number;
+  marsh?: number;
+  rivers?: number;
+  water?: number;
 }
 
 export type LatLngBounds = {
