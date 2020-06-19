@@ -1,11 +1,7 @@
 import { LayerWeights } from "@tile-generator/common";
 import { LC_Type1 } from "../types/rasters";
 
-type Full<T> = {
-  [P in keyof T]-?: T[P];
-};
-
-const defaults: Full<LayerWeights> = {
+const defaults: Required<LayerWeights> = {
   elevation: 0.5,
   forest: 0.75,
   marsh: 0.25,
@@ -14,13 +10,13 @@ const defaults: Full<LayerWeights> = {
 };
 
 export class LayerWeightParams {
-  weights: Full<LayerWeights>;
+  weights: Required<LayerWeights>;
 
   constructor(userWeights?: LayerWeights) {
     this.weights = { ...defaults, ...userWeights };
   }
 
-  apply = (weight: keyof Full<LayerWeights>, num: number) =>
+  apply = (weight: keyof Required<LayerWeights>, num: number) =>
     this.weights[weight] * num;
 }
 
