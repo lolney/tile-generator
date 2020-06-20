@@ -1,3 +1,4 @@
+export * from "./constants";
 export * from "./createRawHexGrid";
 export * from "./errorCodes";
 export * from "./mercatorProjection";

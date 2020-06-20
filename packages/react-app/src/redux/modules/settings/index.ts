@@ -1,19 +1,24 @@
 import { LatLngBounds } from "leaflet";
-import { MapOptions, Options } from "@tile-generator/common";
+import {
+  layerWeightDefaults,
+  MapOptions,
+  Options,
+} from "@tile-generator/common";
 
 type Action = ReturnType<typeof changeOptions>;
 
 const initialState: MapOptions = {
   dimensions: { width: 20, height: 20 },
   format: "Civ VI",
+  layerWeights: layerWeightDefaults,
   bounds: {
     _southWest: { lat: 37, lng: -121 },
     _northEast: { lat: 38, lng: -120 },
   },
 };
 
-const CHANGE_OPTIONS = "CHANGE_OPTIONS";
 const CHANGE_BOUNDS = "CHANGE_BOUNDS";
+const CHANGE_OPTIONS = "CHANGE_OPTIONS";
 
 export const changeOptions = (options: Partial<Options>) => ({
   type: CHANGE_OPTIONS,
