@@ -17,6 +17,7 @@ const AdvancedSlider: React.FC<TileSliderProps> = ({
   ...rest
 }) => {
   const [css, theme] = useStyletron();
+
   return (
     <Slider
       value={[value]}
@@ -77,19 +78,28 @@ const AdvancedSlider: React.FC<TileSliderProps> = ({
             height: "24px",
           }),
         },
-        Thumb: {
-          style: () => ({
-            height: "18px",
-            width: "16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderStyle: "solid",
-            borderWidth: "3px",
-            borderColor: "#ccc",
-            backgroundColor: "#fff",
-          }),
-        },
+        Thumb: () => (
+          <div
+            className={css({
+              height: "18px",
+              width: "16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderStyle: "solid",
+              borderWidth: "3px",
+              borderColor: "#ccc",
+              zIndex: 1,
+              position: "absolute",
+              borderTopLeftRadius: "4px",
+              borderTopRightRadius: "4px",
+              borderBottomLeftRadius: "4px",
+              borderBottomRightRadius: "4px",
+              backgroundColor: theme.colors.mono100,
+              color: theme.colors.contentPrimary,
+            })}
+          ></div>
+        ),
       }}
     />
   );

@@ -17,7 +17,7 @@ const routes: { [A in RouteType]: Route } = {
   "ADVANCED MAP OPTIONS": {
     title: "ADVANCED MAP OPTIONS",
     Component: AdvancedOptions,
-    buttonText: "Back",
+    buttonText: "< Back",
     to: "MAP OPTIONS",
   },
   "MAP OPTIONS": {
@@ -35,12 +35,10 @@ const OptionsContainer = () => {
 
   return (
     <>
-      <div className={styles.header_container}>
-        <button className={styles.advanced_back} onClick={navigate}>
-          {buttonText}
-        </button>
-        <div className={styles.header}>{title}</div>
-      </div>
+      <a className={styles.advanced_back} onClick={navigate}>
+        {buttonText}
+      </a>
+      <div className={styles.header}>{title}</div>
       <Component />
       <SubmitButtons />
     </>

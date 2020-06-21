@@ -31,6 +31,9 @@ const tabStyle = ({ $active, $disabled, $theme }: any) => ({
   borderBottomColor: "#4d90e6",
   color: $active ? $theme.colors.mono100 : colors.textColorWhite,
   paddingBottom: "2px",
+  fontSize: "12px",
+  fontWeight: 600,
+  paddingTop: "9px", // tentative
   ":hover": $disabled
     ? {}
     : {
@@ -45,7 +48,7 @@ const tabStyle = ({ $active, $disabled, $theme }: any) => ({
 
 const layers: Array<{ layer: keyof LayerWeights; title: string }> = [
   { title: "Water", layer: "water" },
-  { title: "Elevation", layer: "elevation" },
+  { title: "Mountains", layer: "elevation" },
   { title: "Forest", layer: "forest" },
   { title: "Rivers", layer: "rivers" },
   { title: "Marsh", layer: "marsh" },
@@ -75,6 +78,7 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
               style: () => ({
                 backgroundColor: "var(--textfieldGrey)",
                 justifyContent: "center",
+                height: "35px", // tentative
               }),
             },
             TabContent: {
