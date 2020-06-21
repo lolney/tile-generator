@@ -27,7 +27,11 @@ export const changeOptions = (options: Partial<Options>) => ({
 
 export const resetOptions = () => ({
   type: CHANGE_OPTIONS,
-  payload: { format: initialState.format, dimensions: initialState.dimensions },
+  payload: {
+    format: initialState.format,
+    dimensions: initialState.dimensions,
+    layerWeights: layerWeightDefaults,
+  },
 });
 
 export const changeBounds = (bounds: LatLngBounds) => ({

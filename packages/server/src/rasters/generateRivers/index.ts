@@ -9,11 +9,13 @@ import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
 import { TilesArray } from "@tile-generator/common";
 import TraceRivers from "./TraceRivers";
 import ArrayDebugger from "./debug/ArrayDebugger";
+import { LayerWeightParams } from "../LayerWeightParams";
 
 const generateRivers = async (
   tiles: Polygon[],
   dimensions: Dimensions,
-  waterLayer: Tile[]
+  waterLayer: Tile[],
+  layerWeights: LayerWeightParams
 ): Promise<Tile[][]> => {
   const rawData = await isRiverLocal(tiles);
   const precipitationLayer = await precipitationLocal(tiles);
@@ -21,7 +23,8 @@ const generateRivers = async (
     rawData,
     waterLayer,
     dimensions,
-    precipitationLayer
+    precipitationLayer,
+    layerWeights
   );
 
   new ArrayDebugger(rawRivers).print("All rivers");

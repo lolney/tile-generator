@@ -2,6 +2,7 @@ import generateRivers from "../index";
 import { Polygon } from "geojson";
 import eureka from "../../../fixtures/eureka.json";
 import { TerrainType } from "@tile-generator/common";
+import { LayerWeightParams } from "../../LayerWeightParams";
 
 const createWaterTiles = (tiles: Polygon[]) =>
   tiles.map(() => ({ terrain: TerrainType.grass }));
@@ -28,7 +29,8 @@ describe("generateRivers", () => {
     const rivers = await generateRivers(
       tiles,
       dimensions,
-      createWaterTiles(tiles)
+      createWaterTiles(tiles),
+      new LayerWeightParams()
     );
 
     expect(rivers).toBeDefined();
@@ -41,7 +43,8 @@ describe("generateRivers", () => {
     const rivers = await generateRivers(
       tiles,
       dimensions,
-      createWaterTiles(tiles)
+      createWaterTiles(tiles),
+      new LayerWeightParams()
     );
 
     expect(10 * 10).toEqual(eureka.length);

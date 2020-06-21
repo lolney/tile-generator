@@ -165,7 +165,7 @@ export default class MapBuilder {
   }
 
   async createForestTiles(): Promise<Array<Tile>> {
-    const FOREST_THRESHOLD = this.layerWeights.weights.forest;
+    const FOREST_THRESHOLD = this.layerWeights.get("forest");
     const results = await isForestLocal(this.grid);
 
     const tilePromises = results.map(async (forestIndex, i) => {
@@ -186,7 +186,7 @@ export default class MapBuilder {
   }
 
   async createMarshTiles(): Promise<Array<Tile>> {
-    const MARSH_THRESHOLD = this.layerWeights.weights.marsh;
+    const MARSH_THRESHOLD = this.layerWeights.get("marsh", { invert: true });
     const results = await isMarshLocal(this.grid);
 
     return results.map((mean: number) => {
@@ -205,7 +205,12 @@ export default class MapBuilder {
 
   async createRiverTiles(waterTiles: Tile[]): Promise<Tile[]> {
     const dimensions = this.options.dimensions;
-    const groups = await generateRivers(this.grid, dimensions, waterTiles);
+    const groups = await generateRivers(
+      this.grid,
+      dimensions,
+      waterTiles,
+      this.layerWeights
+    );
     const initialValue = Array(this.grid.length).fill({});
 
     return groups.reduce(

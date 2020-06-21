@@ -1,23 +1,26 @@
-import { LayerWeights } from "@tile-generator/common";
+import { LayerWeights, layerWeightDefaults } from "@tile-generator/common";
 import { LC_Type1 } from "../types/rasters";
-
-const defaults: Required<LayerWeights> = {
-  elevation: 0.5,
-  forest: 0.75,
-  marsh: 0.25,
-  rivers: 0.75,
-  water: 0.5,
-};
 
 export class LayerWeightParams {
   weights: Required<LayerWeights>;
 
   constructor(userWeights?: LayerWeights) {
-    this.weights = { ...defaults, ...userWeights };
+    this.weights = { ...layerWeightDefaults, ...userWeights };
   }
 
-  apply = (weight: keyof Required<LayerWeights>, num: number) =>
-    this.weights[weight] * num;
+  get = (layer: keyof Required<LayerWeights>, params = { invert: false }) => {
+    let weight = this.weights[layer];
+    return params.invert ? 1 - weight : weight;
+  };
+
+  apply = (
+    layer: keyof Required<LayerWeights>,
+    num: number,
+    params = { invert: false }
+  ) => {
+    const weight = this.get(layer, params);
+    return weight * num;
+  };
 }
 
 export class WaterParams {
@@ -36,9 +39,11 @@ export class WaterParams {
   };
 
   static waterThreshold = (params: LayerWeightParams, waterNeighbors: number) =>
+    2 *
     params.apply(
       "water",
-      WaterParams.waterThresholdByNWaterTilesNeighbors[waterNeighbors]
+      WaterParams.waterThresholdByNWaterTilesNeighbors[waterNeighbors],
+      { invert: true }
     );
 }
 
@@ -62,9 +67,17 @@ export class ElevationParams {
     2 *
     params.apply(
       "elevation",
-      ElevationParams.landcoverMountainSlopeThreshold(landcover)
+      ElevationParams.landcoverMountainSlopeThreshold(landcover),
+      { invert: true }
     );
 
   static hillsThreshold = (params: LayerWeightParams) =>
-    2 * params.apply("elevation", 4);
+    2 * params.apply("elevation", 4, { invert: true });
+}
+
+export class RiverParams {
+  static basePercentile = 0.8;
+
+  static minRiverPercentile = (params: LayerWeightParams) =>
+    0.8 + (params.get("rivers", { invert: true }) - 0.5) / 2.5;
 }

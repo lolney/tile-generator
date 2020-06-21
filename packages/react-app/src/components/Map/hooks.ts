@@ -71,12 +71,17 @@ export const useAreaSelect = (
   submissionStatus: SubmissionStatus
 ) => {
   const [previous, setPrevious] = useState<L.AreaSelect>();
+  const [dimensions, setDimensions] = useState({
+    width: 300,
+    height: 300 * (10 / (10 + 0.5)),
+  });
 
   const areaSelect = useMemo(() => {
-    if (!map || submissionStatus !== SubmissionStatus.none) return;
+    if (!map || submissionStatus !== SubmissionStatus.none) {
+      return;
+    }
     const areaSelect = L.areaSelect({
-      width: 300,
-      height: 300 * (10 / (10 + 0.5)),
+      ...dimensions,
       keepAspectRatio: false,
     });
     areaSelect.addTo(map);
@@ -90,6 +95,9 @@ export const useAreaSelect = (
 
   useEffect(() => {
     if (areaSelect) setPrevious(areaSelect);
+    if (!areaSelect && previous)
+      // @ts-ignore
+      setDimensions({ height: previous._height, width: previous._width });
   }, [areaSelect]);
 
   useEffect(() => {

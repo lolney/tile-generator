@@ -1,8 +1,9 @@
 import { createRawHexGrid, params } from "@tile-generator/common";
-import MapBuilder from "./MapBuilder";
 import { LatLngBounds } from "leaflet";
 import { FeatureType, Options } from "@tile-generator/common";
 import { Polygon } from "geojson";
+import MapBuilder from "./MapBuilder";
+import { LayerWeightParams } from "../rasters/LayerWeightParams";
 
 import { toBeDeepCloseTo, toMatchCloseTo } from "jest-matcher-deep-close-to";
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
@@ -88,6 +89,7 @@ describe("MapBuilder", () => {
       lat_start: 29.7,
       lat_end: 29.3,
     });
+    marshed.layerWeights = new LayerWeightParams({ marsh: 1 });
 
     /* Western great plains */
     const nonMarshed = createFromGridConfig({
@@ -98,6 +100,7 @@ describe("MapBuilder", () => {
       lat_start: 40,
       lat_end: 30,
     });
+    nonMarshed.layerWeights = new LayerWeightParams({ marsh: 1 });
 
     it("correcly identifies marshed regions", async () => {
       const result = await marshed.createMarshTiles();
