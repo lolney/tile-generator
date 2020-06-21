@@ -1,12 +1,13 @@
 @import "../../constants/colors.css";
 
 .header {
-  font-size: 14px;
-  font-weight: 900;
+  font-size: 15px;
+  font-weight: 800;
   font-family: Avenir;
   text-align: center;
   color: var(--textColorWhite);
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .horizontal_containers {
@@ -25,7 +26,7 @@
   color: var(--textColorWhite);
   font-family: Avenir;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: capitalize;
 }
 
@@ -34,4 +35,54 @@
   outline: none;
   color: var(--backgroundGrey);
   font-weight: 800;
+}
+
+.advanced_back {
+  font-size: 14px;
+  font-weight: 800;
+  font-family: Avenir;
+  text-align: center;
+  color: var(--textColorWhite);
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.advanced_body {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.caption_container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.marker,
+.marker_none,
+.marker_ubiquitous {
+  background-color: var(--textColorWhite);
+  height: 8px;
+  position: absolute;
+  right: auto;
+  top: -5px;
+  width: 2px;
+}
+
+.marker {
+  right: 50%;
+}
+
+.marker_ubiquitous {
+  right: -1px;
+}
+
+.caption {
+  color: var(--textColorWhite);
+  font-family: Avenir;
+  font-size: 10px;
 }
