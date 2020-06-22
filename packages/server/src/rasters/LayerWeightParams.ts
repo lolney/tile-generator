@@ -1,6 +1,11 @@
 import { LayerWeights, layerWeightDefaults } from "@tile-generator/common";
 import { LC_Type1 } from "../types/rasters";
 
+interface Params {
+  center?: boolean;
+  invert?: boolean;
+}
+
 export class LayerWeightParams {
   weights: Required<LayerWeights>;
 
@@ -8,15 +13,19 @@ export class LayerWeightParams {
     this.weights = { ...layerWeightDefaults, ...userWeights };
   }
 
-  get = (layer: keyof Required<LayerWeights>, params = { invert: false }) => {
+  get = (
+    layer: keyof Required<LayerWeights>,
+    params = { invert: false, center: false } as Params
+  ) => {
     let weight = this.weights[layer];
-    return params.invert ? 1 - weight : weight;
+    weight = params.invert ? 1 - weight : weight;
+    return params.center ? weight * 2 : weight;
   };
 
   apply = (
     layer: keyof Required<LayerWeights>,
     num: number,
-    params = { invert: false }
+    params = { invert: false, center: false } as Params
   ) => {
     const weight = this.get(layer, params);
     return weight * num;
@@ -39,11 +48,10 @@ export class WaterParams {
   };
 
   static waterThreshold = (params: LayerWeightParams, waterNeighbors: number) =>
-    2 *
     params.apply(
       "water",
       WaterParams.waterThresholdByNWaterTilesNeighbors[waterNeighbors],
-      { invert: true }
+      { invert: true, center: true }
     );
 }
 
@@ -64,15 +72,14 @@ export class ElevationParams {
   };
 
   static mountainThreshold = (params: LayerWeightParams, landcover: number) =>
-    2 *
     params.apply(
       "elevation",
       ElevationParams.landcoverMountainSlopeThreshold(landcover),
-      { invert: true }
+      { invert: true, center: true }
     );
 
   static hillsThreshold = (params: LayerWeightParams) =>
-    2 * params.apply("elevation", 4, { invert: true });
+    params.apply("elevation", 4, { invert: true, center: true });
 }
 
 export class RiverParams {
