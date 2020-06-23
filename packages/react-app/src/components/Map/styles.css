@@ -11,3 +11,8 @@
 .layer-display {
   flex: 1;
 }
+
+.leaflet-popup {
+  pointer-events: none;
+  text-transform: capitalize;
+}

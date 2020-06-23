@@ -34,11 +34,13 @@ export const selectedLayer = (state: State) => {
 export const mapFeatureToStyle: L.StyleFunction = (
   feature: TileFeature | undefined
 ) => {
-  if (feature === undefined || feature.properties === undefined) {
+  // @ts-ignore
+  let tile: Tile | undefined = feature?.properties || feature?.feature;
+  if (!tile) {
     return {};
   } else {
     const color = (() => {
-      switch (feature.properties.terrain) {
+      switch (tile.terrain) {
         case TerrainType.coast:
           return { color: "cyan" };
         case TerrainType.ocean:
@@ -59,9 +61,9 @@ export const mapFeatureToStyle: L.StyleFunction = (
     })();
 
     const elevation = (() => {
-      switch (feature.properties.elevation) {
+      switch (tile.elevation) {
         case Elevation.flat:
-          if (feature.properties.terrain !== TerrainType.coast)
+          if (tile.terrain !== TerrainType.coast)
             return { fillColor: "BlanchedAlmond" };
           return {};
         case Elevation.hills:
@@ -74,7 +76,7 @@ export const mapFeatureToStyle: L.StyleFunction = (
     })();
 
     const terrainFeature = (() => {
-      switch (feature.properties.feature) {
+      switch (tile.feature) {
         case FeatureType.forest:
           return { fillColor: "ForestGreen", fillOpacity };
         case FeatureType.jungle:
@@ -87,10 +89,7 @@ export const mapFeatureToStyle: L.StyleFunction = (
     })();
 
     const rivers = (() => {
-      if (
-        !feature.properties.river ||
-        _.isEqual(feature.properties.river, {})
-      ) {
+      if (!tile.river || _.isEqual(tile.river, {})) {
         return {};
       } else {
         return { fillColor: "DarkBlue" };

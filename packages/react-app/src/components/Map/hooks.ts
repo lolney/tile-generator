@@ -4,10 +4,10 @@ import { useDebounce } from "react-use";
 import { MapOptions, MapLayerValue, Tile } from "@tile-generator/common";
 import {
   createPreviewGrid,
-  drawLayer,
   drawRivers,
   drawGrid,
-  createTooltip,
+  drawLayerComponents,
+  bindTooltip,
 } from "./utils";
 import { LineString, Polygon } from "geojson";
 import { mapFeatureToStyle } from "../../redux/modules/leaflet/selectors";
@@ -47,7 +47,6 @@ export const useLayer = (
   const [layer, setLayer] = useState(initialLayer);
   const [previousLayer, setPreviousLayer] = useState<L.Layer>();
 
-  // todo: update layer instead of adding + removing
   useEffect(() => {
     if (map === undefined) return;
     if (previousLayer) map.removeLayer(previousLayer);
@@ -135,12 +134,16 @@ export const useTileLayer = (
 ) => {
   const setLayer = useLayer(map);
   const leafletLayer = useMemo(
-    () => drawLayer(grid, layer, mapFeatureToStyle).bindTooltip(createTooltip),
-    [grid, layer]
+    () =>
+      map &&
+      drawLayerComponents(grid, layer, mapFeatureToStyle).eachLayer(
+        bindTooltip(map)
+      ),
+    [grid, layer, map]
   );
 
   useEffect(() => {
-    setLayer(leafletLayer);
+    if (leafletLayer) setLayer(leafletLayer);
   }, [setLayer, leafletLayer]);
 };
 
