@@ -12,6 +12,7 @@ import {
 import { LineString, Polygon } from "geojson";
 import { mapFeatureToStyle } from "../../redux/modules/leaflet/selectors";
 import { SubmissionStatus } from "../../redux/types";
+import { LayerWithPath } from "./types";
 
 export const useLeafletMap = () => {
   const [map, setMap] = useState<L.Map>();
@@ -43,7 +44,7 @@ export const useLeafletMap = () => {
 export const useLayer = (
   map: L.Map | undefined,
   initialLayer?: L.Layer | undefined
-) => {
+): [(newLayer: L.Layer | undefined) => void, L.Layer | undefined] => {
   const [layer, setLayer] = useState(initialLayer);
   const [previousLayer, setPreviousLayer] = useState<L.Layer>();
 
@@ -55,13 +56,16 @@ export const useLayer = (
     }
   }, [layer, previousLayer, map]);
 
-  return useCallback(
-    (newLayer: L.Layer | undefined) => {
-      setLayer(newLayer);
-      setPreviousLayer(layer);
-    },
-    [setLayer, setPreviousLayer, layer]
-  );
+  return [
+    useCallback(
+      (newLayer: L.Layer | undefined) => {
+        setLayer(newLayer);
+        setPreviousLayer(layer);
+      },
+      [setLayer, setPreviousLayer, layer]
+    ),
+    layer,
+  ];
 };
 
 export const useAreaSelect = (
@@ -115,7 +119,7 @@ export const useRiverLayer = (
   riverLines: LineString[],
   zoomLevel: number
 ) => {
-  const setRivers = useLayer(map);
+  const [setRivers] = useLayer(map);
 
   const leafletLayer = useMemo(() => {
     if (selectedLayer === "rivers") return drawRivers(riverLines, zoomLevel);
@@ -132,7 +136,7 @@ export const useTileLayer = (
   grid: Polygon[],
   layer: Tile[]
 ) => {
-  const setLayer = useLayer(map);
+  const [setLayer] = useLayer(map);
   const leafletLayer = useMemo(
     () =>
       map &&
@@ -147,12 +151,43 @@ export const useTileLayer = (
   }, [setLayer, leafletLayer]);
 };
 
+const useMapMove = (map: L.Map | undefined) => {
+  const [isMoving, setDragging] = useState(false);
+
+  useEffect(() => {
+    if (!map) return;
+
+    const dragEnd = () => {
+      setDragging(false);
+    };
+    const dragStart = () => {
+      setDragging(true);
+    };
+
+    map.on("zoomstart", dragStart);
+    map.on("zoomend", dragEnd);
+    map.on("dragstart", dragStart);
+    map.on("dragend", dragEnd);
+
+    return () => {
+      map.removeEventListener("dragstart", dragStart);
+      map.removeEventListener("dragend", dragEnd);
+      map.removeEventListener("zoomstart", dragStart);
+      map.removeEventListener("zoomend", dragEnd);
+    };
+  }, [map]);
+
+  return isMoving;
+};
+
 export const usePreviewLayer = (
   map: L.Map | undefined,
   areaSelect: L.AreaSelect | undefined,
   onBoundsChange: (bounds: L.LatLngBounds) => void,
   settings: MapOptions
 ) => {
+  const isMoving = useMapMove(map);
+
   const grid = useMemo(() => {
     if (!map || !areaSelect) return;
     return drawGrid(
@@ -167,7 +202,14 @@ export const usePreviewLayer = (
     );
   }, [map, areaSelect, settings]);
 
-  const setPreview = useLayer(map, grid);
+  const [setPreview, layer] = useLayer(map, grid);
+
+  useEffect(() => {
+    const path = (layer as LayerWithPath)?._path;
+
+    if (path && isMoving) path.style.display = "none";
+    if (path && !isMoving) path.style.display = "auto";
+  }, [isMoving, layer]);
 
   useEffect(() => {
     if (!areaSelect) return;
