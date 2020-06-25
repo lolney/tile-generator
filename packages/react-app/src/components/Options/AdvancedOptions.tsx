@@ -29,7 +29,7 @@ const mapDispatchToProps = {
 const tabStyle = ({ $active, $disabled, $theme }: any) => ({
   outlineColor: colors.textColorWhite,
   borderBottomColor: "#4d90e6",
-  color: $active ? $theme.colors.mono100 : colors.textColorWhite,
+  color: $active ? colors.textColorWhite : "#d6d6d6",
   paddingBottom: "2px",
   fontSize: "12px",
   fontWeight: 600,
@@ -37,12 +37,12 @@ const tabStyle = ({ $active, $disabled, $theme }: any) => ({
   ":hover": $disabled
     ? {}
     : {
-        color: $theme.colors.mono100,
+        color: colors.textColorWhite,
       },
   ":focus": $disabled
     ? {}
     : {
-        color: $theme.colors.mono100,
+        color: colors.textColorWhite,
       },
 });
 

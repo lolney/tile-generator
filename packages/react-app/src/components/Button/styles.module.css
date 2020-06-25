@@ -1,6 +1,6 @@
 .button,
 .primary_button {
-  width: var(--button-width, 78.5px);
+  width: var(--button-width, 98.5px);
   height: var(--button-height, 27px);
   border-radius: 10.5px;
   background-color: #909090;

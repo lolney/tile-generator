@@ -3,7 +3,7 @@ import { TilesArray, TileUtils } from "@tile-generator/common";
 import { Dimensions, Tile, TerrainType } from "@tile-generator/common";
 import { LayerWeightParams, RiverParams } from "../LayerWeightParams";
 
-const MIN_THRESHOLD = 100;
+const MIN_THRESHOLD = 10;
 
 const INCH_IN_MM = 2.5 * 10;
 export const BASE_RAINFALL = 40 * INCH_IN_MM;

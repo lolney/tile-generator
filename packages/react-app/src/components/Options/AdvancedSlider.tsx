@@ -54,7 +54,7 @@ const AdvancedSlider: React.FC<TileSliderProps> = ({
             </div>
             <div className={styles.caption_container}>
               <div className={styles.marker}></div>
-              <div className={styles.caption}>Scarce</div>
+              <div className={styles.caption}>Light</div>
             </div>
             <div className={styles.caption_container}>
               <div className={styles.marker}></div>
@@ -62,11 +62,11 @@ const AdvancedSlider: React.FC<TileSliderProps> = ({
             </div>
             <div className={styles.caption_container}>
               <div className={styles.marker}></div>
-              <div className={styles.caption}>Ample</div>
+              <div className={styles.caption}>Heavy</div>
             </div>
             <div className={styles.caption_container}>
               <div className={styles.marker_ubiquitous}></div>
-              <div className={styles.caption}>All-over</div>
+              <div className={styles.caption}>Max</div>
             </div>
           </div>
         ),
