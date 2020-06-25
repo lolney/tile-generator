@@ -1,4 +1,5 @@
 import L from "leaflet";
+import { isEqual } from "lodash";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDebounce } from "react-use";
 import { MapOptions, MapLayerValue, Tile } from "@tile-generator/common";
@@ -12,7 +13,7 @@ import {
 import { LineString, Polygon } from "geojson";
 import { mapFeatureToStyle } from "../../redux/modules/leaflet/selectors";
 import { SubmissionStatus } from "../../redux/types";
-import { LayerWithPath } from "./types";
+import { LayerWithPath, InvalidatableLayer } from "./types";
 
 export const useLeafletMap = () => {
   const [map, setMap] = useState<L.Map>();
@@ -53,6 +54,11 @@ export const useLayer = (
     if (previousLayer) map.removeLayer(previousLayer);
     if (layer !== undefined) {
       layer.addTo(map);
+      if ((layer as InvalidatableLayer)?.invalidated?.call(null)) {
+        const path = (layer as LayerWithPath)?._path;
+        if (path) path.style.display = "none";
+        setLayer(undefined);
+      }
     }
   }, [layer, previousLayer, map]);
 
@@ -152,7 +158,8 @@ export const useTileLayer = (
 };
 
 const useMapMove = (map: L.Map | undefined) => {
-  const [isMoving, setDragging] = useState(false);
+  const [isDragging, setDragging] = useState(false);
+  const [isZooming, setZooming] = useState(false);
 
   useEffect(() => {
     if (!map) return;
@@ -163,21 +170,27 @@ const useMapMove = (map: L.Map | undefined) => {
     const dragStart = () => {
       setDragging(true);
     };
+    const zoomEnd = () => {
+      setZooming(false);
+    };
+    const zoomStart = () => {
+      setZooming(true);
+    };
 
-    map.on("zoomstart", dragStart);
-    map.on("zoomend", dragEnd);
+    map.on("zoomstart", zoomStart);
+    map.on("zoomend", zoomEnd);
     map.on("dragstart", dragStart);
     map.on("dragend", dragEnd);
 
     return () => {
       map.removeEventListener("dragstart", dragStart);
       map.removeEventListener("dragend", dragEnd);
-      map.removeEventListener("zoomstart", dragStart);
-      map.removeEventListener("zoomend", dragEnd);
+      map.removeEventListener("zoomstart", zoomStart);
+      map.removeEventListener("zoomend", zoomEnd);
     };
   }, [map]);
 
-  return isMoving;
+  return isDragging || isZooming;
 };
 
 export const usePreviewLayer = (
@@ -189,8 +202,9 @@ export const usePreviewLayer = (
   const isMoving = useMapMove(map);
 
   const grid = useMemo(() => {
-    if (!map || !areaSelect) return;
-    return drawGrid(
+    if (!map || !areaSelect || isMoving) return;
+    const bounds = areaSelect.getBounds();
+    const grid = drawGrid(
       // todo: change on bounds changing as well
       // todo: if bounds have changed but not dimensions, just transform the previous layer
       // https://github.com/w8r/Leaflet.Path.Transform
@@ -200,7 +214,11 @@ export const usePreviewLayer = (
         color: "black",
       })
     );
-  }, [map, areaSelect, settings]);
+    ((grid as L.Layer) as InvalidatableLayer).invalidated = () => {
+      return !isEqual(bounds, areaSelect.getBounds());
+    };
+    return grid;
+  }, [map, areaSelect, settings, isMoving]);
 
   const [setPreview, layer] = useLayer(map, grid);
 
