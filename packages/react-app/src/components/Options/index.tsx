@@ -38,7 +38,11 @@ const OptionsContainer = () => {
 
   return (
     <>
-      <a className={styles.advanced_back_container} onClick={navigate}>
+      <a
+        role="button"
+        className={styles.advanced_back_container}
+        onClick={navigate}
+      >
         <img className={styles.advanced_back_icon} src={icon} alt="icon"></img>
         <div>{buttonText}</div>
       </a>
