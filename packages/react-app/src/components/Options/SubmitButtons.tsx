@@ -69,7 +69,7 @@ const SubmitButtons: React.FC<OptionsProps> = ({
         </Button>
       </div>
     )}
-    <Button onClick={resetOptions}>Reset</Button>
+    <Button onClick={resetOptions}>Clear Settings</Button>
   </ControlButtons>
 );
 

@@ -1,7 +1,7 @@
 .btn_container {
   position: absolute;
   bottom: -40.5px;
-  width: 200px;
+  width: fit-content;
   height: 35.5px;
   background-color: var(--backgroundGrey);
   display: flex;
