@@ -1,6 +1,7 @@
 .button,
+.normal_button,
 .primary_button {
-  width: var(--button-width, 78.5px);
+  width: var(--button-width, 98.5px);
   height: var(--button-height, 27px);
   border-radius: 10.5px;
   background-color: #909090;
@@ -23,14 +24,17 @@
 }
 
 .button:disabled,
+.normal_button:disabled,
 .primary_button:disabled {
   opacity: 30%;
   cursor: default;
 }
 
 .button:hover,
+.normal_button:hover,
 .primary_button:hover,
 .button:focus,
+.normal_button:focus,
 .primary_button:focus {
   font-weight: 900;
   box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.2);

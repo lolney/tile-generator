@@ -17,6 +17,7 @@ const tabStyle = {
   borderBottomColor: "#4d90e6",
   fontSize: "18px",
   fontFamily: "Avenir",
+  fontWeight: 600,
 };
 
 const OSTabs: React.FC<TabsProps> = ({ os }) => (
