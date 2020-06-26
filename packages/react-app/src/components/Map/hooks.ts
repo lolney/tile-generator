@@ -107,7 +107,7 @@ export const useAreaSelect = (
     if (!areaSelect && previous)
       // @ts-ignore
       setDimensions({ height: previous._height, width: previous._width });
-  }, [areaSelect]);
+  }, [areaSelect, previous]);
 
   useEffect(() => {
     if (!areaSelect && previous) {

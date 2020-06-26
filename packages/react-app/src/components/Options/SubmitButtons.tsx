@@ -1,7 +1,6 @@
 import React from "react";
-import { Options } from "@tile-generator/common";
 import { submit } from "../../redux/modules/map";
-import { changeOptions, resetOptions } from "../../redux/modules/settings";
+import { resetOptions } from "../../redux/modules/settings";
 import { LightTheme, ThemeProvider } from "baseui";
 import { StatefulTooltip } from "baseui/tooltip";
 import { connect } from "react-redux";
@@ -47,7 +46,7 @@ const SubmitButtons: React.FC<OptionsProps> = ({
         content={quotaTooltip}
         overrides={{
           Inner: {
-            style: ({ $theme }) => {
+            style: () => {
               return {
                 color: "var(--backgroundGrey)",
                 backgroundColor: "var(--textColorWhite)",
@@ -57,17 +56,15 @@ const SubmitButtons: React.FC<OptionsProps> = ({
         }}
       >
         <div>
-          <Button primary disabled={limitReached} onClick={onSubmit}>
+          <Button primary disabled onClick={onSubmit}>
             Generate
           </Button>
         </div>
       </StatefulTooltip>
     ) : (
-      <div>
-        <Button primary onClick={onSubmit}>
-          Generate
-        </Button>
-      </div>
+      <Button primary onClick={onSubmit}>
+        Generate
+      </Button>
     )}
     <Button onClick={resetOptions}>Clear Settings</Button>
   </ControlButtons>

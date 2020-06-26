@@ -8,7 +8,6 @@ import {
   RECEIVE_ERRORS,
   CLEAR_ERROR,
   RECEIVE_DOWNLOAD_URL,
-  RECEIVE_GRID,
 } from "./actions";
 import { MapData, SubmissionStatus } from "../../types";
 import { Action } from "./types";

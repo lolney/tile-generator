@@ -99,7 +99,7 @@ export const readEventStream = (
     const result = await reader.read();
     const latestId = getState().mapData.requestId;
 
-    if (!latestId || latestId != requestId) {
+    if (!latestId || latestId !== requestId) {
       reader.cancel();
       console.log("cancelling");
       break;
