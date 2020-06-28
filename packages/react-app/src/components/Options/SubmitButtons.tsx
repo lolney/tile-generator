@@ -4,14 +4,15 @@ import { resetOptions } from "../../redux/modules/settings";
 import { LightTheme, ThemeProvider } from "baseui";
 import { StatefulTooltip } from "baseui/tooltip";
 import { connect } from "react-redux";
-import { State } from "../../redux/types";
+import { State, StartPosition } from "../../redux/types";
 import { ControlButtons } from "../ControlButtons";
 import styles from "./styles.module.css";
 import Button from "../Button";
 import { reachedLimit } from "../../redux/modules/toolbar";
+import MapContext from "../../context/map";
 
 interface OptionsProps {
-  onSubmit: () => void;
+  submit: (startPosition: StartPosition) => void;
   limitReached: boolean;
   resetOptions: () => void;
 }
@@ -21,7 +22,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = {
-  onSubmit: submit,
+  submit,
   resetOptions,
 };
 
@@ -36,38 +37,49 @@ const quotaTooltip = () => (
 
 const SubmitButtons: React.FC<OptionsProps> = ({
   limitReached,
-  onSubmit,
+  submit,
   resetOptions,
-}) => (
-  <ControlButtons>
-    {limitReached ? (
-      <StatefulTooltip
-        accessibilityType={"tooltip"}
-        content={quotaTooltip}
-        overrides={{
-          Inner: {
-            style: () => {
-              return {
-                color: "var(--backgroundGrey)",
-                backgroundColor: "var(--textColorWhite)",
-              };
+}) => {
+  const map = React.useContext(MapContext);
+  const onSubmit = React.useCallback(() => {
+    if (map)
+      submit({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      });
+  }, [map, submit]);
+
+  return (
+    <ControlButtons>
+      {limitReached ? (
+        <StatefulTooltip
+          accessibilityType={"tooltip"}
+          content={quotaTooltip}
+          overrides={{
+            Inner: {
+              style: () => {
+                return {
+                  color: "var(--backgroundGrey)",
+                  backgroundColor: "var(--textColorWhite)",
+                };
+              },
             },
-          },
-        }}
-      >
-        <div>
-          <Button primary disabled onClick={onSubmit}>
-            Generate
-          </Button>
-        </div>
-      </StatefulTooltip>
-    ) : (
-      <Button primary onClick={onSubmit}>
-        Generate
-      </Button>
-    )}
-    <Button onClick={resetOptions}>Clear Settings</Button>
-  </ControlButtons>
-);
+          }}
+        >
+          <div>
+            <Button primary disabled onClick={onSubmit}>
+              Generate
+            </Button>
+          </div>
+        </StatefulTooltip>
+      ) : (
+        <Button primary onClick={onSubmit}>
+          Generate
+        </Button>
+      )}
+      <Button onClick={resetOptions}>Clear Settings</Button>
+    </ControlButtons>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubmitButtons);

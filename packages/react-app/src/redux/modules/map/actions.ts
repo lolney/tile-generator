@@ -1,4 +1,4 @@
-import { SubmissionStatus } from "../../types";
+import { SubmissionStatus, StartPosition } from "../../types";
 import { LayersType, errorCodes } from "@tile-generator/common";
 import { LineString } from "geojson";
 
@@ -54,12 +54,13 @@ export const downloading = () => ({
   type: DOWNLOADING as typeof DOWNLOADING,
 });
 
-export const submitting = () => ({
+export const submitting = (savedStartPosition: StartPosition) => ({
   type: SUBMITTING as typeof SUBMITTING,
   payload: {
     errorMessage: undefined,
     requestId: `${Math.random()}`,
     submissionStatus: SubmissionStatus.submitting,
+    savedStartPosition,
   },
 });
 

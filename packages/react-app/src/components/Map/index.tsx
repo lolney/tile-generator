@@ -13,13 +13,13 @@ import { connect, MapStateToProps } from "react-redux";
 import { State, SubmissionStatus } from "../../redux/types";
 import { changeBounds } from "../../redux/modules/settings";
 import {
-  useLeafletMap,
   useAreaSelect,
   usePreviewLayer,
   useTileLayer,
   useRiverLayer,
   useZoom,
 } from "./hooks";
+import MapContext from "../../context/map";
 
 type MapProps = DispatchProps & StateProps;
 
@@ -27,7 +27,7 @@ type StateProps = {
   grid: Polygon[];
   layer: Tile[];
   riverLines: LineString[];
-  selectedLayer: MapLayerValue | undefined;
+  selectedLayer: MapLayerValue | null;
   settings: MapOptions;
   submissionStatus: SubmissionStatus;
 };
@@ -58,7 +58,7 @@ const Map: React.FC<MapProps> = ({
   layer,
   submissionStatus,
 }) => {
-  const map = useLeafletMap();
+  const map = React.useContext(MapContext);
   const areaSelect = useAreaSelect(map, onBoundsChange, submissionStatus);
   const zoom = useZoom(map);
 

@@ -34,7 +34,8 @@ export type MapData = {
 };
 
 export type LeafletState = {
-  selectedLayer: MapLayerValue | undefined;
+  selectedLayer: MapLayerValue | null;
+  startPosition: StartPosition;
 };
 
 export type ToolbarState = {
@@ -42,6 +43,11 @@ export type ToolbarState = {
   ipTotal: number;
   globalCount: number;
   globalTotal: number;
+};
+
+export type StartPosition = {
+  center: L.LatLngExpression;
+  zoom: number;
 };
 
 export enum SubmissionStatus {

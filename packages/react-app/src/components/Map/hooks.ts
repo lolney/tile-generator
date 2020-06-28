@@ -12,14 +12,21 @@ import {
 } from "./utils";
 import { LineString, Polygon } from "geojson";
 import { mapFeatureToStyle } from "../../redux/modules/leaflet/selectors";
-import { SubmissionStatus } from "../../redux/types";
+import { SubmissionStatus, State } from "../../redux/types";
 import { LayerWithPath, InvalidatableLayer } from "./types";
+import { useSelector } from "react-redux";
 
 export const useLeafletMap = () => {
   const [map, setMap] = useState<L.Map>();
+  const startPosition = useSelector(
+    (state: State) => state.leaflet.startPosition
+  );
+  const submissionStatus = useSelector(
+    (state: State) => state.mapData.submissionStatus
+  );
 
   useEffect(() => {
-    const map = L.map("map").setView([38, -122], 5);
+    const map = L.map("map").setView(startPosition.center, startPosition.zoom);
 
     map.setMaxZoom(12);
     map.setMinZoom(2);
@@ -38,6 +45,11 @@ export const useLeafletMap = () => {
 
     setMap(map);
   }, []);
+
+  useEffect(() => {
+    if (map && submissionStatus === SubmissionStatus.none)
+      map.setView(startPosition.center, startPosition.zoom);
+  }, [map, startPosition, submissionStatus]);
 
   return map;
 };
@@ -121,7 +133,7 @@ export const useAreaSelect = (
 
 export const useRiverLayer = (
   map: L.Map | undefined,
-  selectedLayer: MapLayerValue | undefined,
+  selectedLayer: MapLayerValue | null,
   riverLines: LineString[],
   zoomLevel: number
 ) => {

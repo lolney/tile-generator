@@ -19,7 +19,7 @@ type StateProps = {
   loadingLayer?: string;
   progress: number;
   receivedLayers: Record<MapLayerValue, boolean>;
-  selectedLayer: MapLayerValue | undefined;
+  selectedLayer: MapLayerValue | null;
   submissionStatus: SubmissionStatus;
 };
 

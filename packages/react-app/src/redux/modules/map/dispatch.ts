@@ -1,4 +1,4 @@
-import { State } from "../../types";
+import { State, StartPosition } from "../../types";
 import download from "downloadjs";
 import { downloading, submitError, submitting } from "./actions";
 import { selectOptions } from "./selectors";
@@ -6,8 +6,11 @@ import { MapDispatch } from "./types";
 import { parseRemainingMaps, readEventStream } from "./thunkActions";
 import { BACKEND_URL } from "../../../constants/values";
 
-export const submit = () => (dispatch: MapDispatch, getState: () => State) => {
-  dispatch(submitting());
+export const submit = (mapPosition: StartPosition) => (
+  dispatch: MapDispatch,
+  getState: () => State
+) => {
+  dispatch(submitting(mapPosition));
   const options = selectOptions(getState());
 
   fetch(`${BACKEND_URL}/api/map`, {

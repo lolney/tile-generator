@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { StatefulTabs, Tab } from "baseui/tabs";
-import { BaseWeb } from "../../baseweb";
+import { BaseWeb } from "../../context/baseweb";
 import styles from "./styles.module.css";
 import {
   Civ5InstructionList,

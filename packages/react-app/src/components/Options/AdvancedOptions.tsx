@@ -10,10 +10,8 @@ import * as colors from "../../constants/colors";
 import AdvancedTab from "./AdvancedTab";
 
 interface OptionsProps {
-  onSubmit: () => void;
   layerWeights: LayerWeights;
   onChange: (options: Partial<Options>) => void;
-  resetOptions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -22,8 +20,6 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = {
   onChange: changeOptions,
-  onSubmit: submit,
-  resetOptions,
 };
 
 const tabStyle = ({ $active, $disabled, $theme }: any) => ({
@@ -56,9 +52,7 @@ const layers: Array<{ layer: keyof LayerWeights; title: string }> = [
 
 export const OptionsComponent: React.FC<OptionsProps> = ({
   onChange,
-  onSubmit,
   layerWeights,
-  resetOptions,
 }) => {
   return (
     <>

@@ -28,7 +28,7 @@ export const receivedLayersSelector = (state: State) => {
 
 export const selectedLayer = (state: State) => {
   const layerName = state.leaflet.selectedLayer;
-  return layerName === undefined ? [] : state.mapData.layers[layerName] || [];
+  return layerName === null ? [] : state.mapData.layers[layerName] || [];
 };
 
 export const mapFeatureToStyle: L.StyleFunction = (
