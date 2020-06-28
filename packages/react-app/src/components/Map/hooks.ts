@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { isEqual } from "lodash";
+import { isEqual, isEmpty } from "lodash";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDebounce } from "react-use";
 import { MapOptions, MapLayerValue, Tile } from "@tile-generator/common";
@@ -165,7 +165,12 @@ export const useTileLayer = (
   );
 
   useEffect(() => {
-    if (leafletLayer) setLayer(leafletLayer);
+    if (!leafletLayer) return;
+    if (isEmpty(grid))
+      setTimeout(() => {
+        setLayer(leafletLayer);
+      }, 500);
+    else setLayer(leafletLayer);
   }, [setLayer, leafletLayer]);
 };
 

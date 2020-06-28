@@ -2,6 +2,7 @@
   position: absolute;
   background: rgba(0, 0, 0, 0.4);
 }
+
 .leaflet-areaselect-handle {
   position: absolute;
   background: #fff;
@@ -12,4 +13,18 @@
   width: 14px;
   height: 14px;
   cursor: move;
+}
+
+.leaflet-areaselect-handle,
+.leaflet-areaselect-shade {
+  animation: fadeIn ease-in 1s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
