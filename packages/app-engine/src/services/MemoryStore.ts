@@ -36,6 +36,8 @@ export class MemoryStore {
     const timeout = () => {
       reset();
       this.interval = setTimeout(timeout, MemoryStore.nextReset());
+      for (const route in Object.keys(this.globalHits))
+        this.globalHitsEmitter.emit(route, 0);
     };
 
     timeout();

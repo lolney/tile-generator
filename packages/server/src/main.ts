@@ -43,6 +43,16 @@ app.use(
 
 // Rate limiting
 const store = new services.MemoryStore(constants.limits);
+const printReset = () => {
+  console.log("last reset", store.lastReset);
+  console.log(
+    `next reset in ${Math.ceil(
+      services.MemoryStore.nextReset() / (1000 * 60)
+    )} minutes`
+  );
+};
+printReset();
+setInterval(printReset, 60 * 1000);
 
 app.get("/limits/global/:route", controllers.limitsController.getGlobal(store));
 
