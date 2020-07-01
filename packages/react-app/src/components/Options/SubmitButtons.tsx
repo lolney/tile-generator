@@ -12,12 +12,14 @@ import { reachedLimit } from "../../redux/modules/toolbar";
 import MapContext from "../../context/map";
 
 interface OptionsProps {
+  dirty: boolean;
   submit: (startPosition: StartPosition) => void;
   limitReached: boolean;
   resetOptions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
+  dirty: state.settings.dirty,
   limitReached: reachedLimit(state),
 });
 
@@ -36,6 +38,7 @@ const quotaTooltip = () => (
 );
 
 const SubmitButtons: React.FC<OptionsProps> = ({
+  dirty,
   limitReached,
   submit,
   resetOptions,
@@ -77,7 +80,9 @@ const SubmitButtons: React.FC<OptionsProps> = ({
           Generate
         </Button>
       )}
-      <Button onClick={resetOptions}>Clear Settings</Button>
+      <Button onClick={resetOptions} disabled={!dirty}>
+        Clear Settings
+      </Button>
     </ControlButtons>
   );
 };

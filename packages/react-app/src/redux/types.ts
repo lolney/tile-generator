@@ -8,7 +8,7 @@ import {
 } from "@tile-generator/common";
 
 export type State = {
-  settings: MapOptions;
+  settings: Settings;
   mapData: MapData;
   leaflet: LeafletState;
   toolbar: ToolbarState;
@@ -31,6 +31,10 @@ export type MapData = {
   riverLines: LineString[];
   submissionStatus: SubmissionStatus;
   totalLayers?: number;
+};
+
+export type Settings = MapOptions & {
+  dirty: boolean;
 };
 
 export type LeafletState = {

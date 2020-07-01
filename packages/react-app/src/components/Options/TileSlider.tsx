@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { usePrevious } from "react-use";
+import { useSelector } from "react-redux";
 import { Slider } from "baseui/slider";
 import * as colors from "../../constants/colors";
+import { State } from "../../redux/types";
+import AnimatedThumb from "../AnimatedThumb";
+import styles from "./styles.module.css";
 
 interface TileSliderProps {
   value: number;
@@ -8,6 +13,8 @@ interface TileSliderProps {
   max: number;
   min: number;
 }
+
+const Thumb: React.FC = () => <AnimatedThumb zIndex={0} />;
 
 const TileSlider: React.FC<TileSliderProps> = ({
   value,
@@ -44,19 +51,7 @@ const TileSlider: React.FC<TileSliderProps> = ({
           height: "24px",
         }),
       },
-      Thumb: {
-        style: () => ({
-          height: "18px",
-          width: "16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderStyle: "solid",
-          borderWidth: "3px",
-          borderColor: "#ccc",
-          backgroundColor: "#fff",
-        }),
-      },
+      Thumb,
     }}
   />
 );
