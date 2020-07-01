@@ -1,6 +1,7 @@
 import React from "react";
 import { Slider } from "baseui/slider";
 import * as colors from "../../constants/colors";
+import AnimatedThumb from "../AnimatedThumb";
 
 interface TileSliderProps {
   value: number;
@@ -8,6 +9,8 @@ interface TileSliderProps {
   max: number;
   min: number;
 }
+
+const Thumb: React.FC = () => <AnimatedThumb zIndex={0} />;
 
 const TileSlider: React.FC<TileSliderProps> = ({
   value,
@@ -44,19 +47,7 @@ const TileSlider: React.FC<TileSliderProps> = ({
           height: "24px",
         }),
       },
-      Thumb: {
-        style: () => ({
-          height: "18px",
-          width: "16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderStyle: "solid",
-          borderWidth: "3px",
-          borderColor: "#ccc",
-          backgroundColor: "#fff",
-        }),
-      },
+      Thumb,
     }}
   />
 );

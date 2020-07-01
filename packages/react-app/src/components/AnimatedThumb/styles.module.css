@@ -1,0 +1,45 @@
+@keyframes glow {
+  0% {
+    box-shadow: 0.5px 0.5px 10px rgb(77, 144, 230);
+  }
+
+  100% {
+    box-shadow: 0px;
+  }
+}
+
+@keyframes rotateShake {
+  0% {
+    transform: rotate(5deg);
+  }
+  10% {
+    transform: rotate(-5deg);
+  }
+  20% {
+    transform: rotate(5deg);
+  }
+  30% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  60% {
+    transform: rotate(5deg);
+  }
+  70% {
+    transform: rotate(-5deg);
+  }
+  80% {
+    transform: rotate(5deg);
+  }
+  90% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(5deg);
+  }
+}

@@ -74,9 +74,9 @@
 }
 
 .caption_container {
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  position: absolute;
+  text-align: center;
+  top: 150%;
 }
 
 .marker,
@@ -90,10 +90,6 @@
   width: 2px;
 }
 
-.marker {
-  right: 50%;
-}
-
 .marker_ubiquitous {
   right: 0px;
 }
@@ -102,4 +98,39 @@
   color: var(--textColorWhite);
   font-family: Avenir;
   font-size: 10px;
+  position: absolute;
+  left: -12px;
+}
+
+.caption_container:nth-child(3) .caption {
+  left: -15px;
+}
+
+.caption_container:first-child {
+  text-align: left;
+  left: 0%;
+}
+
+.caption_container:nth-child(2) {
+  text-align: left;
+  left: 25%;
+}
+
+.caption_container:nth-child(3) {
+  text-align: left;
+  left: 50%;
+}
+
+.caption_container:nth-child(4) {
+  text-align: left;
+  left: 75%;
+}
+
+.caption_container:last-child {
+  text-align: right;
+  right: 0%;
+}
+
+.slider_container {
+  position: relative;
 }

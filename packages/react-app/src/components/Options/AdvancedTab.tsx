@@ -14,6 +14,7 @@ const InputRow: React.FC<AdvancedTabProps> = ({
   onChange,
 }) => {
   const props = {
+    layer,
     value: (layerWeights[layer] === undefined
       ? 0.5
       : layerWeights[layer]) as number,
