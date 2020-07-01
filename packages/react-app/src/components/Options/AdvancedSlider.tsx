@@ -7,9 +7,6 @@ import { layerWeightDefaults } from "@tile-generator/common";
 import { LayerWeights } from "@tile-generator/common";
 import AnimatedThumb from "../AnimatedThumb";
 
-var x = "#ebebeb";
-const advancedThumbColor = x;
-
 interface TileSliderProps {
   layer: keyof LayerWeights;
   value: number;
