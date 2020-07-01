@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { usePrevious } from "react-use";
-import { useSelector } from "react-redux";
+import React from "react";
 import { Slider } from "baseui/slider";
 import * as colors from "../../constants/colors";
-import { State } from "../../redux/types";
 import { useStyletron } from "baseui";
 import styles from "./styles.module.css";
 import { layerWeightDefaults } from "@tile-generator/common";

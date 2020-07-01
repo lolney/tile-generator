@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { usePrevious } from "react-use";
 import { useSelector } from "react-redux";
-import { Slider } from "baseui/slider";
 import { useStyletron } from "baseui";
 import * as colors from "../../constants/colors";
 import { State } from "../../redux/types";
