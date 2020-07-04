@@ -1,4 +1,4 @@
-import { Civ5MapSize, Civ6MapSize } from "../maps";
+import { Civ5MapSize, Civ6MapSize } from "../map";
 import { sizeStrings } from "../types";
 
 describe.each([Civ5MapSize, Civ6MapSize])("MapSize", (Class) => {
