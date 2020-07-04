@@ -7,6 +7,23 @@ export type GameString = "Civ V" | "Civ VI";
 
 export const gameStrings: Array<GameString> = ["Civ V", "Civ VI"];
 
+export type SizeString =
+  | "MAPSIZE_DUEL"
+  | "MAPSIZE_TINY"
+  | "MAPSIZE_SMALL"
+  | "MAPSIZE_STANDARD"
+  | "MAPSIZE_LARGE"
+  | "MAPSIZE_HUGE";
+
+export const sizeStrings: Array<SizeString> = [
+  "MAPSIZE_DUEL",
+  "MAPSIZE_TINY",
+  "MAPSIZE_SMALL",
+  "MAPSIZE_STANDARD",
+  "MAPSIZE_LARGE",
+  "MAPSIZE_HUGE",
+];
+
 export interface Options {
   dimensions: Dimensions;
   format: GameString;
