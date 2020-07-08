@@ -1,7 +1,7 @@
-import { Polygon, LineString } from "geojson";
-import { RiverType } from "./types";
+import { Polygon, LineString, Position } from "geojson";
+import { RiverType } from "../types";
+import { calcUnit, addOffsets } from "./common";
 
-type coords = [number, number];
 export type params = {
   width: number;
   height: number;
@@ -13,7 +13,7 @@ export type params = {
 
 /**
  *
- * @param params.lat_start: latitude at the northern end of the bounding boxs
+ * @param params.lat_start: latitude at the northern end of the bounding boxes
  */
 export function createRawHexGrid({
   width,
@@ -35,7 +35,7 @@ export function createRawHexGrid({
     // Offset to the right if even row
     let lon_offset = row % 2 === 0 ? 0.5 * x_unit : 0;
 
-    let start: coords = [
+    let start: Position = [
       lon_offset + lon_start,
       latStart - y_unit * 0.75 * row,
     ];
@@ -52,29 +52,7 @@ export function createRawHexGrid({
   return polys;
 }
 
-export function calcUnit(lon_start: number, lon_end: number, width: number) {
-  // lock aspect ratio to width
-  var unit = (lon_end - lon_start) / width;
-  // Add a buffer of .5 units
-  unit = (unit * width) / (width + 0.5);
-
-  return unit;
-}
-
-export function addOffsets(
-  offsets: coords[],
-  start: coords,
-  x_unit: number,
-  y_unit: number
-) {
-  const [sa, sb] = start;
-  return offsets.map((offset) => {
-    const [a, b] = offset;
-    return [sa + a * x_unit, sb + b * y_unit];
-  });
-}
-
-export const offsets: coords[] = [
+export const offsets: Position[] = [
   // lng, lat
   [0, 0],
   [0.5, 0.25], // north
@@ -105,7 +83,7 @@ export const mapRiverToLine = (
 };
 
 export function createHexagon(
-  start: coords,
+  start: Position,
   x_unit: number,
   y_unit: number
 ): Polygon {

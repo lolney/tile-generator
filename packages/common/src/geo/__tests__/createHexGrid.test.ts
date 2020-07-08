@@ -2,9 +2,9 @@ import {
   createRawHexGrid,
   createHexagon,
   offsets,
-  calcUnit,
   mapRiverToLine,
 } from "../createRawHexGrid";
+import { calcUnit } from "../common";
 import { RiverType } from "types";
 
 const fixtures = [

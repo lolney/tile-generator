@@ -12,6 +12,7 @@
     "clean": "rm -rf ./dist",
     "compile": "tsc -p tsconfig.build.json",
     "watch": "tsc -p tsconfig.json --watch",
+    "test": "jest",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
