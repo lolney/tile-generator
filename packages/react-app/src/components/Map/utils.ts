@@ -3,7 +3,6 @@ import L, { LatLngTuple } from "leaflet";
 import { createRawHexGrid, TileUtils } from "@tile-generator/common";
 import { Dimensions, Tile } from "@tile-generator/common";
 import { LineString, Polygon, Feature, GeoJsonObject } from "geojson";
-import styles from "./styles.module.css";
 
 export const createPreviewGrid = (
   bounds: L.LatLngBounds,

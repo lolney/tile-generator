@@ -89,7 +89,7 @@ const SelectSize: React.FC<SelectSizeProps> = ({
         Popover: {
           props: {
             overrides: {
-              Body: { style: () => ({ zIndex: 200 }) },
+              Body: { style: () => ({ zIndex: 0 }) },
             },
           },
         },
