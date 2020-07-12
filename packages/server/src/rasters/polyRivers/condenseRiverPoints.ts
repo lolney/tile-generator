@@ -23,6 +23,13 @@ export class Condenser {
     };
   }
 
+  static condense = (
+    riverPoints: RawRiverPoints,
+    nextPoints: NextPoints,
+    gridPoints: GridPoints,
+    endpointIds: string[]
+  ) => new Condenser(riverPoints, nextPoints, gridPoints).condense(endpointIds);
+
   getNextPoint = (pointId: string) => this.nextPoints[pointId];
 
   getNearestNode = (pointId: string) => {

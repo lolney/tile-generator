@@ -1,5 +1,4 @@
-import { LineString, Polygon, Position } from "geojson";
-import { Graph } from "graphlib";
+import { LineString, Position } from "geojson";
 
 export type RawRiver = {
   id: string;
@@ -17,6 +16,6 @@ export type RawRiverPoints = { [riverId: string]: RawRiverPoint };
 
 export type GridPoints = Position[];
 
-export type GridGraph = Graph;
-
 export type NextNodes = { [nodeId: number]: number };
+
+export type Endpoints = string[];
