@@ -16,3 +16,26 @@
   pointer-events: none;
   text-transform: capitalize;
 }
+
+.popupOptions {
+  height: 5px;
+  width: 10px;
+  padding: 0px;
+  text-align: center;
+}
+
+.leaflet-popup-content-wrapper {
+  background-color: var(--textColorWhite);
+  border-radius: 0px;
+}
+
+.leaflet-popup-tip {
+  background-color: var(--textColorWhite);
+  display: none;
+}
+
+.leaflet-popup-content {
+  margin: 0px;
+  padding: 5px;
+  text-align: center;
+}
