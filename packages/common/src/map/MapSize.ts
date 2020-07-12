@@ -1,11 +1,14 @@
 import { Dimensions, SizeString } from "../types";
 
-abstract class MapSize {
+export abstract class MapSize {
   static mapSizes: Record<SizeString, Dimensions>;
 
-  static dimensionsToMapSize({ height, width }: Dimensions): MapSize {
+  static dimensionsToMapSize({ height, width }: Dimensions): SizeString {
     const size = height * width;
-    for (const [name, dimensions] of Object.entries(this.mapSizes)) {
+    for (const [name, dimensions] of Object.entries(this.mapSizes) as [
+      SizeString,
+      Dimensions
+    ][]) {
       if (size <= dimensions.height * dimensions.width) return name;
     }
     return "MAPSIZE_HUGE";
@@ -30,6 +33,6 @@ export class Civ5MapSize extends MapSize {
     MAPSIZE_SMALL: { width: 66, height: 42 },
     MAPSIZE_STANDARD: { width: 80, height: 52 },
     MAPSIZE_LARGE: { width: 104, height: 64 },
-    MAPSIZE_HUGE: { width: 128, height: 80 },
+    MAPSIZE_HUGE: { width: 120, height: 80 },
   };
 }

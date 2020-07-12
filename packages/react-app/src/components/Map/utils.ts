@@ -89,10 +89,16 @@ export const createTooltip = (layer: L.Layer) => {
   return displayValues.length ? displayValues[0] : "None";
 };
 
+var customOptions = {
+  closeButton: false,
+  minWidth: 15,
+  textAlign: "center",
+};
+
 export const bindTooltip = (map: L.Map) => (layer: L.Layer) => {
   const popup = L.popup();
   popup.setContent(createTooltip(layer));
-  layer.bindPopup(popup);
+  layer.bindPopup(popup, customOptions);
 
   let popupOpen = false;
   let closeTimeout: ReturnType<typeof setTimeout> | null;

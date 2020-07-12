@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { State } from "../../redux/types";
 import InputRow from "./InputRow";
 import SelectMenu from "./SelectMenu";
+import SelectSize from "./SelectSize";
 import styles from "./styles.module.css";
 
 const widthParams = { min: 10, max: 120 };
@@ -46,6 +47,7 @@ export const OptionsComponent: React.FC<OptionsProps> = ({
           <div className={styles.left_headers}>Format</div>
         </div>
         <SelectMenu />
+        <SelectSize />
       </div>
     </>
   );
