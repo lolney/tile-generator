@@ -1,0 +1,1 @@
+ogr2ogr -f "PostgreSQL" PG:"dbname=tilegenerator user=postgres" "$1" -nln $2 -append
