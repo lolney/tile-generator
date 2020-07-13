@@ -48,18 +48,21 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ format, changeOptions }) => (
       },
       Root: {
         style: () => ({
-          width: "65.55%",
+          width: "352.172px", // temp fix; doesn't work with all browsers
           height: "10px",
           marginTop: "10px",
-          marginLeft: "1px",
+          marginLeft: "1px",  // temp fix; doesn't work with all browsers
           padding: "0px",
           background: colors.textFieldGrey,
           borderRadius: "2px",
-          "@media screen and (max-width: 414px)": { width: "54.2%" },
-          "@media screen and (max-width: 411px)": { width: "54.2%" },
-          "@media screen and (max-width: 375px)": { width: "51%" },
-          "@media screen and (max-width: 360px)": { width: "48.7%" },
-          "@media screen and (max-width: 320px)": { width: "42.5%" },
+          "@media screen and (max-width: 414px)": { // temp fix; doesn't work with all browsers. Same with @media screens below
+            width: "226px",
+            marginLeft: "0px",
+          },
+          "@media screen and (max-width: 411px)": { width: "224.75px" },
+          "@media screen and (max-width: 375px)": { width: "192.859px" },
+          "@media screen and (max-width: 360px)": { width: "177.578px" },
+          "@media screen and (max-width: 320px)": { width: "137.39px" },
         }),
       },
       ValueContainer: {

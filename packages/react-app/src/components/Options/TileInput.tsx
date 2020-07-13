@@ -51,6 +51,7 @@ const TileInput: React.FC<TileSliderProps> = ({ onChange, value, ...rest }) => {
             marginRight: "20px",
             marginLeft: "20px",
             marginTop: "8px",
+            borderBottomLeftRadius: "20px",
             background: colors.textFieldGrey,
             "@media screen and (max-width: 414px)": { width: "25%" },
             "@media screen and (max-width: 411px)": { width: "25%" },
