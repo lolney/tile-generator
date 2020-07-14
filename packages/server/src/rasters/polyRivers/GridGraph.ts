@@ -1,27 +1,19 @@
 import { range } from "lodash";
-import { GridPoints, NextNodes } from "./types";
+import { NextNodes } from "./types";
 import { Graph } from "graphlib";
 import { Dimensions } from "@tile-generator/common";
 
 export class GridGraph {
   graph: Graph;
 
-  constructor(
-    private gridPoints: GridPoints,
-    private nextNodes: NextNodes,
-    private dimensions: Dimensions
-  ) {
+  constructor(private dimensions: Dimensions) {
     this.graph = new Graph();
   }
 
-  static build(
-    gridPoints: GridPoints,
-    nextNodes: NextNodes,
-    dimensions: Dimensions
-  ) {
-    const grid = new GridGraph(gridPoints, nextNodes, dimensions);
+  static build(dimensions: Dimensions) {
+    const grid = new GridGraph(dimensions);
     grid.createConnections();
-    return grid;
+    return grid.graph;
   }
 
   // --- connections --- (points alternate low, high, starting with low on the first row)
@@ -37,10 +29,7 @@ export class GridGraph {
       for (const j of range(width + 1)) {
         const myId = this.nodeId(i, j);
         for (const neighbor of this.neighbors(i, j)) {
-          const weight =
-            String(this.nextNodes[Number(myId)]) === neighbor
-              ? 0
-              : Number.POSITIVE_INFINITY;
+          const weight = 1;
           this.graph.setEdge(myId, neighbor, weight);
         }
       }
@@ -48,9 +37,11 @@ export class GridGraph {
   }
 
   nodeId(row: number, col: number) {
-    if (row < 0 || row >= this.dimensions.height) return;
-    if (col < 0 || col >= this.dimensions.width) return;
-    return String(row * this.dimensions.width + col);
+    const height = this.dimensions.height + 1;
+    const width = this.dimensions.width + 1;
+    if (row < 0 || row >= height) return;
+    if (col < 0 || col >= width) return;
+    return String(row * width + col);
   }
 
   neighbors(row: number, col: number) {
