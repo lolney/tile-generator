@@ -19,3 +19,5 @@ export type GridPoints = Position[];
 export type NextNodes = { [nodeId: number]: number };
 
 export type Endpoints = string[];
+
+export type RiverDirection = "north" | "south" | "east" | "west";

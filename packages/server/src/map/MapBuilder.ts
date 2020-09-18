@@ -1,7 +1,7 @@
 import { Polygon } from "geojson";
 import * as turf from "@turf/turf";
 import { LatLngBounds } from "leaflet";
-import zip from "lodash/zip";
+import { isEmpty, zip } from "lodash";
 import {
   Elevation,
   FeatureType,
@@ -31,6 +31,9 @@ import {
 import Map from "./Map";
 import { logperformance } from "../logging";
 import { resampleMissing } from "../rasters/resampleMissing";
+import { getRivers } from "../rasters/polyRivers";
+import { BBox } from "@turf/turf";
+import { generatePolyRivers } from "../rasters/polyRivers";
 
 export default class MapBuilder {
   grid: Polygon[];
@@ -218,5 +221,35 @@ export default class MapBuilder {
         zip(tiles, group).map(([tile, newTile]) => ({ ...tile, ...newTile })),
       initialValue
     );
+  }
+
+  async createRiverTiles2(waterTiles: Tile[]): Promise<Tile[]> {
+    /*const rivers = await Promise.all(this.grid.map((poly) => getRivers(poly)));
+   console.log(
+      zip(rivers, this.grid)
+        .map(
+          ([rivers, tile]) =>
+            !isEmpty(rivers) &&
+            !isEmpty(rivers[0]) && [
+              rivers.map((river) => JSON.stringify(river.geom)),
+              JSON.stringify(tile.coordinates),
+            ]
+        )
+        .filter((e) => e)
+    )
+    console.log("gey");
+    return rivers.map((river) =>
+      !isEmpty(river) ? { river: { northEast: true } } : {}
+    );*/
+    turf.bboxPolygon;
+    const bounds = this.bounds
+      .toBBoxString()
+      .split(",")
+      .map((str) => Number(str));
+    const boundingPolygon = turf.bboxPolygon(bounds as BBox);
+    const rivers = await getRivers(boundingPolygon.geometry);
+    console.log(rivers.map((obj) => JSON.stringify(obj)));
+    // stitchRivers(rivers);
+    return [];
   }
 }
