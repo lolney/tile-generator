@@ -44,6 +44,8 @@ export const useLeafletMap = () => {
     }, 100);
 
     setMap(map);
+    // don't actually want to recreate the map
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export const useAreaSelect = (
     areaSelect.addTo(map);
 
     return areaSelect;
-  }, [map, submissionStatus]);
+  }, [map, submissionStatus, dimensions]);
 
   useEffect(() => {
     areaSelect && onBoundsChange(areaSelect.getBounds());
@@ -171,7 +173,7 @@ export const useTileLayer = (
         setLayer(leafletLayer);
       }, 500);
     else setLayer(leafletLayer);
-  }, [setLayer, leafletLayer]);
+  }, [setLayer, leafletLayer, grid]);
 };
 
 const useMapMove = (map: L.Map | undefined) => {

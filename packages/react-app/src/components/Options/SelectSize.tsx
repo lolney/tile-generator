@@ -7,7 +7,6 @@ import {
   Civ6MapSize,
   Dimensions,
   GameString,
-  MapSize,
   Options,
   SizeString,
   sizeStrings,

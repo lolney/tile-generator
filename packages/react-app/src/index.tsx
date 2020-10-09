@@ -20,7 +20,7 @@ ReactDOM.render(
         <div className={styles.header_container}>
           <NavLink to="/" className={styles.header}>
             <img className={styles.logo} src="/logo.svg" alt="logo"></img>
-            <header>Civilization Tile Builder</header>
+            <header>Tile Builder</header>
           </NavLink>
         </div>
         <div className={styles.space}></div>

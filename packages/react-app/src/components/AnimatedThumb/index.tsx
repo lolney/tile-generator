@@ -15,7 +15,7 @@ const AnimatedThumb: React.FC<AnimatedThumbProps> = ({
   style = {},
   zIndex = 1,
 }) => {
-  const [css, theme] = useStyletron();
+  const [css] = useStyletron();
 
   const isDirty = useSelector((state: State) => state.settings.dirty);
   const wasDirty = usePrevious(isDirty);

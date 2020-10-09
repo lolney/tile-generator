@@ -36,6 +36,7 @@ const OptionsContainer = () => {
   const { Component, title, buttonText, icon, to } = routes[routeType];
   const navigate = useCallback(() => setRouteType(to), [setRouteType, to]);
 
+  /* eslint-disable jsx-a11y/anchor-is-valid */
   return (
     <>
       <a

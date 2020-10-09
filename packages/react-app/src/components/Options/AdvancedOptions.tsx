@@ -1,6 +1,6 @@
 import React from "react";
 import { LayerWeights, Options } from "@tile-generator/common";
-import { changeOptions, resetOptions } from "../../redux/modules/settings";
+import { changeOptions } from "../../redux/modules/settings";
 import { connect } from "react-redux";
 import { State } from "../../redux/types";
 import styles from "./styles.module.css";
