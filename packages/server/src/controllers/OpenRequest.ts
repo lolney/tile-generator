@@ -131,7 +131,7 @@ export default class OpenRequest {
     }
 
     const [buffer, errors] = await this.createFile();
-    const url = await uploadFile(this.getFileName(), buffer);
+    const url = await uploadFile(this.getFileName(), buffer, this.id);
 
     yield new ErrorResult(errors);
     if (url?.[0]) yield new DownloadResult(url?.[0]);

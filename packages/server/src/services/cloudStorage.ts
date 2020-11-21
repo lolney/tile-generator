@@ -5,10 +5,17 @@ import config from "../config.json";
 const storage = new Storage();
 const bucketName = "civ-maps";
 
-export const uploadFile = async (filename: string, buffer: Buffer) => {
+export const uploadFile = async (
+  filename: string,
+  buffer: Buffer,
+  id: string
+) => {
   if (process.env.NODE_ENV !== "production") {
-    console.warn(`NODE_ENV is ${process.env.NODE_ENV}; skipping upload`);
-    return `http://localhost:${config.port}`;
+    const localUrl = `http://localhost:${config.port}/api/maps/${id}`;
+    console.warn(
+      `NODE_ENV is ${process.env.NODE_ENV}; skipping upload and sending ${localUrl}`
+    );
+    return [localUrl];
   }
 
   const file = storage.bucket(bucketName).file(filename);

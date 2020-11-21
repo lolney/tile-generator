@@ -9,7 +9,7 @@ export default async function UpdateController(req: Request, res: Response) {
 
   req.on("close", () => {
     console.log(`disconnected: ${id}`);
-    requests.delete(id);
+    if (process.env.NODE_ENV !== "production") requests.delete(id);
   });
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");

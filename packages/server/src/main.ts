@@ -65,7 +65,7 @@ app.use("/", middleware.rateLimitMiddleware(store));
 // API
 app.post("/api/map", UpdateController);
 if (process.env.NODE_ENV !== "production")
-  app.get("/api/map/:id", MapController);
+  app.get("/api/maps/:id", MapController);
 
 const server = http.createServer(app);
 server.listen(process.env.PORT || config.port, () => {
