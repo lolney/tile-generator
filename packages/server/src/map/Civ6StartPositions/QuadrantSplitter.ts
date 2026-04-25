@@ -64,7 +64,7 @@ export default class QuadrantSplitter {
     }
     if (this.nonSplitQuadrants.length === 0) {
       this.nonSplitQuadrants = this.splitQuadrants;
-      this.nonSplitQuadrants = [];
+      this.splitQuadrants = [];
     }
     return this.nonSplitQuadrants.pop()!;
   };

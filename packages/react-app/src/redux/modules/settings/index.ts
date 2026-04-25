@@ -10,8 +10,8 @@ const initialState: Settings = {
   format: "Civ VI",
   layerWeights: layerWeightDefaults,
   bounds: {
-    _southWest: { lat: 37, lng: -121 },
-    _northEast: { lat: 38, lng: -120 },
+    _southWest: { lat: 36.75, lng: -121.5 },
+    _northEast: { lat: 38.25, lng: -119.5 },
   },
 };
 

@@ -8,8 +8,8 @@ import { combineReducers } from "redux";
 const initialState: LeafletState = {
   selectedLayer: null,
   startPosition: {
-    center: [38, -122],
-    zoom: 5,
+    center: [37.5, -120.5],
+    zoom: 8,
   },
 };
 

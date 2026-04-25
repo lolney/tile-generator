@@ -63,29 +63,43 @@ Run the following script to create the database:
 npm run db:create
 ```
 
-There is not currently a checked-in full global seed. For local development, the
-script below seeds the default UI bounding box in California (`37..38`,
-`-121..-120`) with enough raster data to generate maps:
+The substitute-data pipeline is reproducible and global by default:
+
+```sh
+./scripts/seed_substitute_rasters.sh
+```
+
+The global run streams/downloads large public rasters, including a multi-GB
+GEBCO elevation COG. For fast local development, clip the same global sources
+with `BBOX` (`west south east north`):
 
 ```sh
 brew install postgresql@17 postgis gdal
 brew services start postgresql@17
 
 export PATH="/opt/homebrew/opt/postgresql@17/bin:/opt/homebrew/opt/postgis/bin:/opt/homebrew/bin:$PATH"
-./scripts/seed_local_default_area.sh
+BBOX="-121.5 36.75 -119.5 38.25" ./scripts/seed_substitute_rasters.sh
 ```
 
-The local seed uses:
+`./scripts/seed_local_default_area.sh` is a convenience wrapper around that
+clipped command for the default UI area in California's Central Valley and
+Sierra foothills.
+
+The substitute seed uses:
 
 - MODIS MCD12Q1 v061 `LC_Type1` for `landcover_500`
 - WorldClim 2.1 BIO12 annual precipitation for `precipitation_500`
-- Mapzen elevation tiles for `elevation_500`, with `slope_500` derived by GDAL
+- GEBCO 2024 global elevation/bathymetry for `elevation_500`, with `slope_500`
+  derived by GDAL
 - `forest_500` and `marsh_500` derived from the landcover classes
-- local placeholder rasters for `watermask_500`, `flow_500`, and
-  `beck_kg_v1_present_0p0083`
+- `watermask_500` from MODIS landcover water plus Natural Earth lakes/ocean
+- `flow_500` from Natural Earth river centerlines rasterized as a flow proxy
+- `beck_kg_v1_present_0p0083` from the NatCap-hosted Koppen-Geiger COG
 
-The placeholders are enough for the default inland California local workflow,
-but they are not a replacement for the original global Earth Engine exports.
+The current `flow_500` substitute is global and reproducible but still not
+equivalent to the original HydroSHEDS flow-accumulation raster. It is good
+enough to render real river networks; replacing it with HydroSHEDS or MERIT
+Hydro is the next data-quality upgrade.
 
 ## Deployment
 
@@ -122,10 +136,10 @@ The app also expects these PostGIS raster tables:
   https://zenodo.org/record/8338928
 - Precipitation: WorldClim 2.1 bioclimatic variable BIO12:
   https://www.worldclim.org/data/worldclim21.html
-- Elevation and slope: Mapzen Terrain Tiles GeoTIFFs on AWS for easy tiled
-  downloads, with slope derived by GDAL; Copernicus DEM GLO-30 is a stronger
-  global DEM alternative when 30 m source quality matters:
-  https://registry.opendata.aws/terrain-tiles/
+- Elevation and slope: GEBCO 2024 global elevation/bathymetry COG for a single
+  global source; Copernicus DEM GLO-30 is a stronger land-only alternative when
+  30 m source quality matters:
+  https://data.naturalcapitalalliance.stanford.edu/download/global/gebco/gebco_bathymetry_2024_global.tif
   https://registry.opendata.aws/copernicus-dem/
 - Water mask: JRC Global Surface Water occurrence/seasonality/max-water COGs,
   thresholded into a MOD44W-style binary water mask:
