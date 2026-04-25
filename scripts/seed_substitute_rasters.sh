@@ -20,6 +20,7 @@ bbox="${BBOX:-}"
 hydrorivers_url="${HYDRORIVERS_URL:-https://data.hydrosheds.org/file/HydroRIVERS/HydroRIVERS_v10_shp.zip}"
 hydrorivers_min_discharge_cms="${HYDRORIVERS_MIN_DISCHARGE_CMS:-0.1}"
 hydrorivers_min_strahler="${HYDRORIVERS_MIN_STRAHLER:-1}"
+load_hydrorivers_vectors="${LOAD_HYDRORIVERS_VECTORS:-1}"
 
 landcover_url="/vsicurl/https://zenodo.org/api/records/8367523/files/lc_mcd12q1v061.t1_c_500m_s_20190101_20191231_go_epsg.4326_v20230818.tif/content"
 precipitation_url="/vsizip//vsicurl/https://geodata.ucdavis.edu/climate/worldclim/2_1/base/wc2.1_10m_bio.zip/wc2.1_10m_bio_12.tif"
@@ -45,6 +46,7 @@ rm -f \
 
 projwin_args=""
 te_args=""
+ogr_spat_args=""
 if [ -n "$bbox" ]; then
   # shellcheck disable=SC2086
   set -- $bbox
@@ -54,6 +56,7 @@ if [ -n "$bbox" ]; then
   north="$4"
   projwin_args="-projwin $west $north $east $south"
   te_args="-te $west $south $east $north"
+  ogr_spat_args="-spat $west $south $east $north"
 else
   printf '%s\n' "No BBOX set; preparing global substitute rasters. This can process many GB."
 fi
@@ -139,6 +142,22 @@ unzip -q -o "$hydrorivers_zip" -d "$data_dir/vectors/hydrorivers"
 hydrorivers_shp="$(find "$data_dir/vectors/hydrorivers" -name 'HydroRIVERS*.shp' | head -n 1)"
 if [ -n "$hydrorivers_shp" ]; then
   hydrorivers_layer="$(basename "$hydrorivers_shp" .shp)"
+  if [ "$load_hydrorivers_vectors" = "1" ]; then
+    # Keep real river vectors alongside the raster. The server uses this table
+    # first when present, which preserves continuity and real-world alignment.
+    # shellcheck disable=SC2086
+    ogr2ogr -overwrite -f PostgreSQL "PG:dbname=$db_name" "$hydrorivers_shp" \
+      $ogr_spat_args \
+      -nln hydrorivers \
+      -nlt PROMOTE_TO_MULTI \
+      -lco GEOMETRY_NAME=geom \
+      -lco FID=gid \
+      -lco SPATIAL_INDEX=GIST \
+      -where "DIS_AV_CMS >= $hydrorivers_min_discharge_cms AND ORD_STRA >= $hydrorivers_min_strahler"
+    psql -d "$db_name" -c "CREATE INDEX IF NOT EXISTS hydrorivers_discharge_idx ON hydrorivers (dis_av_cms);"
+    psql -d "$db_name" -c "CREATE INDEX IF NOT EXISTS hydrorivers_strahler_idx ON hydrorivers (ord_stra);"
+  fi
+
   gdal_rasterize -q -at \
     -a DIS_AV_CMS \
     -where "DIS_AV_CMS >= $hydrorivers_min_discharge_cms AND ORD_STRA >= $hydrorivers_min_strahler" \

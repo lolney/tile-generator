@@ -63,21 +63,32 @@ Run the following script to create the database:
 npm run db:create
 ```
 
-The substitute-data pipeline is reproducible and global by default:
-
-```sh
-./scripts/seed_substitute_rasters.sh
-```
-
-The global run streams/downloads large public rasters, including a multi-GB
-GEBCO elevation COG. For fast local development, clip the same global sources
-with `BBOX` (`west south east north`):
+The substitute-data pipeline is reproducible and global by default. A full
+production seed creates all raster tables plus an indexed `hydrorivers` vector
+table used for higher-quality river rendering:
 
 ```sh
 brew install postgresql@17 postgis gdal
 brew services start postgresql@17
 
 export PATH="/opt/homebrew/opt/postgresql@17/bin:/opt/homebrew/opt/postgis/bin:/opt/homebrew/bin:$PATH"
+export PGDATABASE=tilegenerator
+./scripts/seed_substitute_rasters.sh
+```
+
+The global run downloads or streams several large public datasets. Expect many
+GB of network traffic and local scratch data, especially GEBCO elevation and
+the global HydroRIVERS archive. Keep `DATA_DIR` on a volume with enough free
+space if you do not want the default `data/substitute` location:
+
+```sh
+DATA_DIR=/Volumes/maps/tile-generator-seed ./scripts/seed_substitute_rasters.sh
+```
+
+For fast local development, clip the same global sources with `BBOX`
+(`west south east north`):
+
+```sh
 BBOX="-121.5 36.75 -119.5 38.25" ./scripts/seed_substitute_rasters.sh
 ```
 
@@ -94,16 +105,23 @@ The substitute seed uses:
 - `forest_500` and `marsh_500` derived from the landcover classes
 - `watermask_500` from MODIS landcover water plus Natural Earth lakes/ocean
 - `flow_500` from HydroRIVERS discharge values rasterized to the map grid
+- `hydrorivers` from the same HydroRIVERS source, loaded as indexed PostGIS
+  vectors for continuity-preserving river rendering
 - `beck_kg_v1_present_0p0083` from the NatCap-hosted Koppen-Geiger COG
 
 The `flow_500` substitute uses HydroRIVERS because it is global, topological,
 and includes estimated long-term discharge plus Strahler/order attributes. The
-seed keeps the app's fast raster lookup path while using real river geometries.
-You can tune source density before rasterization with:
+seed keeps the app's fast raster lookup path as a fallback, while the
+`hydrorivers` vector table is preferred at runtime for real-world alignment and
+continuous river paths. You can tune source density before rasterization and
+vector import with:
 
 ```sh
 HYDRORIVERS_MIN_DISCHARGE_CMS=0.1 HYDRORIVERS_MIN_STRAHLER=1 ./scripts/seed_substitute_rasters.sh
 ```
+
+Set `LOAD_HYDRORIVERS_VECTORS=0` only if you need the old raster-only behavior
+or are importing into a constrained development database.
 
 For smaller-scale maps, raise one of those thresholds or generate separate
 `flow_500` copies at different thresholds and point `FLOW_DB_NAME` at the

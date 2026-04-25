@@ -6,13 +6,12 @@ import * as colors from "../../constants/colors";
 import { State } from "../../redux/types";
 import styles from "./styles.module.css";
 
-interface AnimatedThumbProps {
-  style?: any;
+interface AnimatedThumbProps extends React.HTMLAttributes<HTMLDivElement> {
   zIndex?: number;
 }
 
 const AnimatedThumb = React.forwardRef<HTMLDivElement, AnimatedThumbProps>(
-  ({ style = {}, zIndex = 1 }, ref) => {
+  ({ className, style, zIndex = 1, ...props }, ref) => {
     const [css] = useStyletron();
 
     const isDirty = useSelector((state: State) => state.settings.dirty);
@@ -31,7 +30,12 @@ const AnimatedThumb = React.forwardRef<HTMLDivElement, AnimatedThumbProps>(
     }, [isDirty, wasDirty]);
 
     return (
-      <div className={css({ zIndex, position: "absolute" })} ref={ref}>
+      <div
+        {...props}
+        className={`${className ?? ""} ${css({ zIndex })}`.trim()}
+        ref={ref}
+        style={style}
+      >
         <div
           className={css({
             height: "18px",
@@ -47,7 +51,6 @@ const AnimatedThumb = React.forwardRef<HTMLDivElement, AnimatedThumbProps>(
             borderBottomLeftRadius: "4px",
             borderBottomRightRadius: "4px",
             backgroundColor: colors.textColorWhite,
-            ...style,
             animation,
           })}
         ></div>

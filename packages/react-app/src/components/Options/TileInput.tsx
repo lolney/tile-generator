@@ -38,10 +38,13 @@ const TileInput: React.FC<TileSliderProps> = ({ onChange, value, ...rest }) => {
         setTypedValue((event.target as any).value.slice(0, 3));
       }}
       onBlur={roundToValidNumber}
-      onFocus={() => setFocused(true)}
+      onFocus={() => {
+        setTypedValue(String(value));
+        setFocused(true);
+      }}
       size={SIZE.mini}
       error={!isValid}
-      value={focused ? typedValue : value}
+      value={focused ? typedValue : String(value)}
       {...rest}
       overrides={{
         Root: {

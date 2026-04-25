@@ -10,9 +10,10 @@ interface TileSliderProps {
   min: number;
 }
 
-const Thumb = React.forwardRef<HTMLDivElement>((_, ref) => (
-  <AnimatedThumb ref={ref} zIndex={0} />
-));
+const Thumb = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>((props, ref) => <AnimatedThumb {...props} ref={ref} zIndex={0} />);
 
 Thumb.displayName = "TileSliderThumb";
 

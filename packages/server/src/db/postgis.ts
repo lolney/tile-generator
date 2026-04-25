@@ -1,4 +1,4 @@
-import { Polygon, GeoJsonObject } from "geojson";
+import { Polygon, GeoJsonObject, LineString, MultiLineString } from "geojson";
 import db from ".";
 import { SAMPLES_PER_TILE } from "../constants";
 
@@ -168,4 +168,32 @@ export async function findTileStddev(
 
 export async function findTileMax(tiles: Polygon[], dbname: string) {
   return findMax(dbname, tiles);
+}
+
+export async function findHydroRiverLines(
+  bounds: Polygon,
+  minDischargeCms = 0.1,
+  minStrahler = 1
+): Promise<Array<LineString | MultiLineString>> {
+  const existsRows = await db.doQuery(
+    "SELECT to_regclass('public.hydrorivers') AS table_name;"
+  );
+  if (!existsRows[0]?.table_name) return [];
+
+  const boundsSql = serializeGeoJSON(bounds);
+  const query = `
+    WITH clipped AS (
+      SELECT (ST_Dump(ST_CollectionExtract(ST_Intersection(geom, ${boundsSql}), 2))).geom
+      FROM hydrorivers
+      WHERE ST_Intersects(geom, ${boundsSql})
+        AND dis_av_cms >= ${Number(minDischargeCms)}
+        AND ord_stra >= ${Number(minStrahler)}
+    )
+    SELECT ST_AsGeoJSON(geom) AS geojson
+    FROM clipped
+    WHERE NOT ST_IsEmpty(geom);
+  `;
+
+  const rows = await db.doQuery(query);
+  return rows.map((row: any) => JSON.parse(row.geojson));
 }
