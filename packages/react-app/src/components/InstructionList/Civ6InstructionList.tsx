@@ -30,9 +30,11 @@ const civ6HelpText = (os: OsString, path: string): Instruction => ({
   ],
 });
 
-export default ({ os, hideTitle }: InstructionListProps) => (
+const Civ6InstructionList = ({ os, hideTitle }: InstructionListProps) => (
   <BaseInstructionList
     hideTitle={hideTitle}
     instruction={civ6HelpText(os, paths[os])}
   />
 );
+
+export default Civ6InstructionList;

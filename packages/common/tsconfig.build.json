@@ -10,7 +10,8 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": "src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"]
 }

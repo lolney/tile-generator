@@ -29,6 +29,7 @@ env.yaml
 \.env
 
 maps/
+data/
 
 EarthStandard\.Civ6Map
 

@@ -2,22 +2,22 @@
   "name": "tile-generator",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {},
   "scripts": {
-    "add-app-engine": "lerna add --scope=@tile-generator/app-engine",
-    "add-client": "lerna add --scope=@tile-generator/react-app",
-    "add-common": "lerna add --scope=@tile-generator/common",
-    "add-server": "lerna add --scope=@tile-generator/server",
-    "audit": "lerna-audit",
-    "bootstrap": "lerna bootstrap",
-    "build-client-prod": "npm install && npm run build-common && npm install && npm run build-client",
+    "add-app-engine": "npm install --workspace=@tile-generator/app-engine",
+    "add-client": "npm install --workspace=@tile-generator/react-app",
+    "add-common": "npm install --workspace=@tile-generator/common",
+    "add-server": "npm install --workspace=@tile-generator/server",
+    "build-client-prod": "npm install && npm run build-common && npm run build-client",
     "build-client": "lerna run build --scope=@tile-generator/react-app",
     "build-common": "lerna run build --scope=@tile-generator/common",
     "build-server": "lerna run build --scope=@tile-generator/server",
     "build": "lerna run build",
     "clean": "lerna run clean",
     "db:create": "sh ./scripts/create_db.sh",
-    "postinstall": "npm run bootstrap",
     "pub": "lerna publish",
     "reinstall-common": "./scripts/reinstall_common.sh"
   },
@@ -31,7 +31,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "lerna": "^3.20.2",
-    "lerna-audit": "^1.2.0"
+    "lerna": "^8.2.4"
   }
 }

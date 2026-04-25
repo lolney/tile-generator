@@ -5,7 +5,7 @@ const privateKey = require("../tile-generator-private-key.json");
 
 export default class EarthEngine {
   static async init() {
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       ee.data.authenticateViaPrivateKey(
         privateKey,
         () => {
@@ -18,7 +18,7 @@ export default class EarthEngine {
       );
     });
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       ee.initialize(
         null,
         null,

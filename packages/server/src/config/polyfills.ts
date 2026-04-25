@@ -1,7 +1,12 @@
 import "node-window-polyfill/register";
-(window as any).screen = { deviceXDPI: 1 };
+(global as any).window = (global as any).window || {};
+(global as any).window.screen = { deviceXDPI: 1 };
+(global as any).screen = (global as any).window.screen;
 (global as any)["document"] = {
   documentElement: { style: [] },
   createElement: () => ({}),
 };
-(global as any)["navigator"] = { userAgent: "", platform: "" };
+Object.defineProperty(global, "navigator", {
+  configurable: true,
+  value: { userAgent: "", platform: "" },
+});

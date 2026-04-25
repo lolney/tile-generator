@@ -23,7 +23,7 @@ export const uploadFile = async (
 
   bufferStream.end(buffer);
 
-  await new Promise((resolve, reject) =>
+  await new Promise<void>((resolve, reject) =>
     bufferStream
       .pipe(file.createWriteStream())
       .on("error", (err: any) => reject(err))

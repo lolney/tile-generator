@@ -31,9 +31,11 @@ const civVHelpText = (os: OsString, path: string): Instruction => ({
   ],
 });
 
-export default ({ os, hideTitle }: InstructionListProps) => (
+const Civ5InstructionList = ({ os, hideTitle }: InstructionListProps) => (
   <BaseInstructionList
     hideTitle={hideTitle}
     instruction={civVHelpText(os, paths[os])}
   />
 );
+
+export default Civ5InstructionList;

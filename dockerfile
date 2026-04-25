@@ -1,9 +1,7 @@
-FROM node:12-slim
+FROM node:22-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
-
-RUN npm i lerna -g --loglevel notice
 
 COPY packages/server ./packages/server
 COPY packages/common ./packages/common
@@ -12,7 +10,6 @@ COPY packages/app-engine ./packages/app-engine
 COPY package*.json ./
 COPY lerna.json .
 
-RUN lerna bootstrap
 RUN npm install
 RUN npm run build
 

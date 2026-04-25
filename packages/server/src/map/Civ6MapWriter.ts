@@ -47,7 +47,7 @@ export default class Civ6MapWriter implements CivMapWriter {
 
   async write(): Promise<[Buffer, Errors]> {
     const errors = await this.writeExistingDb();
-    return new Promise((resolve, reject) => {
+    return new Promise<[Buffer, Errors]>((resolve, reject) => {
       fs.readFile(this.path, (err, data) => {
         if (err) {
           reject(err);
@@ -129,7 +129,7 @@ export default class Civ6MapWriter implements CivMapWriter {
     return errors;
   }
 
-  async run(query: string) {
+  async run(query: string): Promise<void> {
     if (!query) return;
 
     return new Promise((resolve, reject) => {

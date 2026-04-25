@@ -1,4 +1,7 @@
-host=localhost
-psql -h $host -U postgres -c "CREATE DATABASE tilegenerator;"
-psql -h $host -d tilegenerator -U postgres -c "CREATE EXTENSION IF NOT EXISTS postgis;"
-psql -h $host -d tilegenerator -U postgres -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"
+host="${PGHOST:-localhost}"
+user="${PGUSER:-postgres}"
+database="${PGDATABASE:-tilegenerator}"
+
+createdb -h "$host" -U "$user" "$database" 2>/dev/null || true
+psql -h "$host" -d "$database" -U "$user" -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+psql -h "$host" -d "$database" -U "$user" -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"
