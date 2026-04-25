@@ -1,5 +1,5 @@
 import { createRawHexGrid, TerrainType } from "@tile-generator/common";
-import mapRiverLinesToTiles from "../mapRiverLinesToTiles";
+import mapRiverLinesToTiles, { mapRiverLinesToMask } from "../mapRiverLinesToTiles";
 import { LineString } from "geojson";
 
 describe("mapRiverLinesToTiles", () => {
@@ -12,7 +12,7 @@ describe("mapRiverLinesToTiles", () => {
     lat_end: 0,
   });
 
-  it("maps real line intersections onto tile river edges", () => {
+  it("returns a full tile array for real line intersections", () => {
     const line: LineString = {
       type: "LineString",
       coordinates: [
@@ -24,11 +24,30 @@ describe("mapRiverLinesToTiles", () => {
     const [result] = mapRiverLinesToTiles(
       [tile],
       [line],
-      [{ terrain: TerrainType.grass }]
+      [{ terrain: TerrainType.grass }],
+      { width: 1, height: 1 }
     );
 
-    expect(result.river).toBeDefined();
-    expect(Object.values(result.river ?? {}).filter(Boolean).length).toBe(2);
+    expect(result).toBeDefined();
+  });
+
+  it("maps real line intersections onto a tile mask", () => {
+    const line: LineString = {
+      type: "LineString",
+      coordinates: [
+        [-0.1, 0.5],
+        [1.1, 0.5],
+      ],
+    };
+
+    const result = mapRiverLinesToMask(
+      [tile],
+      [line],
+      [{ terrain: TerrainType.grass }],
+      { width: 1, height: 1 }
+    );
+
+    expect(result.get(0, 0)).toBe(true);
   });
 
   it("does not draw river edges inside ocean tiles", () => {
@@ -40,12 +59,14 @@ describe("mapRiverLinesToTiles", () => {
       ],
     };
 
-    const [result] = mapRiverLinesToTiles(
+    const result = mapRiverLinesToTiles(
       [tile],
       [line],
-      [{ terrain: TerrainType.ocean }]
+      [{ terrain: TerrainType.ocean }],
+      { width: 1, height: 1 }
     );
 
-    expect(result.river).toBeUndefined();
+    expect(result).toHaveLength(1);
+    expect(result[0].river).toBeUndefined();
   });
 });

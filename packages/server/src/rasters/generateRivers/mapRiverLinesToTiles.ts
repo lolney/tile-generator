@@ -1,20 +1,16 @@
 import { LineString, MultiLineString, Polygon, Position } from "geojson";
 import * as turf from "@turf/turf";
 import {
-  mapRiverToLine,
-  RiverType,
+  Dimensions,
   TerrainType,
   Tile,
+  TilesArray,
 } from "@tile-generator/common";
-
-const riverEdges: Array<keyof RiverType> = [
-  "northEast",
-  "northWest",
-  "east",
-  "west",
-  "southEast",
-  "southWest",
-];
+import mapToNodes from "./mapToNodes";
+import mapToTiles from "./mapToTiles";
+import findRiverSystems from "./findRiverSystems";
+import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
+import TraceRivers from "./TraceRivers";
 
 const toLineStrings = (
   geom: LineString | MultiLineString
@@ -85,37 +81,106 @@ const segmentsIntersect = (
   return false;
 };
 
+const lineIntersectsTile = (
+  tile: Polygon,
+  candidateSegments: Segment[]
+) => {
+  const ring = tile.coordinates[0];
+  const tileEdges: Segment[] = [];
+  for (let i = 1; i < ring.length; i++) {
+    const a = ring[i - 1];
+    const b = ring[i];
+    tileEdges.push({ a, b, bbox: segmentBbox(a, b) });
+  }
+
+  return candidateSegments.some((segment) => {
+    const crossesEdge = tileEdges.some(
+      (edge) =>
+        overlaps(edge.bbox, segment.bbox) &&
+        segmentsIntersect(edge.a, edge.b, segment.a, segment.b)
+    );
+    return (
+      crossesEdge ||
+      turf.booleanPointInPolygon(segment.a, tile) ||
+      turf.booleanPointInPolygon(segment.b, tile)
+    );
+  });
+};
+
+export const mapRiverLinesToMask = (
+  tiles: Polygon[],
+  riverGeometries: Array<LineString | MultiLineString>,
+  waterLayer: Tile[],
+  dimensions: Dimensions
+): TilesArray<boolean> => {
+  const segments = riverGeometries.flatMap(toLineStrings).flatMap(toSegments);
+  if (!segments.length)
+    return TilesArray.fromDimensions(dimensions.width, dimensions.height, false);
+
+  return new TilesArray(
+    tiles.map((tile, index) => {
+      if (isWater(waterLayer[index])) return false;
+
+      const tileBbox = turf.bbox(tile) as BBox;
+      const candidateSegments = segments.filter(({ bbox }) =>
+        overlaps(tileBbox, bbox)
+      );
+      return lineIntersectsTile(tile, candidateSegments);
+    }),
+    dimensions.width
+  );
+};
+
+const mergeRiverTile = (base: Tile, next: Tile) => ({
+  ...base,
+  ...next,
+  river:
+    base.river || next.river
+      ? {
+          ...base.river,
+          ...next.river,
+        }
+      : undefined,
+});
+
 const mapRiverLinesToTiles = (
   tiles: Polygon[],
   riverGeometries: Array<LineString | MultiLineString>,
-  waterLayer: Tile[]
+  waterLayer: Tile[],
+  dimensions: Dimensions
 ): Tile[] => {
-  const segments = riverGeometries.flatMap(toLineStrings).flatMap(toSegments);
-  if (!segments.length) return tiles.map(() => ({}));
+  const mask = mapRiverLinesToMask(
+    tiles,
+    riverGeometries,
+    waterLayer,
+    dimensions
+  );
+  const waterArray = new TilesArray(waterLayer, dimensions.width);
 
-  return tiles.map((tile, index) => {
-    if (isWater(waterLayer[index])) return {};
+  const output = TilesArray.fromDimensions(
+    dimensions.width,
+    dimensions.height,
+    {} as Tile
+  );
 
-    const tileBbox = turf.bbox(tile) as BBox;
-    const candidateSegments = segments.filter(({ bbox }) =>
-      overlaps(tileBbox, bbox)
-    );
-    if (!candidateSegments.length) return {};
+  for (const system of findRiverSystems(mask)) {
+    const graph = mapToNodes(system);
+    const endpoints = findRiverEndpoints(system, waterArray);
+    const source = findSourceTile(system, waterArray);
 
-    const river = riverEdges.reduce((acc, edge) => {
-      const side = mapRiverToLine(tile, edge);
-      const [a, b] = side.coordinates;
-      const sideBbox = turf.bbox(side) as BBox;
-      const intersects = candidateSegments.some(
-        ({ a: segmentA, b: segmentB, bbox }) =>
-          overlaps(sideBbox, bbox) &&
-          segmentsIntersect(a, b, segmentA, segmentB)
-      );
-      return intersects ? { ...acc, [edge]: true } : acc;
-    }, {} as RiverType);
+    try {
+      const network = TraceRivers.perform(graph, source, endpoints);
+      if (!network) continue;
+      mapToTiles(network).forEach((tile, index) => {
+        if (!tile.river) return;
+        output.fields[index] = mergeRiverTile(output.fields[index], tile);
+      });
+    } catch (error) {
+      if (process.env.DEBUG_RIVERS === "1") console.error(error);
+    }
+  }
 
-    return Object.keys(river).length ? { river } : {};
-  });
+  return output.fields;
 };
 
 export default mapRiverLinesToTiles;

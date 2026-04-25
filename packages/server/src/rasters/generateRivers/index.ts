@@ -14,6 +14,8 @@ import ArrayDebugger from "./debug/ArrayDebugger";
 import { LayerWeightParams } from "../LayerWeightParams";
 import mapRiverLinesToTiles from "./mapRiverLinesToTiles";
 
+const debugRivers = process.env.DEBUG_RIVERS === "1";
+
 const getTileDiameterMiles = (tile: Polygon) => {
   const ring = tile.coordinates[0];
   const lngs = ring.map(([lng]) => lng);
@@ -52,7 +54,11 @@ const getVectorMinDischarge = (layerWeights: LayerWeightParams) => {
 
   const riverWeight = layerWeights.get("rivers");
   if (riverWeight <= 0) return Infinity;
-  return 0.1 + (1 - riverWeight) * 2;
+
+  // HydroRIVERS density changes non-linearly with discharge. Keep the default
+  // setting focused on recognizable larger channels, while still allowing Heavy
+  // and Max to reveal smaller tributaries at fine scales.
+  return 0.1 * Math.pow(10000, 1 - riverWeight);
 };
 
 const getVectorMinStrahler = () => {
@@ -62,6 +68,7 @@ const getVectorMinStrahler = () => {
 
 const generateVectorRivers = async (
   tiles: Polygon[],
+  dimensions: Dimensions,
   waterLayer: Tile[],
   layerWeights: LayerWeightParams
 ) => {
@@ -73,7 +80,12 @@ const generateVectorRivers = async (
     minDischarge,
     getVectorMinStrahler()
   );
-  const riverTiles = mapRiverLinesToTiles(tiles, riverGeometries, waterLayer);
+  const riverTiles = mapRiverLinesToTiles(
+    tiles,
+    riverGeometries,
+    waterLayer,
+    dimensions
+  );
   return riverTiles.some((tile) => tile.river) ? riverTiles : undefined;
 };
 
@@ -85,6 +97,7 @@ const generateRivers = async (
 ): Promise<Tile[][]> => {
   const vectorRivers = await generateVectorRivers(
     tiles,
+    dimensions,
     waterLayer,
     layerWeights
   );
@@ -102,11 +115,11 @@ const generateRivers = async (
     tileDiameterMiles
   );
 
-  new ArrayDebugger(rawRivers).print("All rivers");
+  if (debugRivers) new ArrayDebugger(rawRivers).print("All rivers");
   const systems = findRiverSystems(rawRivers);
 
   const tileGroups = systems.map((system) => {
-    new ArrayDebugger(system).print("River system");
+    if (debugRivers) new ArrayDebugger(system).print("River system");
 
     const graph = mapToNodes(system);
     const waterArray = new TilesArray(waterLayer, system.width);
@@ -115,7 +128,7 @@ const generateRivers = async (
 
     try {
       const network = TraceRivers.perform(graph, source, endpoints);
-      console.debug("edges", network?.graph.edges());
+      if (debugRivers) console.debug("edges", network?.graph.edges());
       if (!network) throw new Error("Empty network");
       const tiles = mapToTiles(network);
       return tiles;

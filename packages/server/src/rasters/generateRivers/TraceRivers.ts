@@ -14,6 +14,7 @@ Alt river algo:
     - Mark those edges as cost 0
 */
 type Path = ReturnType<typeof alg.dijkstra>;
+const debugRivers = process.env.DEBUG_RIVERS === "1";
 
 export default class TraceRivers {
   endpoints: RiverIndex[];
@@ -62,6 +63,8 @@ export default class TraceRivers {
   updateWeights = (path: Path, end: string, source: string) => {
     const reportError = () => {
       console.error(`Path does not lead to source: ${end},${source}`);
+      if (!debugRivers) return;
+
       const graphdebug = new GraphDebuger(this.weightsGraph);
       graphdebug.print(new RiverNode(source), new RiverNode(end));
       graphdebug.writeGraphVizToFile(`${end},${source}`);
@@ -69,7 +72,7 @@ export default class TraceRivers {
     };
 
     while (end !== source) {
-      console.debug("end", end);
+      if (debugRivers) console.debug("end", end);
       if (!path[end] || !path[end].predecessor) {
         reportError();
         return;
@@ -79,10 +82,12 @@ export default class TraceRivers {
       end = predecessor;
     }
 
-    new GraphDebuger(this.weightsGraph).print(
-      new RiverNode(source),
-      new RiverNode(end)
-    );
+    if (debugRivers) {
+      new GraphDebuger(this.weightsGraph).print(
+        new RiverNode(source),
+        new RiverNode(end)
+      );
+    }
   };
 
   prunedNodes = () => {
