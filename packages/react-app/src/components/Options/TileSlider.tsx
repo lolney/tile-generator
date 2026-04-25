@@ -10,7 +10,11 @@ interface TileSliderProps {
   min: number;
 }
 
-const Thumb: React.FC = () => <AnimatedThumb zIndex={0} />;
+const Thumb = React.forwardRef<HTMLDivElement>((_, ref) => (
+  <AnimatedThumb ref={ref} zIndex={0} />
+));
+
+Thumb.displayName = "TileSliderThumb";
 
 const TileSlider: React.FC<TileSliderProps> = ({
   value,
@@ -47,7 +51,7 @@ const TileSlider: React.FC<TileSliderProps> = ({
           height: "24px",
         }),
       },
-      Thumb,
+      Thumb: Thumb as React.FC,
     }}
   />
 );

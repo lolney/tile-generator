@@ -45,4 +45,16 @@ describe("findSourceTile", () => {
     );
     expect(result).toEqual(undefined);
   });
+
+  it("should ignore river neighbors outside the water layer bounds", () => {
+    const edgeRiverLayer = [[true, true, true]];
+    const partialWaterLayer: Tile[][] = [[land]];
+
+    const result = findSourceTile(
+      TilesArray.from2D(edgeRiverLayer),
+      TilesArray.from2D(partialWaterLayer)
+    );
+
+    expect(result).toEqual(undefined);
+  });
 });

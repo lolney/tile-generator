@@ -6,12 +6,12 @@ import { TilesArray } from "@tile-generator/common";
 function* findNeighbors<T>(
   base: TilesArray<boolean>,
   overlay: TilesArray<T>,
-  condition: (t: T) => boolean
+  condition: (t: T | undefined) => boolean
 ) {
   for (const [i, j] of base.pairs()) {
     if (!base.get(i, j)) continue;
     const count = Array.from(base.neighbors(i, j)).reduce((sum, [ii, jj]) => {
-      return condition(overlay.get(ii, jj)) ? sum + 1 : sum;
+      return condition(overlay.getWithBoundsCheck(ii, jj)) ? sum + 1 : sum;
     }, 0);
     yield { count, index: [i, j] as [number, number] };
   }
@@ -24,7 +24,7 @@ const findCoastNeighbors = (
   findNeighbors(
     river,
     waterArray,
-    (tile: Tile) => tile.terrain === TerrainType.coast
+    (tile: Tile | undefined) => tile?.terrain === TerrainType.coast
   );
 
 const findRiverNeighbors = (river: RawRiverSystem) =>
