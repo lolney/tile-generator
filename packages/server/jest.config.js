@@ -1,5 +1,8 @@
 module.exports = {
   preset: "ts-jest",
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
+  moduleNameMapper: {
+    "^@tile-generator/common$": "<rootDir>/../common/src",
+  },
   modulePathIgnorePatterns: ["<rootDir>/dist/"],
 };

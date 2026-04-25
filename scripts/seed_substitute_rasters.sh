@@ -17,6 +17,9 @@ db_name="${PGDATABASE:-tilegenerator}"
 data_dir="${DATA_DIR:-data/substitute}"
 target_res="${TARGET_RES:-0.0083333333333333}"
 bbox="${BBOX:-}"
+hydrorivers_url="${HYDRORIVERS_URL:-https://data.hydrosheds.org/file/HydroRIVERS/HydroRIVERS_v10_shp.zip}"
+hydrorivers_min_discharge_cms="${HYDRORIVERS_MIN_DISCHARGE_CMS:-0.1}"
+hydrorivers_min_strahler="${HYDRORIVERS_MIN_STRAHLER:-1}"
 
 landcover_url="/vsicurl/https://zenodo.org/api/records/8367523/files/lc_mcd12q1v061.t1_c_500m_s_20190101_20191231_go_epsg.4326_v20230818.tif/content"
 precipitation_url="/vsizip//vsicurl/https://geodata.ucdavis.edu/climate/worldclim/2_1/base/wc2.1_10m_bio.zip/wc2.1_10m_bio_12.tif"
@@ -117,9 +120,9 @@ gdal_rasterize -q -burn 1 -at \
   "$data_dir/vectors/ne_10m_ocean.shp" \
   "$data_dir/watermask_500.tif"
 
-# This is a global river proxy, not true flow accumulation. It is deliberately
-# reproducible and scriptable; HydroSHEDS/MERIT Hydro can replace this table
-# later for better hydrology.
+# HydroRIVERS is extracted from HydroSHEDS flow data and includes discharge,
+# Strahler order, and downstream topology attributes. Rasterizing discharge
+# keeps the existing fast raster query path while preserving real river paths.
 gdal_calc.py --quiet \
   -a "$data_dir/landcover_500.tif" \
   --outfile="$data_dir/flow_500.tif" \
@@ -127,10 +130,28 @@ gdal_calc.py --quiet \
   --type=Float32 \
   --NoDataValue=-9999 \
   --overwrite
-gdal_rasterize -q -burn 100 -at \
-  -l ne_10m_rivers_lake_centerlines \
-  "$data_dir/vectors/ne_10m_rivers_lake_centerlines.shp" \
-  "$data_dir/flow_500.tif"
+
+hydrorivers_zip="$data_dir/vectors/$(basename "$hydrorivers_url")"
+if [ ! -f "$hydrorivers_zip" ]; then
+  curl -fsSL "$hydrorivers_url" -o "$hydrorivers_zip"
+fi
+unzip -q -o "$hydrorivers_zip" -d "$data_dir/vectors/hydrorivers"
+hydrorivers_shp="$(find "$data_dir/vectors/hydrorivers" -name 'HydroRIVERS*.shp' | head -n 1)"
+if [ -n "$hydrorivers_shp" ]; then
+  hydrorivers_layer="$(basename "$hydrorivers_shp" .shp)"
+  gdal_rasterize -q -at \
+    -a DIS_AV_CMS \
+    -where "DIS_AV_CMS >= $hydrorivers_min_discharge_cms AND ORD_STRA >= $hydrorivers_min_strahler" \
+    -l "$hydrorivers_layer" \
+    "$hydrorivers_shp" \
+    "$data_dir/flow_500.tif"
+else
+  printf '%s\n' "HydroRIVERS shapefile not found; falling back to Natural Earth rivers."
+  gdal_rasterize -q -burn 100 -at \
+    -l ne_10m_rivers_lake_centerlines \
+    "$data_dir/vectors/ne_10m_rivers_lake_centerlines.shp" \
+    "$data_dir/flow_500.tif"
+fi
 
 for table in \
   watermask_500 \

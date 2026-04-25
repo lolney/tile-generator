@@ -5,5 +5,6 @@ set -eu
 
 DATA_DIR="${1:-data}" \
 BBOX="${BBOX:--121.5 36.75 -119.5 38.25}" \
+HYDRORIVERS_URL="${HYDRORIVERS_URL:-https://data.hydrosheds.org/file/HydroRIVERS/HydroRIVERS_v10_na_shp.zip}" \
 TARGET_RES="${TARGET_RES:-0.0025}" \
   ./scripts/seed_substitute_rasters.sh

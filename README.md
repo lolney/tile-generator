@@ -93,13 +93,21 @@ The substitute seed uses:
   derived by GDAL
 - `forest_500` and `marsh_500` derived from the landcover classes
 - `watermask_500` from MODIS landcover water plus Natural Earth lakes/ocean
-- `flow_500` from Natural Earth river centerlines rasterized as a flow proxy
+- `flow_500` from HydroRIVERS discharge values rasterized to the map grid
 - `beck_kg_v1_present_0p0083` from the NatCap-hosted Koppen-Geiger COG
 
-The current `flow_500` substitute is global and reproducible but still not
-equivalent to the original HydroSHEDS flow-accumulation raster. It is good
-enough to render real river networks; replacing it with HydroSHEDS or MERIT
-Hydro is the next data-quality upgrade.
+The `flow_500` substitute uses HydroRIVERS because it is global, topological,
+and includes estimated long-term discharge plus Strahler/order attributes. The
+seed keeps the app's fast raster lookup path while using real river geometries.
+You can tune source density before rasterization with:
+
+```sh
+HYDRORIVERS_MIN_DISCHARGE_CMS=0.1 HYDRORIVERS_MIN_STRAHLER=1 ./scripts/seed_substitute_rasters.sh
+```
+
+For smaller-scale maps, raise one of those thresholds or generate separate
+`flow_500` copies at different thresholds and point `FLOW_DB_NAME` at the
+appropriate table.
 
 ## Deployment
 
@@ -148,8 +156,10 @@ The app also expects these PostGIS raster tables:
   high-resolution tree mask, or MODIS MCD12Q1 `LC_Type1` classes `1..5` for a
   lower-resolution source aligned with the local seed:
   https://worldcover2021.esa.int/download
-- Flow accumulation and rivers: HydroSHEDS core flow accumulation grids, or
-  HydroRIVERS vectors rasterized to the map grid:
+- Flow accumulation and rivers: HydroRIVERS vectors rasterized to the map grid
+  for real-world continuity; HydroSHEDS core flow accumulation grids or MERIT
+  Hydro are alternatives when raster flow accumulation is more important than
+  line geometry:
   https://www.hydrosheds.org/products
   https://www.hydrosheds.org/downloads-archive
 - Koppen-Geiger climate: Beck et al. 1 km present-day classification maps:

@@ -14,12 +14,23 @@ const rainfallFactor = (rainfall: number) =>
 const landFraction = (waterLayer: Tile[]) =>
   waterLayer.map((tile) => !TileUtils.isWater(tile)).length / waterLayer.length;
 
+const scaleThreshold = (tileDiameterMiles: number) => {
+  if (tileDiameterMiles <= 2) return 0.1;
+  if (tileDiameterMiles <= 5) return 0.25;
+  if (tileDiameterMiles <= 10) return 0.5;
+  if (tileDiameterMiles <= 25) return 2;
+  if (tileDiameterMiles <= 50) return 10;
+  if (tileDiameterMiles <= 100) return 25;
+  return MIN_THRESHOLD;
+};
+
 const mapToTilesArray = (
   rawData: number[],
   waterLayer: Tile[],
   dimensions: Dimensions,
   precipitationLayer: number[],
-  layerWeights: LayerWeightParams
+  layerWeights: LayerWeightParams,
+  tileDiameterMiles = 50
 ) => {
   const sorted = sortBy(rawData);
   const cutoffValue = Math.max(
@@ -30,7 +41,7 @@ const mapToTilesArray = (
           sorted.length
       )
     ],
-    MIN_THRESHOLD
+    scaleThreshold(tileDiameterMiles)
   );
 
   return new TilesArray(

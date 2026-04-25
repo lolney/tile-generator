@@ -5,11 +5,32 @@ import { Tile, Dimensions } from "@tile-generator/common";
 import findRiverSystems from "./findRiverSystems";
 import { isRiverLocal, precipitationLocal } from "../rasterLocal";
 import { Polygon } from "geojson";
+import * as turf from "@turf/turf";
 import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
 import { TilesArray } from "@tile-generator/common";
 import TraceRivers from "./TraceRivers";
 import ArrayDebugger from "./debug/ArrayDebugger";
 import { LayerWeightParams } from "../LayerWeightParams";
+
+const getTileDiameterMiles = (tile: Polygon) => {
+  const ring = tile.coordinates[0];
+  const lngs = ring.map(([lng]) => lng);
+  const lats = ring.map(([, lat]) => lat);
+  const bbox = [
+    Math.min(...lngs),
+    Math.min(...lats),
+    Math.max(...lngs),
+    Math.max(...lats),
+  ] as [number, number, number, number];
+
+  return turf.length(
+    turf.lineString([
+      [bbox[0], bbox[1]],
+      [bbox[2], bbox[3]],
+    ]),
+    { units: "miles" }
+  );
+};
 
 const generateRivers = async (
   tiles: Polygon[],
@@ -19,12 +40,14 @@ const generateRivers = async (
 ): Promise<Tile[][]> => {
   const rawData = await isRiverLocal(tiles);
   const precipitationLayer = await precipitationLocal(tiles);
+  const tileDiameterMiles = getTileDiameterMiles(tiles[0]);
   const rawRivers = mapToTilesArray(
     rawData,
     waterLayer,
     dimensions,
     precipitationLayer,
-    layerWeights
+    layerWeights,
+    tileDiameterMiles
   );
 
   new ArrayDebugger(rawRivers).print("All rivers");
