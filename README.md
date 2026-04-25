@@ -1,3 +1,7 @@
+<img width="1944" height="1418" alt="95606653_281827036176851_4234289681669292032_n" src="https://github.com/user-attachments/assets/f59a8826-5472-46ba-a3a1-c30fdf466300" />
+<img width="1918" height="1393" alt="95684205_695074414589100_5422431318262677504_n" src="https://github.com/user-attachments/assets/eef4f8f8-a226-46e5-97ee-9d72f417d8ca" />
+
+
 Web app for generating tile maps from Google Earth Engine climate/terrain data. The main use is to generate Civilization maps (Civ V or VI) based on real-world locations.
 
 ## Development
