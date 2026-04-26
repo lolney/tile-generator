@@ -2,6 +2,7 @@ import { LineString, MultiLineString, Polygon, Position } from "geojson";
 import * as turf from "@turf/turf";
 import {
   Dimensions,
+  RiverType,
   TerrainType,
   Tile,
   TilesArray,
@@ -11,6 +12,15 @@ import mapToTiles from "./mapToTiles";
 import findRiverSystems from "./findRiverSystems";
 import findRiverEndpoints, { findSourceTile } from "./findRiverEndpoints";
 import TraceRivers from "./TraceRivers";
+
+const riverEdgeOrder: Array<keyof RiverType> = [
+  "northWest",
+  "northEast",
+  "east",
+  "southEast",
+  "southWest",
+  "west",
+];
 
 const toLineStrings = (
   geom: LineString | MultiLineString
@@ -143,26 +153,50 @@ const mergeRiverTile = (base: Tile, next: Tile) => ({
       : undefined,
 });
 
-const mapRiverLinesToTiles = (
-  tiles: Polygon[],
-  riverGeometries: Array<LineString | MultiLineString>,
-  waterLayer: Tile[],
-  dimensions: Dimensions
-): Tile[] => {
-  const mask = mapRiverLinesToMask(
-    tiles,
-    riverGeometries,
-    waterLayer,
-    dimensions
-  );
-  const waterArray = new TilesArray(waterLayer, dimensions.width);
+const circularDistance = (a: keyof RiverType, b: keyof RiverType) => {
+  const distance = Math.abs(riverEdgeOrder.indexOf(a) - riverEdgeOrder.indexOf(b));
+  return Math.min(distance, riverEdgeOrder.length - distance);
+};
 
-  const output = TilesArray.fromDimensions(
-    dimensions.width,
-    dimensions.height,
-    {} as Tile
-  );
+const combinations = <T>(values: T[], count: number): T[][] => {
+  if (count === 0) return [[]];
+  if (values.length < count) return [];
 
+  const [head, ...tail] = values;
+  return [
+    ...combinations(tail, count - 1).map((combo) => [head, ...combo]),
+    ...combinations(tail, count),
+  ];
+};
+
+const riverShapeScore = (edges: Array<keyof RiverType>) => {
+  let score = 0;
+  for (let i = 0; i < edges.length; i++) {
+    for (let j = i + 1; j < edges.length; j++) {
+      score += circularDistance(edges[i], edges[j]);
+    }
+  }
+  return score;
+};
+
+const simplifyRiver = (river: RiverType | undefined): RiverType | undefined => {
+  const edges = riverEdgeOrder.filter((edge) => river?.[edge]);
+  if (edges.length <= 3) return river;
+
+  const [best] = combinations(edges, 3).sort(
+    (a, b) => riverShapeScore(b) - riverShapeScore(a)
+  );
+  return best.reduce((acc, edge) => ({ ...acc, [edge]: true }), {} as RiverType);
+};
+
+const simplifyRiverTiles = (tiles: Tile[]) =>
+  tiles.map((tile) => ({ ...tile, river: simplifyRiver(tile.river) }));
+
+const traceMaskToTiles = (
+  mask: TilesArray<boolean>,
+  waterArray: TilesArray<Tile>,
+  output: TilesArray<Tile>
+) => {
   for (const system of findRiverSystems(mask)) {
     const graph = mapToNodes(system);
     const endpoints = findRiverEndpoints(system, waterArray);
@@ -179,8 +213,30 @@ const mapRiverLinesToTiles = (
       if (process.env.DEBUG_RIVERS === "1") console.error(error);
     }
   }
+};
 
-  return output.fields;
+const mapRiverLinesToTiles = (
+  tiles: Polygon[],
+  riverGeometries: Array<LineString | MultiLineString>,
+  waterLayer: Tile[],
+  dimensions: Dimensions
+): Tile[] => {
+  const mask = mapRiverLinesToMask(
+    tiles,
+    riverGeometries,
+    waterLayer,
+    dimensions
+  );
+  const waterArray = new TilesArray(waterLayer, dimensions.width);
+  const output = TilesArray.fromDimensions(
+    dimensions.width,
+    dimensions.height,
+    {} as Tile
+  );
+
+  traceMaskToTiles(mask, waterArray, output);
+
+  return simplifyRiverTiles(output.fields);
 };
 
 export default mapRiverLinesToTiles;
